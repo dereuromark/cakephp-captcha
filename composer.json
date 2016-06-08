@@ -1,0 +1,36 @@
+{
+	"name": "dereuromark/cakephp-captcha",
+	"type": "cakephp-plugin",
+	"description": "A CakePHP plugin to integrate captchas.",
+	"keywords": ["cakephp", "plugin", "captchas", "security"],
+	"homepage": "https://github.com/dereuromark/cakephp-captcha",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Mark Scherer",
+			"homepage": "http://www.dereuromark.de",
+			"role": "Maintainer"
+		}
+	],
+	"require": {
+		"php": ">=5.4",
+		"cakephp/cakephp": "~3.2"
+	},
+	"autoload": {
+		"psr-4": {
+			"Captcha\\": "src"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Captcha\\Test\\": "tests",
+			"Cake\\Test\\": "vendor/cakephp/cakephp/tests"
+		}
+	},
+	"support": {
+		"source": "https://github.com/dereuromark/cakephp-captcha"
+	},
+	"require-dev": {
+		"fig-r/psr2r-sniffer": "dev-master"
+	}
+}
