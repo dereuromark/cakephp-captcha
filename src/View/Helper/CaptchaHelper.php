@@ -11,8 +11,12 @@ use Cake\View\Helper;
  * @property \Cake\View\Helper\UrlHelper $Url
  */
 class CaptchaHelper extends Helper {
+
 	use ConventionsTrait;
 
+	/**
+	 * @var array
+	 */
 	public $helpers = ['Form', 'Html', 'Url'];
 
 	/**
@@ -22,29 +26,16 @@ class CaptchaHelper extends Helper {
 	 */
 	protected $_defaultConfig = [];
 
+	/**
+	 * @var int
+	 */
 	protected $_id;
 
 	/**
-	 * Difficulty level
+	 * @param array $options
 	 *
-	 * @var int
+	 * @return string
 	 */
-	public $level;
-
-	/**
-	 * Font size.
-	 *
-	 * @var int
-	 */
-	public $size = 14;
-
-	/**
-	 * Allow decimal
-	 *
-	 * @var bool
-	 */
-	public $allowDecimal = false;
-
 	public function input(array $options = []) {
 		$options += [
 			'label' => ['escape' => false, 'text' => $this->image()],
@@ -76,7 +67,7 @@ class CaptchaHelper extends Helper {
 	 * @return string HTML
 	 */
 	public function image(array $options = []) {
-		return $this->Html->image($this->imageUrl(), $options = []);
+		return $this->Html->image($this->imageUrl(), $options);
 	}
 
 	/**

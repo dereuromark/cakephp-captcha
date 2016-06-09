@@ -36,7 +36,7 @@ class SimpleMath implements MathInterface {
 
 	/**
 	 * @return string
-     */
+	 */
 	public function getExpression() {
 		$numberOne = $this->data[0];
 		$operator = $this->data[1];
@@ -47,7 +47,7 @@ class SimpleMath implements MathInterface {
 
 	/**
 	 * @return string
-     */
+	 */
 	public function getValue() {
 		$operator = $this->data[1];
 		if ($operator === '-') {

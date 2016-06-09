@@ -9,7 +9,19 @@ use Cake\Event\Event;
  */
 class CaptchaController extends AppController {
 
+	/**
+	 * @var string
+	 */
 	public $modelClass = 'Captcha.Captchas';
+
+	/**
+	 * @return void
+     */
+	public function initialize() {
+		parent::initialize();
+
+		$this->loadComponent('Captcha.Captcha');
+	}
 
 	/**
 	 * @param \Cake\Event\Event $event
@@ -29,7 +41,7 @@ class CaptchaController extends AppController {
 	 */
 	public function display($id = null) {
 		$captcha = $this->Captchas->get($id);
-		$captcha = $this->Captchas->prepare($captcha);
+		$captcha = $this->Captcha->prepare($captcha);
 
 		$this->set(compact('captcha'));
 

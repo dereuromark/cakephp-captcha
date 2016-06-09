@@ -2,7 +2,6 @@
 namespace Captcha\Model\Table;
 
 use BadMethodCallException;
-use Cake\Core\Configure;
 use Cake\Database\Schema\Table as Schema;
 use Cake\I18n\Time;
 use Cake\ORM\RulesChecker;
@@ -15,14 +14,6 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsTo $Sessions
  */
 class CaptchasTable extends Table {
-
-	/**
-	 * @var array
-	 */
-	protected $_defaultConfig = [
-		'hashType' => null,
-		'engine' => 'Captcha\Engine\MathEngine',
-	];
 
 	/**
 	 * @param \Cake\Database\Schema\Table $table
@@ -145,20 +136,6 @@ class CaptchasTable extends Table {
 	}
 
 	public function getLevel($sessionId, $ip) {
-
-	}
-
-	/**
-	 * @param \Captcha\Model\Entity\Captcha $captcha
-	 *
-	 * @return bool|\Captcha\Model\Entity\Captcha
-	 */
-	public function prepare($captcha) {
-		if ($captcha->result === null || $captcha->result === '') {
-			$generated = $this->_getEngine()->generate();
-			$captcha = $this->patchEntity($captcha, $generated);
-		}
-		return $this->save($captcha);
 	}
 
 	/**
@@ -169,15 +146,6 @@ class CaptchasTable extends Table {
 	public function markUsed($captcha) {
 		$captcha->used = new Time();
 		return (bool)$this->save($captcha);
-	}
-
-	/**
-	 * @return \Captcha\Engine\EngineInterface
-	 */
-	private function _getEngine() {
-		$config = (array)Configure::read('Captcha') + $this->_defaultConfig;
-		$engine = $config['engine'];
-		return new $engine($config);
 	}
 
 }

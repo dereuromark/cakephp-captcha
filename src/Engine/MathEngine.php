@@ -11,10 +11,12 @@ require Plugin::path('Captcha') . 'vendor/' . 'mathpublisher.php';
 
 class MathEngine implements EngineInterface {
 
-
 	const FORMAT_JPEG = 'jpeg';
 	const FORMAT_PNG = 'png';
 
+	/**
+	 * @var array
+	 */
 	protected $_defaultConfig = [
 		'size' => 14,
 		'imageFormat' => self::FORMAT_PNG,
@@ -65,6 +67,7 @@ class MathEngine implements EngineInterface {
 	}
 
 	/**
+	 * @param string $expression
 	 * @return string Binary image data
 	 */
 	protected function render($expression) {

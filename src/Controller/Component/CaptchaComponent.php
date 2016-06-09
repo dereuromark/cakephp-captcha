@@ -3,6 +3,7 @@
 namespace Captcha\Controller\Component;
 
 use Cake\Controller\Component;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 
@@ -10,10 +11,11 @@ class CaptchaComponent extends Component {
 
 	use EventDispatcherTrait;
 
-	/*
-     * @var array
-     */
+	/**
+	 * @var array
+	 */
 	protected $_defaultConfig = [
+		'engine' => 'Captcha\Engine\MathEngine',
 	];
 
 	/**
@@ -40,6 +42,8 @@ class CaptchaComponent extends Component {
 		$controller = $this->_registry->getController();
 		$this->eventManager($controller->eventManager());
 		$this->response = &$controller->response;
+
+		$this->Captchas = $controller->Captchas;
 	}
 
 	/**
@@ -49,7 +53,29 @@ class CaptchaComponent extends Component {
 	 * @return \Cake\Network\Response|null
 	 */
 	public function startup(Event $event) {
-		return $this->setUpValidation($event);
+		//return $this->setUpValidation($event);
+	}
+
+	/**
+	 * @param \Captcha\Model\Entity\Captcha $captcha
+	 *
+	 * @return bool|\Captcha\Model\Entity\Captcha
+	 */
+	public function prepare($captcha) {
+		if ($captcha->result === null || $captcha->result === '') {
+			$generated = $this->_getEngine()->generate();
+			$captcha = $this->Captchas->patchEntity($captcha, $generated);
+		}
+		return $this->Captchas->save($captcha);
+	}
+
+	/**
+	 * @return \Captcha\Engine\EngineInterface
+	 */
+	private function _getEngine() {
+		$config = (array)Configure::read('Captcha') + $this->_defaultConfig;
+		$engine = $config['engine'];
+		return new $engine($config);
 	}
 
 }

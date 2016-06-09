@@ -24,7 +24,6 @@ class CaptchaBehavior extends Behavior {
 		'minTime' => 2, // Seconds the form will need to be filled in by a human
 		'maxTime' => HOUR, // Seconds the form will need to be submitted in
 		'log' => false, // Log errors
-		'hashType' => null,
 		'engine' => 'Captcha\Engine\MathEngine',
 		'dummyField' => 'email_homepage' // Honeypot trap
 	];
@@ -166,12 +165,12 @@ class CaptchaBehavior extends Behavior {
 	/**
 	 * @param array $data
 	 *
-	 * @return \App\Model\Entity\Captcha|null
+	 * @return \Captcha\Model\Entity\Captcha|null
 	 */
 	protected function _getCaptcha(array $data) {
 		$id = !empty($data['captcha_id']) ? (int)$data['captcha_id'] : null;
 		if (!$id) {
-			return false;
+			return null;
 		}
 
 		if (isset($this->_captchas[$id])) {
