@@ -2,10 +2,23 @@
 
 namespace Captcha\Engine;
 
+use Cake\Core\Plugin;
 use Cake\Validation\Validator;
 use Captcha\Engine\Math\SimpleMath;
 
+require Plugin::path('Captcha') . 'vendor/' .  'mathpublisher.php';
+
 class MathEngine implements EngineInterface {
+
+
+	const FORMAT_JPEG = 'jpeg';
+	const FORMAT_PNG = 'png';
+
+	protected $_defaultConfig = [
+		'size' => 14,
+		'imageFormat' => self::FORMAT_PNG,
+		'mathType' => SimpleMath::class
+	];
 
 	/**
 	 * @var array
@@ -13,7 +26,7 @@ class MathEngine implements EngineInterface {
 	protected $config;
 
 	public function __construct(array $config) {
-		$this->config = $config + ['type' => SimpleMath::class];
+		$this->config = $config + $this->_defaultConfig;
 	}
 
     /**
@@ -30,7 +43,7 @@ class MathEngine implements EngineInterface {
 		$image = $this->render($expression);
 
 		return [
-			'value' => $value,
+			'result' => $value,
 			'image' => $image
 		];
     }
@@ -55,15 +68,28 @@ class MathEngine implements EngineInterface {
      */
     protected function render($expression)
     {
-        // TODO: Implement render() method.
-    }
+		$formula = new \expression_math(tableau_expression($expression));
+		$formula->dessine($this->config['size']);
+		ob_start();
+		switch ($this->config['imageFormat']) {
+			case self::FORMAT_JPEG:
+				imagejpeg($formula->image);
+				break;
+			case self::FORMAT_PNG:
+				imagepng($formula->image);
+				break;
+		}
+		imagedestroy($formula->image);
+
+		return ob_get_clean();
+	}
 
 	/**
 	 * @return \Captcha\Engine\Math\MathInterface
      */
 	protected function _getTypeClass() {
 		$config = $this->config;
-		return new $config['type']($config);
+		return new $config['mathType']($config);
 	}
 
 }
