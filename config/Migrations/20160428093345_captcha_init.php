@@ -2,8 +2,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CaptchaInit extends AbstractMigration
-{
+class CaptchaInit extends AbstractMigration {
 	/**
 	 * Change Method.
 	 *
@@ -24,9 +23,10 @@ class CaptchaInit extends AbstractMigration
 	 *
 	 * Remember to call "create()" or "update()" and NOT "save()" when working
 	 * with the Table class.
+	 *
+	 * @return void
 	 */
-	public function change()
-	{
+	public function change() {
 		$table = $this->table('captchas');
 		$table->addColumn('session_id', 'string', [
 			'default' => null,
@@ -57,4 +57,5 @@ class CaptchaInit extends AbstractMigration
 		]);
 		$table->create();
 	}
+
 }

@@ -1,7 +1,7 @@
 <?php
 
-use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\Router;
+use Cake\Routing\Route\DashedRoute;
 
 Router::scope('/', function($routes) {
 	$routes->connect('/:controller', ['action' => 'index'], ['routeClass' => DashedRoute::class]);

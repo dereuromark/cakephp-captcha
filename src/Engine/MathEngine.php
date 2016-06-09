@@ -5,8 +5,9 @@ namespace Captcha\Engine;
 use Cake\Core\Plugin;
 use Cake\Validation\Validator;
 use Captcha\Engine\Math\SimpleMath;
+use expression_math;
 
-require Plugin::path('Captcha') . 'vendor/' .  'mathpublisher.php';
+require Plugin::path('Captcha') . 'vendor/' . 'mathpublisher.php';
 
 class MathEngine implements EngineInterface {
 
@@ -29,12 +30,12 @@ class MathEngine implements EngineInterface {
 		$this->config = $config + $this->_defaultConfig;
 	}
 
-    /**
-     * @param array $config
-     *
-     * @return array
-     */
-    public function generate() {
+	/**
+	 * @param array $config
+	 *
+	 * @return array
+	 */
+	public function generate() {
 		$class = $this->_getTypeClass();
 
 		$expression = $class->getExpression();
@@ -46,29 +47,28 @@ class MathEngine implements EngineInterface {
 			'result' => $value,
 			'image' => $image
 		];
-    }
+	}
 
-    /**
-     * @param Validator $validator
-     *
-     * @return void
-     */
-    public function buildValidator(Validator $validator) {
-        $validator->add('captcha_result', [
-            'valid' => [
-                'rule' => 'validateCaptchaResult',
-                'provider' => 'table',
-                'message' => __('The solution is not correct'),
-            ]
-        ]);
-    }
+	/**
+	 * @param \Cake\Validation\Validator $validator
+	 *
+	 * @return void
+	 */
+	public function buildValidator(Validator $validator) {
+		$validator->add('captcha_result', [
+			'valid' => [
+				'rule' => 'validateCaptchaResult',
+				'provider' => 'table',
+				'message' => __('The solution is not correct'),
+			]
+		]);
+	}
 
-    /**
-     * @return string Binary image data
-     */
-    protected function render($expression)
-    {
-		$formula = new \expression_math(tableau_expression($expression));
+	/**
+	 * @return string Binary image data
+	 */
+	protected function render($expression) {
+		$formula = new expression_math(tableau_expression($expression));
 		$formula->dessine($this->config['size']);
 		ob_start();
 		switch ($this->config['imageFormat']) {
@@ -86,7 +86,7 @@ class MathEngine implements EngineInterface {
 
 	/**
 	 * @return \Captcha\Engine\Math\MathInterface
-     */
+	 */
 	protected function _getTypeClass() {
 		$config = $this->config;
 		return new $config['mathType']($config);

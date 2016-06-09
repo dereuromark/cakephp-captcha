@@ -9,15 +9,15 @@ use Cake\Validation\Validator;
 
 interface EngineInterface {
 
-    /**
-     * @return array
-     */
-    public function generate();
+	/**
+	 * @return array
+	 */
+	public function generate();
 
 	/**
 	 * @param \Cake\Validation\Validator $validator
 	 * @return void
 	 */
-    public function buildValidator(Validator $validator);
+	public function buildValidator(Validator $validator);
 
 }
