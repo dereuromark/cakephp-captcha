@@ -7,6 +7,7 @@ use Cake\Network\Session;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
+use DateTime;
 
 class CaptchaBehaviorTest extends TestCase {
 
@@ -70,8 +71,8 @@ class CaptchaBehaviorTest extends TestCase {
 			'result' => 3,
 			'ip' => '127.0.0.1',
 			'session_id' => 1,
-			'created' => new \DateTime('- 1 hour'),
-			'modified' => new \DateTime('- 1 hour')
+			'created' => new DateTime('- 1 hour'),
+			'modified' => new DateTime('- 1 hour')
 		]);
 		$result = $this->Captchas->save($captcha);
 		$this->assertTrue((bool)$result);

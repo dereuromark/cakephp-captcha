@@ -16,7 +16,7 @@ class CaptchaController extends AppController {
 
 	/**
 	 * @return void
-     */
+	 */
 	public function initialize() {
 		parent::initialize();
 

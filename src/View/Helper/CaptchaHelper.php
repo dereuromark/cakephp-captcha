@@ -1,7 +1,6 @@
 <?php
 namespace Captcha\View\Helper;
 
-use Cake\Core\ConventionsTrait;
 use Cake\ORM\TableRegistry;
 use Cake\View\Helper;
 

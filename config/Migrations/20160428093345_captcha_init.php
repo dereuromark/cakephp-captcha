@@ -38,7 +38,7 @@ class CaptchaInit extends AbstractMigration {
 			'limit' => 255,
 			'null' => false,
 		]);
-		$table->addColumn('image', 'text', [
+		$table->addColumn('image', 'binary', [
 			'default' => null,
 			'null' => true,
 		]);

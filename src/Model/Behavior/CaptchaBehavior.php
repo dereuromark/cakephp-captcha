@@ -194,44 +194,6 @@ class CaptchaBehavior extends Behavior {
 		return $this->_captchas[$id];
 	}
 
-
-	/**
-	 * Flood protection by false fields and math code
-	 * TODO: build in floodProtection (max Trials etc)
-	 * TODO: SESSION based one as alternative
-	 *
-	 * @return bool Success
-	 */
-	protected function _validateCaptcha($data) {
-		if (!isset($data['captcha'])) {
-			// form inputs missing? SPAM!
-			return $this->_setError(__d('tools', 'captchaContentMissing'));
-		}
-
-		$hash = $this->_buildHash($data);
-
-		if ($data['captcha_hash'] === $hash) {
-			return true;
-		}
-		// wrong captcha content or session expired
-		return $this->_setError(__d('tools', 'Captcha incorrect'), 'SubmittedResult = \'' . $data['captcha'] . '\'');
-	}
-
-	/**
-	 * Build and log error message
-	 * TODO: dont return boolean false
-	 *
-	 * @return bool false
-	 */
-	protected function _setError($msg = null, $internalMsg = null) {
-		if (!empty($msg)) {
-			$this->error = $msg;
-		}
-		if (!empty($internalMsg)) {
-			$this->internalError = $internalMsg;
-		}
-	}
-
 	/**
 	 * @param array $config
 	 *
