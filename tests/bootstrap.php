@@ -57,6 +57,8 @@ if (file_exists(CONFIG . 'app_local.php')) {
 	\Cake\Core\Configure::load('app_local', 'default');
 }
 
+\Cake\Core\Plugin::load('Captcha', ['path' => ROOT . DS, 'autoload' => true, 'bootstrap' => true, 'routes' => true]);
+
 // Ensure default test connection is defined
 if (!getenv('db_class')) {
 	putenv('db_class=Cake\Database\Driver\Sqlite');

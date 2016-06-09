@@ -12,8 +12,6 @@ use Cake\View\Helper;
  */
 class CaptchaHelper extends Helper {
 
-	use ConventionsTrait;
-
 	/**
 	 * @var array
 	 */

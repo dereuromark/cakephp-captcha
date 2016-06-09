@@ -95,7 +95,7 @@ class CaptchasTable extends Table {
 			]
 		);
 		if (!$this->save($captcha)) {
-			throw new BadMethodCallException('Sth went wrong');
+			throw new BadMethodCallException('Sth went wrong: ' . print_r($captcha->errors(), true));
 		}
 
 		return $captcha->id;
