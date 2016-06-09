@@ -39,6 +39,8 @@ class CaptchaHelperTest extends TestCase {
 			]
 		);
 
+		Router::reload();
+
 		$this->request = new Request(); //$this->getMockBuilder(Request::class)->setMethods([''])->getMock([]);
 		$this->session = $this->getMockBuilder(Session::class)->setMethods(['id'])->getMock();
 		$this->request->session($this->session);
@@ -63,7 +65,6 @@ class CaptchaHelperTest extends TestCase {
 	 */
 	public function testRender() {
 		$this->request->env('REMOTE_ADDR', '127.0.0.1');
-		Router::reload();
 
 		$result = $this->Captcha->render();
 		$expected = <<<HTML

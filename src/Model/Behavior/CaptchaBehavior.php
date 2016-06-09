@@ -22,7 +22,7 @@ class CaptchaBehavior extends Behavior {
 	 */
 	protected $_defaultConfig = [
 		'minTime' => 2, // Seconds the form will need to be filled in by a human
-		'maxTime' => HOUR, // Seconds the form will need to be submitted in
+		'maxTime' => DAY, // Seconds the form will need to be submitted in
 		'log' => false, // Log errors
 		'engine' => 'Captcha\Engine\MathEngine',
 		'dummyField' => 'email_homepage' // Honeypot trap
@@ -159,6 +159,7 @@ class CaptchaBehavior extends Behavior {
 			return false;
 		}
 
+		$this->_captchasTable->markUsed($captcha);
 		return true;
 	}
 
