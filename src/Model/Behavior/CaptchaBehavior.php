@@ -7,6 +7,7 @@ use Cake\Event\Event;
 use Cake\I18n\Time;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Router;
 use Cake\Validation\Validator;
 
 /**
@@ -84,6 +85,8 @@ class CaptchaBehavior extends Behavior {
 				],
 			]);
 		}
+
+		$this->_engine->buildValidator($validator, $this->config());
 		if ($this->config('minTime')) {
 			$validator->add('captcha_result', [
 				'minTime' => [
@@ -104,8 +107,6 @@ class CaptchaBehavior extends Behavior {
 				],
 			]);
 		}
-
-		$this->_engine->buildValidator($validator, $this->config());
 	}
 
 	/**
@@ -170,15 +171,26 @@ class CaptchaBehavior extends Behavior {
 	 */
 	protected function _getCaptcha(array $data) {
 		$id = !empty($data['captcha_id']) ? (int)$data['captcha_id'] : null;
-		if (!$id) {
-			return null;
-		}
 
-		if (isset($this->_captchas[$id])) {
+		if (array_key_exists($id, $this->_captchas)) {
 			return $this->_captchas[$id];
 		}
 
-		$this->_captchas[$id] = $this->_captchasTable->find()->where(['id' => $id])->first();
+		$request = Router::getRequest();
+		$sessionId = $request->session()->id();
+		$ip = $request->clientIp();
+
+		if (!$id) {
+			$this->_captchas[$id] = null;
+			return null;
+		}
+
+		$conditions = [
+			'id' => $id,
+			'ip' => $ip,
+			'session_id' => $sessionId
+		];
+		$this->_captchas[$id] = $this->_captchasTable->find()->where($conditions)->first();
 		return $this->_captchas[$id];
 	}
 
