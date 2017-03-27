@@ -53,5 +53,5 @@ $ad = $this->Ads->newEntity($postData);
 $this->Users->save($user);
 ```
 
-For detailed documentation see **[Docs](https://github.com/dereuromark/cakephp-captcha/docs)**.
+For detailed documentation see **[Docs](docs)**.
 
