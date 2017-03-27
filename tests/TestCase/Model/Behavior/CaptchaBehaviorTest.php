@@ -29,7 +29,7 @@ class CaptchaBehaviorTest extends TestCase {
 	public $Comments;
 
 	/**
-	 * @var Request
+	 * @var \Cake\Network\Request
 	 */
 	protected $request;
 
