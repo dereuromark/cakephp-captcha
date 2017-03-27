@@ -2,7 +2,7 @@
 namespace Captcha\Model\Table;
 
 use BadMethodCallException;
-use Cake\Database\Schema\Table as Schema;
+use Cake\Database\Schema\TableSchema;
 use Cake\I18n\Time;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -16,13 +16,13 @@ use Cake\Validation\Validator;
 class CaptchasTable extends Table {
 
 	/**
-	 * @param \Cake\Database\Schema\Table $table
+	 * @param \Cake\Database\Schema\TableSchema $schema
 	 *
-	 * @return \Cake\Database\Schema\Table
+	 * @return \Cake\Database\Schema\TableSchema
 	 */
-	protected function _initializeSchema(Schema $table) {
-		$table->columnType('image', 'image');
-		return $table;
+	protected function _initializeSchema(TableSchema $schema) {
+		$schema->columnType('image', 'image');
+		return $schema;
 	}
 
 	/**
