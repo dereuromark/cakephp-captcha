@@ -42,13 +42,16 @@ bin/cake Migrations migrate -p Captcha
 Using the default MathEngine we can simply attach the behavior to the Table class.
 
 ```php
-// Adding the behavior in your Table initialize()
-$this->addBehavior('Captcha.Captcha', ['complexity' => 2, ...]);
+// Adding the behavior in your Table initialize() or at runtime in your controller action
+$this->addBehavior('Captcha.Captcha');
 
 // Saving a new ad would now require a valid captcha solution
-$dd = [
+$postData = [
 	'title' => 'Looking for a friend'
 ];
 $ad = $this->Ads->newEntity($postData);
 $this->Users->save($user);
 ```
+
+For detailed documentation see **[Docs](https://github.com/dereuromark/cakephp-captcha/docs)**.
+
