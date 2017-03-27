@@ -76,10 +76,10 @@ class MathEngine implements EngineInterface {
 		$formula->dessine($this->config['size']);
 		ob_start();
 		switch ($this->config['imageFormat']) {
-			case self::FORMAT_JPEG:
+			case static::FORMAT_JPEG:
 				imagejpeg($formula->image);
 				break;
-			case self::FORMAT_PNG:
+			case static::FORMAT_PNG:
 				imagepng($formula->image);
 				break;
 		}
