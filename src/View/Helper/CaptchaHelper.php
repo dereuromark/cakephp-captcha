@@ -24,7 +24,7 @@ class CaptchaHelper extends Helper {
 	protected $_defaultConfig = [];
 
 	/**
-	 * @var int
+	 * @var int|null
 	 */
 	protected $_id;
 

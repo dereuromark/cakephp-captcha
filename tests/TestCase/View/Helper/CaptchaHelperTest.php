@@ -45,9 +45,8 @@ class CaptchaHelperTest extends TestCase {
 		Router::reload();
 
 		$this->request = new Request(); //$this->getMockBuilder(Request::class)->setMethods([''])->getMock([]);
-		$this->session = $this->getMockBuilder(Session::class)->setMethods(['id'])->getMock();
+		$this->session = new Session();
 		$this->request->session($this->session);
-		$this->session->expects($this->once())->method('id')->willReturn(1);
 		$this->View = new View($this->request);
 		$this->Captcha = new CaptchaHelper($this->View);
 	}
