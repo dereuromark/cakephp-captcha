@@ -26,10 +26,10 @@ class MathEngine implements EngineInterface {
 	/**
 	 * @var array
 	 */
-	protected $config;
+	protected $_config;
 
 	public function __construct(array $config) {
-		$this->config = $config + $this->_defaultConfig;
+		$this->_config = $config + $this->_defaultConfig;
 	}
 
 	/**
@@ -73,9 +73,9 @@ class MathEngine implements EngineInterface {
 	 */
 	protected function render($expression) {
 		$formula = new expression_math(tableau_expression($expression));
-		$formula->dessine($this->config['size']);
+		$formula->dessine($this->_config['size']);
 		ob_start();
-		switch ($this->config['imageFormat']) {
+		switch ($this->_config['imageFormat']) {
 			case static::FORMAT_JPEG:
 				imagejpeg($formula->image);
 				break;
@@ -92,7 +92,7 @@ class MathEngine implements EngineInterface {
 	 * @return \Captcha\Engine\Math\MathInterface
 	 */
 	protected function _getTypeClass() {
-		$config = $this->config;
+		$config = $this->_config;
 		return new $config['mathType']($config);
 	}
 

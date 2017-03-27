@@ -50,4 +50,17 @@ class MathEngineTest extends TestCase {
 		$this->assertSame(['result', 'image'], array_keys($result));
 	}
 
+	/**
+	 * @return void
+	 */
+	public function testGenerateOptions() {
+		$options = [
+			'imageFormat' => MathEngine::FORMAT_JPEG,
+			'complexity' => 100,
+		];
+		$this->Math = new MathEngine($options);
+		$result = $this->Math->generate();
+		$this->assertSame(['result', 'image'], array_keys($result));
+	}
+
 }

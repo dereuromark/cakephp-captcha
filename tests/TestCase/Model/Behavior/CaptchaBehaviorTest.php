@@ -29,6 +29,11 @@ class CaptchaBehaviorTest extends TestCase {
 	public $Comments;
 
 	/**
+	 * @var Request
+	 */
+	protected $request;
+
+	/**
 	 * @return void
 	 */
 	public function setUp() {
@@ -41,8 +46,8 @@ class CaptchaBehaviorTest extends TestCase {
 
 		$this->request = new Request();
 		$this->request->env('REMOTE_ADDR', '127.0.0.1');
-		$this->session = $this->getMockBuilder(Session::class)->setMethods(['id'])->getMock();
-		$this->session->expects($this->once())->method('id')->willReturn(1);
+		$this->session = new Session();
+		//$this->session->expects($this->once())->method('id')->willReturn(1);
 		$this->request->session($this->session);
 		Router::pushRequest($this->request);
 		Router::reload();
@@ -70,7 +75,7 @@ class CaptchaBehaviorTest extends TestCase {
 		$captcha = $this->Captchas->newEntity([
 			'result' => 3,
 			'ip' => '127.0.0.1',
-			'session_id' => 1,
+			'session_id' => 'cli',
 			'created' => new DateTime('- 1 hour'),
 			'modified' => new DateTime('- 1 hour')
 		]);

@@ -86,7 +86,7 @@ class CaptchaBehavior extends Behavior {
 			]);
 		}
 
-		$this->_engine->buildValidator($validator, $this->config());
+		$this->_engine->buildValidator($validator);
 		if ($this->config('minTime')) {
 			$validator->add('captcha_result', [
 				'minTime' => [
@@ -177,6 +177,9 @@ class CaptchaBehavior extends Behavior {
 		}
 
 		$request = Router::getRequest();
+		if (!$request->session()->started()) {
+			$request->session()->start();
+		}
 		$sessionId = $request->session()->id();
 		$ip = $request->clientIp();
 
@@ -195,13 +198,10 @@ class CaptchaBehavior extends Behavior {
 	}
 
 	/**
-	 * @param array $config
-	 *
 	 * @return array
 	 */
-	public function generate(array $config) {
-		$config += $this->_config;
-		return $this->_engine->generate($config);
+	public function generate() {
+		return $this->_engine->generate();
 	}
 
 }

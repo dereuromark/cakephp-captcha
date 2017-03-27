@@ -21,16 +21,22 @@ class SimpleMath implements MathInterface {
 	 */
 	protected $data = [];
 
+	/**
+	 * @param array $config
+	 */
 	public function __construct(array $config) {
 		$this->_config = $config + $this->_defaultConfig;
-		$this->data[0] = $this->_randomNumber() + 1;
+		$this->data[0] = $this->_randomNumber();
 		$this->data[1] = $this->_randomOperator();
-		$this->data[2] = $this->_randomNumber() - 1;
+		$this->data[2] = $this->_randomNumber();
+		while ($this->data[2] === $this->data[1]) {
+			$this->data[2] = $this->_randomNumber();
+		}
 
 		if ($this->data[1] === '-' && $this->data[2] > $this->data[0]) {
 			$tmp = $this->data[2];
 			$this->data[2] = $this->data[0];
-			$this->data[0] = $this->data[2];
+			$this->data[0] = $tmp;
 		}
 	}
 
