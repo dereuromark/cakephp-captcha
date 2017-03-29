@@ -95,7 +95,7 @@ class CaptchaHelper extends Helper {
 	 * @return \Captcha\Model\Table\CaptchasTable
 	 */
 	protected function _getTable() {
-	/* @var \Captcha\Model\Table\CaptchasTable $table */
+		/* @var \Captcha\Model\Table\CaptchasTable $table */
 		$table = TableRegistry::get('Captcha.Captchas');
 
 		return $table;
