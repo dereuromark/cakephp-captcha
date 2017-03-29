@@ -83,3 +83,19 @@ class WordEngine implements EngineInterface {
 
 }
 ```
+
+## Throttle and Garbage Collect
+With such a DB driven tool you must clean out your table daily or even hourly based on the traffic.
+Use the `maxTime` config to define the time span a captcha is valid, and when it can be removed as outdated.
+The built in solution here is to auto-clean when creating images on a probability level (0...100). Default for `cleanupProbability` is `10` (percent).
+You can also use a simple cron job that does it. Set `cleanupProbability` to `0` then.
+
+The `minTime` is by default 2 seconds and make sure you cannot auto-post a form too fast.
+
+One should also include a throttle limit, so you cannot fill up the DB.
+The built in mechanism is a `maxPerUser` value (defaults to 1000) which prevents entering more than this amount per ip or session.
+If a form gets built and sent too often, those captcha results will never validate then (as their result has not been persisted anymore due to this rate limit).
+
+## Honeypot
+The `dummyField` config sets an input field (by default `email_homepage` control) as hidden field, and will fail if filled out.
+This can only happen by a bot, which usually fills out all fields it finds.

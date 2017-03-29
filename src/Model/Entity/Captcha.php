@@ -10,6 +10,7 @@ use Cake\ORM\Entity;
  * @property string $session_id
  * @property string $ip
  * @property string $result
+ * @property string $image
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $used
  */

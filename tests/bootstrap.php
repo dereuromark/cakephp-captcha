@@ -1,28 +1,33 @@
 <?php
 
-require dirname(__DIR__) . '/vendor/cakephp/cakephp/src/basics.php';
-require dirname(__DIR__) . '/vendor/autoload.php';
-
-define('ROOT', dirname(__DIR__));
-define('APP_DIR', 'src');
-
-define('APP', rtrim(sys_get_temp_dir(), DS) . DS . APP_DIR . DS);
-if (!is_dir(APP)) {
-	mkdir(APP, 0770, true);
+if (!defined('DS')) {
+	define('DS', DIRECTORY_SEPARATOR);
 }
-
-define('TMP', ROOT . DS . 'tmp' . DS);
-if (!is_dir(TMP)) {
-	mkdir(TMP, 0770, true);
+if (!defined('WINDOWS')) {
+	if (DS === '\\' || substr(PHP_OS, 0, 3) === 'WIN') {
+		define('WINDOWS', true);
+	} else {
+		define('WINDOWS', false);
+	}
 }
-
-define('CONFIG', dirname(__FILE__) . DS . 'config' . DS);
-define('LOGS', TMP . 'logs' . DS);
-define('CACHE', TMP . 'cache' . DS);
-
-define('CAKE_CORE_INCLUDE_PATH', ROOT . '/vendor/cakephp/cakephp');
-define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
+// Path constants to a few helpful things.
+define('ROOT', dirname(__DIR__) . DS);
+define('CAKE_CORE_INCLUDE_PATH', ROOT . 'vendor' . DS . 'cakephp' . DS . 'cakephp');
+define('CORE_PATH', ROOT . 'vendor' . DS . 'cakephp' . DS . 'cakephp' . DS);
 define('CAKE', CORE_PATH . 'src' . DS);
+define('TESTS', ROOT . 'tests' . DS);
+define('TEST_ROOT', ROOT . 'tests' . DS . 'test_app' . DS);
+define('APP_DIR', 'src');
+define('APP', TEST_ROOT . APP_DIR . DS);
+define('WEBROOT_DIR', 'webroot');
+define('TMP', sys_get_temp_dir() . DS);
+define('CONFIG', TESTS . 'config' . DS);
+define('WWW_ROOT', TEST_ROOT . WEBROOT_DIR . DS);
+define('CACHE', TMP);
+define('LOGS', TMP);
+
+require ROOT . '/vendor/autoload.php';
+require CORE_PATH . 'config/bootstrap.php';
 
 Cake\Core\Configure::write('App', [
 	'namespace' => 'App'
@@ -58,6 +63,9 @@ if (file_exists(CONFIG . 'app_local.php')) {
 }
 
 \Cake\Core\Plugin::load('Captcha', ['path' => ROOT . DS, 'autoload' => true, 'bootstrap' => true, 'routes' => true]);
+
+\Cake\Routing\DispatcherFactory::add('Routing');
+\Cake\Routing\DispatcherFactory::add('ControllerFactory');
 
 // Ensure default test connection is defined
 if (!getenv('db_class')) {

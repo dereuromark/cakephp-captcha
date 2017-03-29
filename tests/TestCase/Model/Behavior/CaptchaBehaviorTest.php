@@ -21,17 +21,22 @@ class CaptchaBehaviorTest extends TestCase {
 	/**
 	 * @var \Cake\ORM\Table;
 	 */
-	public $Captchas;
+	protected $Captchas;
 
 	/**
 	 * @var \Cake\ORM\Table;
 	 */
-	public $Comments;
+	protected $Comments;
 
 	/**
-	 * @var \Cake\Network\Request
+	 * @var \Cake\Http\ServerRequest
 	 */
 	protected $request;
+
+	/**
+	 * @var \Cake\Network\Session
+	 */
+	protected $session;
 
 	/**
 	 * @return void
@@ -47,10 +52,8 @@ class CaptchaBehaviorTest extends TestCase {
 		$this->request = new Request();
 		$this->request->env('REMOTE_ADDR', '127.0.0.1');
 		$this->session = new Session();
-		//$this->session->expects($this->once())->method('id')->willReturn(1);
 		$this->request->session($this->session);
 		Router::pushRequest($this->request);
-		Router::reload();
 
 		$this->Captchas = TableRegistry::get('Captcha.Captchas');
 

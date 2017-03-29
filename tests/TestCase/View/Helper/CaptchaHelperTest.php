@@ -22,12 +22,22 @@ class CaptchaHelperTest extends TestCase {
 	/**
 	 * @var \Cake\View\View
 	 */
-	public $View;
+	protected $View;
 
 	/**
 	 * @var \Captcha\View\Helper\CaptchaHelper
 	 */
-	public $Captcha;
+	protected $Captcha;
+
+	/**
+	 * @var \Cake\Http\ServerRequest
+	 */
+	protected $request;
+
+	/**
+	 * @var \Cake\Network\Session
+	 */
+	protected $session;
 
 	/**
 	 * setUp method
@@ -38,13 +48,12 @@ class CaptchaHelperTest extends TestCase {
 		parent::setUp();
 
 		Configure::write('Captcha', [
-				'debug' => false,
 			]
 		);
 
 		Router::reload();
 
-		$this->request = new Request(); //$this->getMockBuilder(Request::class)->setMethods([''])->getMock([]);
+		$this->request = new Request();
 		$this->session = new Session();
 		$this->request->session($this->session);
 		$this->View = new View($this->request);

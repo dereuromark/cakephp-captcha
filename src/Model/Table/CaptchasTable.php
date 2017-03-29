@@ -2,16 +2,24 @@
 namespace Captcha\Model\Table;
 
 use BadMethodCallException;
+use Cake\Core\Configure;
 use Cake\Database\Schema\TableSchema;
 use Cake\I18n\Time;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Captcha\Model\Rule\MaxRule;
 
 /**
- * Captchas Model
- *
  * @property \Cake\ORM\Association\BelongsTo $Sessions
+ * @method \Captcha\Model\Entity\Captcha get($primaryKey, $options = [])
+ * @method \Captcha\Model\Entity\Captcha newEntity($data = null, array $options = [])
+ * @method \Captcha\Model\Entity\Captcha[] newEntities(array $data, array $options = [])
+ * @method \Captcha\Model\Entity\Captcha|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \Captcha\Model\Entity\Captcha patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \Captcha\Model\Entity\Captcha[] patchEntities($entities, array $data, array $options = [])
+ * @method \Captcha\Model\Entity\Captcha findOrCreate($search, callable $callback = null, $options = [])
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class CaptchasTable extends Table {
 
@@ -78,6 +86,8 @@ class CaptchasTable extends Table {
 	 * @return \Cake\ORM\RulesChecker
 	 */
 	public function buildRules(RulesChecker $rules) {
+		$rules->addCreate(new MaxRule());
+
 		return $rules;
 	}
 
@@ -88,10 +98,13 @@ class CaptchasTable extends Table {
 	 * @return int
 	 */
 	public function touch($sessionId, $ip) {
+		$probability = (int)Configure::read('Captcha.cleanupProbability');
+		$this->cleanup($probability);
+
 		$captcha = $this->newEntity(
 			[
 				'session_id' => $sessionId,
-				'ip' => $ip
+				'ip' => $ip,
 			]
 		);
 		if (!$this->save($captcha)) {
@@ -114,28 +127,20 @@ class CaptchasTable extends Table {
 	}
 
 	/**
+	 * @param int $probability
 	 * @return int
 	 */
-	public function cleanup() {
-		return $this->deleteAll(['or' => ['created <' => new Time('-1 day'), 'used' => true]]);
-	}
-
-	/**
-	 * @param string $ip
-	 * @param string $sessionId
-	 *
-	 * @return int
-	 */
-	public function cleanupByIpOrSessionId($ip, $sessionId) {
-		$count = $this->getCount($ip, $sessionId);
-		if ($count < 1000) {
+	public function cleanup($probability = 100) {
+		if (!$probability) {
+			return 0;
+		}
+		$randomNumber = mt_rand(1, 100);
+		if ((int)$probability < $randomNumber) {
 			return 0;
 		}
 
-		return $this->deleteAll(['or' => ['ip' => $ip, 'session_id' => $sessionId]]);
-	}
-
-	public function getLevel($sessionId, $ip) {
+		$maxTime = Configure::read('Captcha.maxTime');
+		return $this->deleteAll(['or' => ['created <' => date(time() - $maxTime), 'used IS NOT' => null]]);
 	}
 
 	/**

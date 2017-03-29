@@ -87,6 +87,7 @@ class CaptchaHelper extends Helper {
 			$this->request->session()->start();
 		}
 		$this->_id = $CaptchasTable->touch($this->request->session()->id(), $this->request->clientIp());
+
 		return $this->_id;
 	}
 
@@ -94,7 +95,10 @@ class CaptchaHelper extends Helper {
 	 * @return \Captcha\Model\Table\CaptchasTable
 	 */
 	protected function _getTable() {
-		return TableRegistry::get('Captcha.Captchas');
+	/* @var \Captcha\Model\Table\CaptchasTable $table */
+		$table = TableRegistry::get('Captcha.Captchas');
+
+		return $table;
 	}
 
 }

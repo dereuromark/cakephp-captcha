@@ -13,7 +13,7 @@ class MathEngineTest extends TestCase {
 	/**
 	 * @var \Captcha\Engine\MathEngine
 	 */
-	public $Math;
+	protected $Math;
 
 	/**
 	 * setUp method
@@ -24,7 +24,6 @@ class MathEngineTest extends TestCase {
 		parent::setUp();
 
 		Configure::write('Captcha', [
-				'debug' => false,
 			]
 		);
 		$config = [];
