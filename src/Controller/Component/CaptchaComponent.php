@@ -47,16 +47,6 @@ class CaptchaComponent extends Component {
 	}
 
 	/**
-	 * Callback for Controller.startup event.
-	 *
-	 * @param \Cake\Event\Event $event Event instance.
-	 * @return \Cake\Network\Response|null
-	 */
-	public function startup(Event $event) {
-		//return $this->setUpValidation($event);
-	}
-
-	/**
 	 * @param \Captcha\Model\Entity\Captcha $captcha
 	 *
 	 * @return bool|\Captcha\Model\Entity\Captcha
@@ -72,7 +62,7 @@ class CaptchaComponent extends Component {
 	/**
 	 * @return \Captcha\Engine\EngineInterface
 	 */
-	private function _getEngine() {
+	protected function _getEngine() {
 		$config = (array)Configure::read('Captcha') + $this->_defaultConfig;
 		$engine = $config['engine'];
 		return new $engine($config);
