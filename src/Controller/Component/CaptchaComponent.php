@@ -4,7 +4,6 @@ namespace Captcha\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Core\Configure;
-use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 
 class CaptchaComponent extends Component {
