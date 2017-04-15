@@ -37,7 +37,7 @@ class CaptchaController extends AppController {
 	 * Displays a captcha image
 	 *
 	 * @param int|null $id
-	 * @return \Cake\Network\Response|void
+	 * @return \Cake\Http\Response|void
 	 */
 	public function display($id = null) {
 		$captcha = $this->Captchas->get($id);

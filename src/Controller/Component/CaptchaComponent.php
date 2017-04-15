@@ -27,7 +27,7 @@ class CaptchaComponent extends Component {
 	/**
 	 * Response object
 	 *
-	 * @var \Cake\Network\Response
+	 * @var \Cake\Http\Response
 	 */
 	public $response;
 
