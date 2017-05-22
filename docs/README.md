@@ -9,6 +9,26 @@ More likely one would use them side by side.
 Simple math captchas are also usually a bit more fun than trying to figure out some unreadable words behind colorful bars.
 But since this plugin ships with a highly extensible interface solution, you can write and use your own captcha image solution.
 
+## Working with model-less forms
+E.g. for a contact form, first add this in your controller's `initialize()`:
+```php
+$this->loadComponent('Captcha.Captcha');
+```
+
+Then inside your action, use `addValidation()` to inject the behavior's validation rules into the form validator:
+```php
+$contactForm = new ContactForm();
+
+if ($this->request->is('post')) {
+	$this->Captcha->addValidation($contactForm->validator());
+	
+	if ($contactForm->execute($this->request->data)) {
+		// Send email and redirect
+	}
+	// Display validation errors
+}
+```
+
 ## Configuration
 
 You can configure it globally using Configure class - and `app.php`:

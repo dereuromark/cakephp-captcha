@@ -3,8 +3,10 @@
 namespace Captcha\Controller\Component;
 
 use Cake\Controller\Component;
-use Cake\Core\Configure;
+use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
+use Cake\ORM\TableRegistry;
+use Cake\Validation\Validator;
 
 class CaptchaComponent extends Component {
 
@@ -14,22 +16,13 @@ class CaptchaComponent extends Component {
 	 * @var array
 	 */
 	protected $_defaultConfig = [
-		'engine' => 'Captcha\Engine\MathEngine',
+		'actions' => [],
 	];
 
 	/**
-	 * Request object
-	 *
-	 * @var \Cake\Network\Request
+	 * @var \Cake\Controller\Controller
 	 */
-	public $request;
-
-	/**
-	 * Response object
-	 *
-	 * @var \Cake\Http\Response
-	 */
-	public $response;
+	public $controller;
 
 	/**
 	 * Initialize properties.
@@ -38,33 +31,54 @@ class CaptchaComponent extends Component {
 	 * @return void
 	 */
 	public function initialize(array $config) {
-		$controller = $this->_registry->getController();
-		$this->eventManager($controller->eventManager());
-		$this->response = &$controller->response;
-
-		$this->Captchas = $controller->Captchas;
+		$this->controller = $this->_registry->getController();
 	}
 
 	/**
-	 * @param \Captcha\Model\Entity\Captcha $captcha
+	 * @param \Cake\Event\Event $event
 	 *
-	 * @return bool|\Captcha\Model\Entity\Captcha
+	 * @return void
 	 */
-	public function prepare($captcha) {
-		if ($captcha->result === null || $captcha->result === '') {
-			$generated = $this->_getEngine()->generate();
-			$captcha = $this->Captchas->patchEntity($captcha, $generated);
+	public function beforeFilter(Event $event) {
+		$actions = $this->config('actions');
+		if ($actions && !in_array($this->controller->request->param('action'), $actions)) {
+			return;
 		}
-		return $this->Captchas->save($captcha);
+
+		$model = $this->controller->modelClass;
+		if (!isset($this->controller->$model) || $this->controller->$model->hasBehavior('Captcha')) {
+			return;
+		}
+		$this->controller->$model->addBehavior('Captcha.Captcha');
 	}
 
 	/**
-	 * @return \Captcha\Engine\EngineInterface
+	 * @param \Cake\Event\Event $event
+	 *
+	 * @return void
 	 */
-	protected function _getEngine() {
-		$config = (array)Configure::read('Captcha') + $this->_defaultConfig;
-		$engine = $config['engine'];
-		return new $engine($config);
+	public function beforeRender(Event $event) {
+		if (in_array('Captcha.Captcha', $this->controller->helpers) || isset($this->controller->helpers['Captcha.Captcha'])) {
+			return;
+		}
+
+		$this->controller->helpers[] = 'Captcha.Captcha';
+	}
+
+	/**
+	 * @param \Cake\Validation\Validator $validator
+	 *
+	 * @return void
+	 */
+	public function addValidation(Validator $validator) {
+		/* @var \Captcha\Model\Table\CaptchasTable $Captchas */
+		$Captchas = TableRegistry::get('CaptchasValidator', ['class' => 'Captcha.Captchas']);
+
+		$validator = $Captchas->validator(null, $validator);
+
+		$Captchas->addBehavior('Captcha.Captcha');
+		/* @var \Captcha\Model\Behavior\CaptchaBehavior $Captchas */
+		$Captchas->addValidation($validator);
 	}
 
 }

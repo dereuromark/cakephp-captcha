@@ -66,6 +66,15 @@ class CaptchaBehavior extends Behavior {
 	 * @return void
 	 */
 	public function buildValidator(Event $event, Validator $validator, $name) {
+		$this->addValidation($validator);
+	}
+
+	/**
+	 * @param \Cake\Validation\Validator $validator
+	 *
+	 * @return void
+	 */
+	public function addValidation(Validator $validator) {
 		$validator->requirePresence('captcha_result');
 		$validator->add('captcha_result', [
 			'required' => [

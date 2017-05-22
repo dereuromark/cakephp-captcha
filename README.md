@@ -41,16 +41,28 @@ bin/cake Migrations migrate -p Captcha
 ## Basic Usage
 Using the default MathEngine we can simply attach the behavior to the Table class.
 
+Load the helper, e.g in your AppView:
 ```php
-// Adding the behavior in your Table initialize() or at runtime in your controller action
+$this->loadHelper('Captcha.Captcha');
+```
+
+Add a captcha control in your form:
+```php
+echo $this->Captcha->render(['placeholder' => __('Please solve the riddle')]);
+```
+
+Add the behavior in your Table initialize() or at runtime in your controller action:
+```php
 $this->addBehavior('Captcha.Captcha');
 
-// Saving a new ad would now require a valid captcha solution
+Saving a new ad would now require a valid captcha solution.
+```php
+// This would come from the form POST
 $postData = [
 	'title' => 'Looking for a friend'
 ];
 $ad = $this->Ads->newEntity($postData);
-$this->Users->save($user);
+$success = $this->Users->save($user);
 ```
 
 For detailed documentation see **[Docs](docs)**.

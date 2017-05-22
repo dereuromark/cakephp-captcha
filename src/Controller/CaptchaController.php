@@ -6,6 +6,7 @@ use Cake\Event\Event;
 
 /**
  * @property \Captcha\Model\Table\CaptchasTable $Captchas
+ * @property \Captcha\Controller\Component\PreparerComponent $Preparer
  */
 class CaptchaController extends AppController {
 
@@ -20,7 +21,7 @@ class CaptchaController extends AppController {
 	public function initialize() {
 		parent::initialize();
 
-		$this->loadComponent('Captcha.Captcha');
+		$this->loadComponent('Captcha.Preparer');
 	}
 
 	/**
@@ -41,7 +42,7 @@ class CaptchaController extends AppController {
 	 */
 	public function display($id = null) {
 		$captcha = $this->Captchas->get($id);
-		$captcha = $this->Captcha->prepare($captcha);
+		$captcha = $this->Preparer->prepare($captcha);
 
 		$this->set(compact('captcha'));
 
