@@ -9,6 +9,28 @@ More likely one would use them side by side.
 Simple math captchas are also usually a bit more fun than trying to figure out some unreadable words behind colorful bars.
 But since this plugin ships with a highly extensible interface solution, you can write and use your own captcha image solution.
 
+## Forms with tables
+You can add the behavior to your model inside the specific action: or you can simply
+```php
+$this->MyTable->addBehavior('Captcha.Captcha');
+```
+
+You can also use the component (and the optional actions array) to auto-add the behavior to your model: 
+```php
+// inside initialize() of controller
+$this->loadComponent('Captcha.Captcha');
+```
+The component has the advantage that it also auto-loads the Captcha helper for your template forms.
+Otherwise you need to manually load it.
+
+If you only want to validate captchas for certain actions, the component can be skipped for the actions not in the "actions" array:
+```php
+$this->loadComponent('Captcha.Captcha', [
+	'actions' => ['add', 'edit'],
+]);
+```
+
+
 ## Working with model-less forms
 E.g. for a contact form, first add this in your controller's `initialize()`:
 ```php
