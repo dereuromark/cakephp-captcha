@@ -54,6 +54,7 @@ echo $this->Captcha->render(['placeholder' => __('Please solve the riddle')]);
 Add the behavior in your Table initialize() or at runtime in your controller action:
 ```php
 $this->addBehavior('Captcha.Captcha');
+```
 
 Saving a new ad would now require a valid captcha solution.
 ```php
