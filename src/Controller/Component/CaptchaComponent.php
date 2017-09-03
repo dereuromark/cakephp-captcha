@@ -71,13 +71,13 @@ class CaptchaComponent extends Component {
 	 * @return void
 	 */
 	public function addValidation(Validator $validator) {
-		/* @var \Captcha\Model\Table\CaptchasTable $Captchas */
+		/** @var \Captcha\Model\Table\CaptchasTable $Captchas */
 		$Captchas = TableRegistry::get('CaptchasValidator', ['class' => 'Captcha.Captchas']);
 
 		$validator = $Captchas->validator(null, $validator);
 
 		$Captchas->addBehavior('Captcha.Captcha');
-		/* @var \Captcha\Model\Behavior\CaptchaBehavior $Captchas */
+		/** @var \Captcha\Model\Behavior\CaptchaBehavior $Captchas */
 		$Captchas->addValidation($validator);
 	}
 
