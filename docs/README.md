@@ -141,3 +141,8 @@ If a form gets built and sent too often, those captcha results will never valida
 ## Honeypot
 The `dummyField` config sets an input field (by default `email_homepage` control) as hidden field, and will fail if filled out.
 This can only happen by a bot, which usually fills out all fields it finds.
+
+
+## Local Setup
+Make you you got the gd lib installed:
+- `sudo apt-get install php5-gd`
