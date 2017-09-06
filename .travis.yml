@@ -25,9 +25,6 @@ matrix:
 
   fast_finish: true
 
-before_install:
-  - sudo apt-get install freetype*
-
 before_script:  
   - composer self-update
   - composer install --prefer-source --no-interaction
