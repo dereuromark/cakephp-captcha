@@ -25,6 +25,7 @@ matrix:
 
 before_install:
   - sudo apt-get install freetype*
+  - sudo service apache2 restart
 
 before_script:  
   - composer self-update
