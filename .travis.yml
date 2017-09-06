@@ -1,5 +1,7 @@
 language: php
 
+dist: precise
+
 sudo: true
 
 php:
@@ -25,7 +27,6 @@ matrix:
 
 before_install:
   - sudo apt-get install freetype*
-  - sudo service nginx reload
 
 before_script:  
   - composer self-update
