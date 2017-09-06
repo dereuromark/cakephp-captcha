@@ -78,7 +78,7 @@ class CaptchaBehaviorTest extends TestCase {
 		$captcha = $this->Captchas->newEntity([
 			'result' => 3,
 			'ip' => '127.0.0.1',
-			'session_id' => 'cli',
+			'session_id' => $this->request->session()->id() ?: 'test',
 			'created' => new DateTime('- 1 hour'),
 			'modified' => new DateTime('- 1 hour')
 		]);
@@ -102,7 +102,6 @@ class CaptchaBehaviorTest extends TestCase {
 		$this->assertFalse((bool)$res);
 
 		$data['captcha_result'] = 3;
-		$data['email_homepage'] = '';
 
 		$comment = $this->Comments->newEntity($data);
 		$res = $this->Comments->save($comment);

@@ -190,6 +190,10 @@ class CaptchaBehavior extends Behavior {
 			$request->session()->start();
 		}
 		$sessionId = $request->session()->id();
+		if (!$sessionId && PHP_SAPI === 'cli') {
+			$sessionId = 'test';
+		}
+
 		$ip = $request->clientIp();
 
 		if (!$id) {

@@ -1,5 +1,7 @@
 language: php
 
+dist: precise
+
 sudo: true
 
 php:
@@ -26,8 +28,6 @@ matrix:
 before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction
-  
-  - sudo apt-get install freetype*
 
   - if [[ $PHPCS != 1 ]]; then composer require phpunit/phpunit:"^5.7|^6.0"; fi
 
