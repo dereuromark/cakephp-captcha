@@ -1,7 +1,6 @@
 <?php
 namespace Captcha\Database\Type;
 
-use Cake\Database\Driver;
 use Cake\Database\Type\BinaryType;
 
 /**
