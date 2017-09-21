@@ -11,7 +11,7 @@ php:
 env:
   matrix:
     - DB=mysql db_dsn='mysql://root@127.0.0.1/cakephp_test'
-    - DB=pgsql db_class='Cake\Database\Driver\Postgres' db_dsn='postgres://postgres@127.0.0.1/cakephp_test' db_database='cakephp_test' db_username='travis' db_password=''
+    - DB=pgsql db_dsn='postgres://postgres@127.0.0.1/cakephp_test'
   global:
     - DEFAULT=1
 

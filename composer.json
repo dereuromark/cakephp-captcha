@@ -18,6 +18,7 @@
 		"paragonie/random_compat": "@stable"
 	},
 	"require-dev": {
+		"cakephp/migrations": "@stable",
 		"fig-r/psr2r-sniffer": "dev-master"
 	},
 	"autoload": {
