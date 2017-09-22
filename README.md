@@ -25,7 +25,7 @@ See http://sandbox3.dereuromark.de/sandbox/captchas
 
 ## Setup
 ```
-composer require dereuromark/cakephp-captcha:dev-master
+composer require dereuromark/cakephp-captcha
 ```
 and
 ```
