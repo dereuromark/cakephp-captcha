@@ -11,6 +11,11 @@ class PreparerComponent extends Component {
 	use EventDispatcherTrait;
 
 	/**
+	 * @var \Captcha\Model\Table\CaptchasTable
+	 */
+	protected $Captchas;
+
+	/**
 	 * @var array
 	 */
 	protected $_defaultConfig = [
