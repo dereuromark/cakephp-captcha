@@ -29,7 +29,11 @@ composer require dereuromark/cakephp-captcha
 ```
 and
 ```
-bin/cake plugin load Captcha
+bin/cake plugin load Captcha -b -r
+```
+or you manually add the load() call into your bootstrap:
+```
+Plugin::load('Captcha', ['bootstrap' => true, 'routes' => true]);
 ```
 
 You also need to import the SQL schema.
