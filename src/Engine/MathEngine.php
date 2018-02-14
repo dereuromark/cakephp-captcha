@@ -33,8 +33,6 @@ class MathEngine implements EngineInterface {
 	}
 
 	/**
-	 * @param array $config
-	 *
 	 * @return array
 	 */
 	public function generate() {
