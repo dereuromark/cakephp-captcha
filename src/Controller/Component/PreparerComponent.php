@@ -30,7 +30,7 @@ class PreparerComponent extends Component {
 	 */
 	public function initialize(array $config) {
 		$controller = $this->_registry->getController();
-		$this->eventManager($controller->eventManager());
+		$this->setEventManager($controller->getEventManager());
 
 		$this->Captchas = $controller->Captchas;
 	}

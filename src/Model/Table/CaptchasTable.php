@@ -29,7 +29,7 @@ class CaptchasTable extends Table {
 	 * @return \Cake\Database\Schema\TableSchema
 	 */
 	protected function _initializeSchema(TableSchema $schema) {
-		$schema->columnType('image', 'image');
+		$schema->setColumnType('image', 'image');
 		return $schema;
 	}
 
@@ -42,9 +42,9 @@ class CaptchasTable extends Table {
 	public function initialize(array $config) {
 		parent::initialize($config);
 
-		$this->table('captchas');
-		$this->displayField('id');
-		$this->primaryKey('id');
+		$this->setTable('captchas');
+		$this->setDisplayField('id');
+		$this->setPrimaryKey('id');
 
 		$this->addBehavior('Timestamp');
 	}
@@ -108,7 +108,7 @@ class CaptchasTable extends Table {
 			]
 		);
 		if (!$this->save($captcha)) {
-			throw new BadMethodCallException('Sth went wrong: ' . print_r($captcha->errors(), true));
+			throw new BadMethodCallException('Sth went wrong: ' . print_r($captcha->getErrors(), true));
 		}
 
 		return $captcha->id;

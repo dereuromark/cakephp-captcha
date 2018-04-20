@@ -78,7 +78,7 @@ class CaptchaBehaviorTest extends TestCase {
 		$captcha = $this->Captchas->newEntity([
 			'result' => 3,
 			'ip' => '127.0.0.1',
-			'session_id' => $this->request->session()->id() ?: 'test',
+			'session_id' => $this->request->getSession()->id() ?: 'test',
 			'created' => new DateTime('- 1 hour'),
 			'modified' => new DateTime('- 1 hour')
 		]);

@@ -51,12 +51,12 @@ class CaptchaHelper extends Helper {
 	public function render(array $options = []) {
 		$id = $this->_getId();
 
-		$x = $this->input($options);
-		$x .= $this->Form->input('captcha_id', ['type' => 'hidden', 'value' => $id]);
+		$html = $this->input($options);
+		$html .= $this->Form->control('captcha_id', ['type' => 'hidden', 'value' => $id]);
 
-		$dummyField = $this->config('dummyField') ?: 'email_homepage';
-		$x .= '<div style="display: none">' . $this->Form->input($dummyField, ['value' => '']) . '</div>';
-		return $x;
+		$dummyField = $this->getConfig('dummyField') ?: 'email_homepage';
+		$html .= '<div style="display: none">' . $this->Form->control($dummyField, ['value' => '']) . '</div>';
+		return $html;
 	}
 
 	/**
@@ -84,10 +84,10 @@ class CaptchaHelper extends Helper {
 			return $this->_id;
 		}
 		$CaptchasTable = $this->_getTable();
-		if (!$this->request->session()->started()) {
-			$this->request->session()->start();
+		if (!$this->request->getSession()->started()) {
+			$this->request->getSession()->start();
 		}
-		$id = $this->request->session()->id();
+		$id = $this->request->getSession()->id();
 		if (!$id && PHP_SAPI === 'cli') {
 			$id = 'test';
 		}

@@ -40,7 +40,7 @@ class CaptchaComponent extends Component {
 	 * @return void
 	 */
 	public function beforeFilter(Event $event) {
-		$actions = $this->config('actions');
+		$actions = $this->getConfig('actions');
 		if ($actions && !in_array($this->controller->request->param('action'), $actions)) {
 			return;
 		}
@@ -74,7 +74,7 @@ class CaptchaComponent extends Component {
 		/** @var \Captcha\Model\Table\CaptchasTable $Captchas */
 		$Captchas = TableRegistry::get('CaptchasValidator', ['class' => 'Captcha.Captchas']);
 
-		$validator = $Captchas->validator(null, $validator);
+		$Captchas->setValidator(null, $validator);
 
 		$Captchas->addBehavior('Captcha.Captcha');
 		/** @var \Captcha\Model\Behavior\CaptchaBehavior $Captchas */

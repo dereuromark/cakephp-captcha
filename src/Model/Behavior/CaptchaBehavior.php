@@ -54,8 +54,8 @@ class CaptchaBehavior extends Behavior {
 		$config += (array)Configure::read('Captcha');
 		parent::initialize($config);
 
-		$engine = $this->config('engine');
-		$this->_engine = new $engine($this->config());
+		$engine = $this->getConfig('engine');
+		$this->_engine = new $engine($this->getConfig());
 		$this->_captchasTable = TableRegistry::get('Captcha.Captchas');
 	}
 
@@ -82,10 +82,10 @@ class CaptchaBehavior extends Behavior {
 				'last' => true
 			],
 		]);
-		if ($this->config('dummyField')) {
-			$validator->requirePresence($this->config('dummyField'));
-			$validator->allowEmpty($this->config('dummyField'));
-			$validator->add($this->config('dummyField'), [
+		if ($this->getConfig('dummyField')) {
+			$validator->requirePresence($this->getConfig('dummyField'));
+			$validator->allowEmpty($this->getConfig('dummyField'));
+			$validator->add($this->getConfig('dummyField'), [
 				'dummyField' => [
 					'rule' => function ($value, $context) {
 						return $value === '';
@@ -96,7 +96,7 @@ class CaptchaBehavior extends Behavior {
 		}
 
 		$this->_engine->buildValidator($validator);
-		if ($this->config('minTime')) {
+		if ($this->getConfig('minTime')) {
 			$validator->add('captcha_result', [
 				'minTime' => [
 					'rule' => 'validateCaptchaMinTime',
@@ -106,7 +106,7 @@ class CaptchaBehavior extends Behavior {
 				],
 			]);
 		}
-		if ($this->config('maxTime')) {
+		if ($this->getConfig('maxTime')) {
 			$validator->add('captcha_result', [
 				'maxTime' => [
 					'rule' => 'validateCaptchaMaxTime',
@@ -129,7 +129,7 @@ class CaptchaBehavior extends Behavior {
 		if (!$captcha) {
 			return false;
 		}
-		if ($captcha->created >= new Time('- ' . $this->config('minTime') . ' seconds')) {
+		if ($captcha->created >= new Time('- ' . $this->getConfig('minTime') . ' seconds')) {
 			return false;
 		}
 
@@ -147,7 +147,7 @@ class CaptchaBehavior extends Behavior {
 		if (!$captcha) {
 			return false;
 		}
-		if ($captcha->created <= new Time('- ' . $this->config('maxTime') . ' seconds')) {
+		if ($captcha->created <= new Time('- ' . $this->getConfig('maxTime') . ' seconds')) {
 			return false;
 		}
 
@@ -186,10 +186,10 @@ class CaptchaBehavior extends Behavior {
 		}
 
 		$request = Router::getRequest();
-		if (!$request->session()->started()) {
-			$request->session()->start();
+		if (!$request->getSession()->started()) {
+			$request->getSession()->start();
 		}
-		$sessionId = $request->session()->id();
+		$sessionId = $request->getSession()->id();
 		if (!$sessionId && PHP_SAPI === 'cli') {
 			$sessionId = 'test';
 		}

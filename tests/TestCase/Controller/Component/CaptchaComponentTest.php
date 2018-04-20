@@ -27,9 +27,7 @@ class CaptchaComponentTest extends IntegrationTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		Configure::write('Captcha', [
-			]
-		);
+		Configure::write('Captcha', []);
 	}
 
 	/**
@@ -40,7 +38,7 @@ class CaptchaComponentTest extends IntegrationTestCase {
 
 		$contactForm = new Form();
 
-		$captchaComponent->addValidation($contactForm->validator());
+		$captchaComponent->addValidation($contactForm->getValidator());
 
 		$this->assertFalse($contactForm->execute([]));
 	}

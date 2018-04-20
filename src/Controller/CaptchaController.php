@@ -46,7 +46,7 @@ class CaptchaController extends AppController {
 
 		$this->set(compact('captcha'));
 
-		$this->viewBuilder()->className('Captcha.Captcha');
+		$this->viewBuilder()->setClassName('Captcha.Captcha');
 	}
 
 }
