@@ -38,7 +38,7 @@ class CaptchaComponentTest extends IntegrationTestCase {
 
 		$contactForm = new Form();
 
-		$captchaComponent->addValidation($contactForm->getValidator());
+		$captchaComponent->addValidation($contactForm->validator());
 
 		$this->assertFalse($contactForm->execute([]));
 	}
