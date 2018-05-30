@@ -145,4 +145,4 @@ This can only happen by a bot, which usually fills out all fields it finds.
 
 ## Local Setup
 Make you you got the gd lib installed:
-- `sudo apt-get install php5-gd`
+- `sudo apt-get install php{version}-gd`
