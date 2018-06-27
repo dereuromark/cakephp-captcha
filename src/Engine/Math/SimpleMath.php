@@ -56,10 +56,14 @@ class SimpleMath implements MathInterface {
 	 */
 	public function getValue() {
 		$operator = $this->data[1];
+
 		if ($operator === '-') {
-			return $this->data[0] - $this->data[2];
+			$value = $this->data[0] - $this->data[2];
+		} else {
+			$value = $this->data[0] + $this->data[2];
 		}
-		return (string)($this->data[0] + $this->data[2]);
+
+		return (string)$value;
 	}
 
 	/**
