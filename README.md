@@ -11,7 +11,7 @@ Allows any type of image-based captchas for your forms.
 ## A CakePHP 3.x plugin to
 - Easily integrate captchas in your CakePHP application.
 
-This plugin requires CakePHP 3.5+.
+This plugin requires CakePHP 3.7+.
 
 ### Whats in this plugin
 - Simple match captchas that will already do the trick without annoying "I can't read those letters".
@@ -32,10 +32,6 @@ composer require dereuromark/cakephp-captcha
 and
 ```
 bin/cake plugin load Captcha -b -r
-```
-or you manually add the load() call into your bootstrap:
-```
-Plugin::load('Captcha', ['bootstrap' => true, 'routes' => true]);
 ```
 
 You also need to import the SQL schema.

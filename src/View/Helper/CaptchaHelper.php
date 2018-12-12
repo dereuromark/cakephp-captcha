@@ -84,14 +84,14 @@ class CaptchaHelper extends Helper {
 			return $this->_id;
 		}
 		$CaptchasTable = $this->_getTable();
-		if (!$this->request->getSession()->started()) {
-			$this->request->getSession()->start();
+		if (!$this->_View->getRequest()->getSession()->started()) {
+			$this->_View->getRequest()->getSession()->start();
 		}
-		$id = $this->request->getSession()->id();
+		$id = $this->_View->getRequest()->getSession()->id();
 		if (!$id && PHP_SAPI === 'cli') {
 			$id = 'test';
 		}
-		$this->_id = $CaptchasTable->touch($id, $this->request->clientIp());
+		$this->_id = $CaptchasTable->touch($id, $this->_View->getRequest()->clientIp());
 
 		return $this->_id;
 	}
