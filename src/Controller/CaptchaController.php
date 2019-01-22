@@ -26,7 +26,7 @@ class CaptchaController extends AppController {
 
 	/**
 	 * @param \Cake\Event\Event $event
-	 * @return void
+	 * @return \Cake\Http\Response|null
 	 */
 	public function beforeFilter(Event $event) {
 		if (isset($this->Auth)) {
