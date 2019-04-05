@@ -149,7 +149,7 @@ In the future, those will be separate behaviors, and therefore validator additio
 Make sure your Form class has a BehaviorTrait attached, that duplicates the core methods:
 ```php
 /**
- * @param EventManager|null $eventManager
+ * @param \Cake\Event\EventManager|null $eventManager
  */
 public function __construct(EventManager $eventManager = null) {
 	parent::__construct($eventManager);
