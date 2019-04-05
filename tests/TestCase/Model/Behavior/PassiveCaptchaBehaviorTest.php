@@ -2,7 +2,6 @@
 namespace Captcha\Test\Model\Behavior;
 
 use App\Form\PassiveCaptchaTestForm;
-use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
 
 class PassiveCaptchaBehaviorTest extends TestCase {
@@ -61,8 +60,7 @@ class PassiveCaptchaBehaviorTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function testExecuteMultiple()
-	{
+	public function testExecuteMultiple() {
 		$config = [
 			'dummyField' => ['dummy_one', 'dummy_two'],
 		];
@@ -84,4 +82,4 @@ class PassiveCaptchaBehaviorTest extends TestCase {
 		$this->assertTrue($result);
 	}
 
-	}
+}
