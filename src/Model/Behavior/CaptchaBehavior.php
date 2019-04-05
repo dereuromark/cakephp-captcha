@@ -26,7 +26,7 @@ class CaptchaBehavior extends Behavior {
 		'maxTime' => DAY, // Seconds the form will need to be submitted in
 		'log' => false, // Log errors
 		'engine' => 'Captcha\Engine\MathEngine',
-		'dummyField' => 'email_homepage', /* @deprecated Use PassiveCaptcha Behavior */
+		'dummyField' => 'email_homepage', /* @deprecated Use PassiveCaptcha behavior */
 	];
 
 	/**
