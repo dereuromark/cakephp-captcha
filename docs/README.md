@@ -142,6 +142,51 @@ If a form gets built and sent too often, those captcha results will never valida
 The `dummyField` config sets an input field (by default `email_homepage` control) as hidden field, and will fail if filled out.
 This can only happen by a bot, which usually fills out all fields it finds.
 
+If you want to only use this "passive captcha", then use the `Captcha.PassiveCaptcha` behavior instead.
+In the future, those will be separate behaviors, and therefore validator additions.
+
+### Attaching this to Form classes (model-less)
+Make sure your Form class has a BehaviorTrait attached, that duplicates the core methods:
+```php
+/**
+ * @param \Cake\Event\EventManager|null $eventManager
+ */
+public function __construct(EventManager $eventManager = null) {
+	parent::__construct($eventManager);
+
+	$this->_behaviors = new BehaviorRegistry();
+	$this->_behaviors->setTable(new Table()); // We fake this
+}
+
+/**
+ * @param string $name
+ * @param array $options
+ *
+ * @return $this
+ */
+public function addBehavior($name, array $options = []) {
+	$this->_behaviors->load($name, $options);
+
+	return $this;
+}
+
+/**
+ * Returns the behavior registry for this table.
+ *
+ * @return \Cake\ORM\BehaviorRegistry The BehaviorRegistry instance.
+ */
+public function behaviors() {
+	return $this->_behaviors;
+}
+```
+Hopefully, thois will be resolved with [this issue](https://github.com/cakephp/cakephp/issues/13094).
+
+```php
+$contact = new ContactForm();
+
+$contact->addBehavior('Captcha.PassiveCaptcha');
+$contact->behaviors()->PassiveCaptcha->addValidation($contact->getValidator());
+```
 
 ## Local Setup
 Make you you got the gd lib installed:

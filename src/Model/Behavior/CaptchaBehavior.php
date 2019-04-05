@@ -26,7 +26,7 @@ class CaptchaBehavior extends Behavior {
 		'maxTime' => DAY, // Seconds the form will need to be submitted in
 		'log' => false, // Log errors
 		'engine' => 'Captcha\Engine\MathEngine',
-		'dummyField' => 'email_homepage', // Honeypot trap
+		'dummyField' => 'email_homepage', /* @deprecated Use PassiveCaptcha behavior */
 	];
 
 	/**
@@ -82,6 +82,8 @@ class CaptchaBehavior extends Behavior {
 				'last' => true
 			],
 		]);
+
+		/** @deprecated Use PassiveCaptcha Behavior */
 		if ($this->getConfig('dummyField')) {
 			$validator->requirePresence($this->getConfig('dummyField'));
 			$validator->allowEmpty($this->getConfig('dummyField'));

@@ -84,4 +84,13 @@ HTML;
 		$this->assertSame($expected, $result);
 	}
 
+	/**
+	 * @return void
+	 */
+	public function testPassive() {
+		$result = $this->Captcha->passive();
+		$expected = '<div style="display: none"><div class="input text"><label for="email-homepage">Email Homepage</label><input type="text" name="email_homepage" id="email-homepage" value=""/></div></div>';
+		$this->assertSame($expected, $result);
+	}
+
 }
