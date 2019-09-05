@@ -26,7 +26,7 @@ Otherwise you need to manually load it.
 If you only want to validate captchas for certain actions, the component can be skipped for the actions not in the "actions" array:
 ```php
 $this->loadComponent('Captcha.Captcha', [
-	'actions' => ['add', 'edit'],
+    'actions' => ['add', 'edit'],
 ]);
 ```
 
@@ -42,12 +42,12 @@ Then inside your action, use `addValidation()` to inject the behavior's validati
 $contactForm = new ContactForm();
 
 if ($this->request->is('post')) {
-	$this->Captcha->addValidation($contactForm->validator());
-	
-	if ($contactForm->execute($this->request->data)) {
-		// Send email and redirect
-	}
-	// Display validation errors
+    $this->Captcha->addValidation($contactForm->validator());
+    
+    if ($contactForm->execute($this->request->data)) {
+        // Send email and redirect
+    }
+    // Display validation errors
 }
 ```
 
@@ -56,11 +56,11 @@ if ($this->request->is('post')) {
 You can configure it globally using Configure class - and `app.php`:
 ```
 'Captcha' => [
-	'engine' => ...,
-	'mathType => ...,
-	'imageType => ...,
-	'complexity' => ...,
-	...
+    'engine' => ...,
+    'mathType => ...,
+    'imageType => ...,
+    'complexity' => ...,
+    ...
 ]
 ```
 
@@ -76,19 +76,19 @@ use Captcha\Engine\Math\MathInterface;
 
 class ComplexMath implements MathInterface {
 
-	/**
-	 * @return string
-	 */
-	public function getExpression() {
-		...
-	}
+    /**
+     * @return string
+     */
+    public function getExpression() {
+        ...
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getValue() {
-		...
-	}
+    /**
+     * @return string
+     */
+    public function getValue() {
+        ...
+    }
 
 }
 ```
@@ -108,20 +108,20 @@ use Captcha\Engine\EngineInterface;
 
 class WordEngine implements EngineInterface {
 
-	/**
-	 * @return array
-	 */
-	public function generate() {
-		...
-	}
+    /**
+     * @return array
+     */
+    public function generate() {
+        ...
+    }
 
-	/**
-	 * @param \Cake\Validation\Validator $validator
-	 * @return void
-	 */
-	public function buildValidator(Validator $validator) {
-		...
-	}
+    /**
+     * @param \Cake\Validation\Validator $validator
+     * @return void
+     */
+    public function buildValidator(Validator $validator) {
+        ...
+    }
 
 }
 ```
@@ -152,10 +152,10 @@ Make sure your Form class has a BehaviorTrait attached, that duplicates the core
  * @param \Cake\Event\EventManager|null $eventManager
  */
 public function __construct(EventManager $eventManager = null) {
-	parent::__construct($eventManager);
+    parent::__construct($eventManager);
 
-	$this->_behaviors = new BehaviorRegistry();
-	$this->_behaviors->setTable(new Table()); // We fake this
+    $this->_behaviors = new BehaviorRegistry();
+    $this->_behaviors->setTable(new Table()); // We fake this
 }
 
 /**
@@ -165,9 +165,9 @@ public function __construct(EventManager $eventManager = null) {
  * @return $this
  */
 public function addBehavior($name, array $options = []) {
-	$this->_behaviors->load($name, $options);
+    $this->_behaviors->load($name, $options);
 
-	return $this;
+    return $this;
 }
 
 /**
@@ -176,7 +176,7 @@ public function addBehavior($name, array $options = []) {
  * @return \Cake\ORM\BehaviorRegistry The BehaviorRegistry instance.
  */
 public function behaviors() {
-	return $this->_behaviors;
+    return $this->_behaviors;
 }
 ```
 Hopefully, thois will be resolved with [this issue](https://github.com/cakephp/cakephp/issues/13094).

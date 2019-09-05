@@ -31,8 +31,7 @@
 	"autoload-dev": {
 		"psr-4": {
 			"Captcha\\Test\\": "tests/",
-			"App\\": "tests/test_app/src/",
-			"Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
+			"App\\": "tests/test_app/src/"
 		}
 	},
 	"support": {
@@ -44,7 +43,7 @@
 		"test-coverage" : "php phpunit.phar --log-junit tmp/coverage/unitreport.xml --coverage-html tmp/coverage --coverage-clover tmp/coverage/coverage.xml",
 		"phpstan": "phpstan analyse -c tests/phpstan.neon -l 3 src/",
 		"phpstan-setup": "cp composer.json composer.backup && composer require --dev phpstan/phpstan && mv composer.backup composer.json",
-		"cs-check": "phpcs -v -p --standard=vendor/fig-r/psr2r-sniffer/PSR2R/ruleset.xml --ignore=/cakephp-captcha/vendor/,/tmp/,/logs/,/config/Migrations/ --extensions=php ./",
-		"cs-fix": "phpcbf -v --standard=vendor/fig-r/psr2r-sniffer/PSR2R/ruleset.xml --ignore=/cakephp-captcha/vendor/,/tmp/,/logs/,/config/Migrations/ --extensions=php ./"
+		"cs-check": "phpcs -v -p --standard=vendor/fig-r/psr2r-sniffer/PSR2R/ruleset.xml --ignore=/config/Migrations/ --extensions=php src/ tests/ config/",
+		"cs-fix": "phpcbf -v --standard=vendor/fig-r/psr2r-sniffer/PSR2R/ruleset.xml --ignore=/config/Migrations/ --extensions=php ./"
 	}
 }

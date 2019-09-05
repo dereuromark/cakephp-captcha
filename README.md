@@ -62,7 +62,7 @@ Saving a new ad would now require a valid captcha solution.
 ```php
 // This would come from the form POST
 $postData = [
-	'title' => 'Looking for a friend'
+    'title' => 'Looking for a friend'
 ];
 $ad = $this->Ads->newEntity($postData);
 $success = $this->Users->save($user);
