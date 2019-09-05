@@ -74,7 +74,7 @@ class CaptchaComponent extends Component {
 		/** @var \Captcha\Model\Table\CaptchasTable $Captchas */
 		$Captchas = TableRegistry::get('CaptchasValidator', ['class' => 'Captcha.Captchas']);
 
-		$Captchas->setValidator(null, $validator);
+		$Captchas->setValidator('captcha', $validator);
 
 		$Captchas->addBehavior('Captcha.Captcha');
 		/** @var \Captcha\Model\Behavior\CaptchaBehavior $Captchas */

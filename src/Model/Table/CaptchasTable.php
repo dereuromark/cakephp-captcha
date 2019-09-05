@@ -140,7 +140,7 @@ class CaptchasTable extends Table {
 		}
 
 		$maxTime = Configure::read('Captcha.maxTime');
-		return $this->deleteAll(['or' => ['created <' => new Time(time() - $maxTime), 'used IS NOT' => null]]);
+		return $this->deleteAll(['or' => ['created <' => new Time((string)(time() - $maxTime)), 'used IS NOT' => null]]);
 	}
 
 	/**
