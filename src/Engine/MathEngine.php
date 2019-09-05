@@ -28,6 +28,9 @@ class MathEngine implements EngineInterface {
 	 */
 	protected $_config;
 
+	/**
+	 * @param array $config
+	 */
 	public function __construct(array $config) {
 		$this->_config = $config + $this->_defaultConfig;
 	}
