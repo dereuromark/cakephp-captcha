@@ -5,9 +5,6 @@ use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
 use Captcha\Engine\MathEngine;
 
-/**
- *
- */
 class MathEngineTest extends TestCase {
 
 	/**

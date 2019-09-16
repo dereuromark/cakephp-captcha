@@ -9,9 +9,6 @@ use Cake\TestSuite\TestCase;
 use Cake\View\View;
 use Captcha\View\Helper\CaptchaHelper;
 
-/**
- *
- */
 class CaptchaHelperTest extends TestCase {
 
 	/**
