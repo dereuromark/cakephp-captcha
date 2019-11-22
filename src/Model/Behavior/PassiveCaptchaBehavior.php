@@ -55,7 +55,7 @@ class PassiveCaptchaBehavior extends Behavior {
 					'rule' => function ($value, $context) {
 						return $value === '';
 					},
-					'last' => true
+					'last' => true,
 				],
 			]);
 		}

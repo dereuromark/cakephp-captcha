@@ -8,7 +8,7 @@ class SimpleMath implements MathInterface {
 	 * @var array
 	 */
 	protected $_defaultConfig = [
-		'complexity' => 2
+		'complexity' => 2,
 	];
 
 	/**
@@ -79,7 +79,7 @@ class SimpleMath implements MathInterface {
 	protected function _randomOperator() {
 		$operators = [
 			'+',
-			'-'
+			'-',
 		];
 		$key = random_int(0, 1);
 		return $operators[$key];

@@ -20,7 +20,7 @@ class MathEngine implements EngineInterface {
 	protected $_defaultConfig = [
 		'size' => 14,
 		'imageFormat' => self::FORMAT_PNG,
-		'mathType' => SimpleMath::class
+		'mathType' => SimpleMath::class,
 	];
 
 	/**
@@ -48,7 +48,7 @@ class MathEngine implements EngineInterface {
 
 		return [
 			'result' => $value,
-			'image' => $image
+			'image' => $image,
 		];
 	}
 
@@ -63,8 +63,8 @@ class MathEngine implements EngineInterface {
 				'rule' => 'validateCaptchaResult',
 				'provider' => 'table',
 				'message' => __('The solution is not correct'),
-				'last' => true
-			]
+				'last' => true,
+			],
 		]);
 	}
 

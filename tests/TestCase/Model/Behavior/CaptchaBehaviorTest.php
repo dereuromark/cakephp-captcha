@@ -15,7 +15,7 @@ class CaptchaBehaviorTest extends TestCase {
 	 * @var array
 	 */
 	public $fixtures = [
-		'plugin.Captcha.Captchas', 'plugin.Captcha.Comments'
+		'plugin.Captcha.Captchas', 'plugin.Captcha.Comments',
 	];
 
 	/**
@@ -80,14 +80,14 @@ class CaptchaBehaviorTest extends TestCase {
 			'ip' => '127.0.0.1',
 			'session_id' => $this->request->getSession()->id() ?: 'test',
 			'created' => new DateTime('- 1 hour'),
-			'modified' => new DateTime('- 1 hour')
+			'modified' => new DateTime('- 1 hour'),
 		]);
 		$result = $this->Captchas->save($captcha);
 		$this->assertTrue((bool)$result);
 		$id = $captcha->id;
 
 		$data = [
-			'comment' => 'Foo'
+			'comment' => 'Foo',
 		];
 		$comment = $this->Comments->newEntity($data);
 		$res = $this->Comments->save($comment);

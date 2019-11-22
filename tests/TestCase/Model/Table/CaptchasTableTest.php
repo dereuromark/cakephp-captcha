@@ -17,7 +17,7 @@ class CaptchasTableTest extends TestCase {
 	 * @var array
 	 */
 	public $fixtures = [
-		'plugin.Captcha.Captchas'
+		'plugin.Captcha.Captchas',
 	];
 
 	/**

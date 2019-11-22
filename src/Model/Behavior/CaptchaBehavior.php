@@ -78,7 +78,7 @@ class CaptchaBehavior extends Behavior {
 		$validator->add('captcha_result', [
 			'required' => [
 				'rule' => 'notBlank',
-				'last' => true
+				'last' => true,
 			],
 		]);
 
@@ -91,7 +91,7 @@ class CaptchaBehavior extends Behavior {
 					'rule' => function ($value, $context) {
 						return $value === '';
 					},
-					'last' => true
+					'last' => true,
 				],
 			]);
 		}
@@ -103,7 +103,7 @@ class CaptchaBehavior extends Behavior {
 					'rule' => 'validateCaptchaMinTime',
 					'provider' => 'table',
 					'message' => __('You were too fast'),
-					'last' => true
+					'last' => true,
 				],
 			]);
 		}
@@ -113,7 +113,7 @@ class CaptchaBehavior extends Behavior {
 					'rule' => 'validateCaptchaMaxTime',
 					'provider' => 'table',
 					'message' => __('You were too slow'),
-					'last' => true
+					'last' => true,
 				],
 			]);
 		}
@@ -205,7 +205,7 @@ class CaptchaBehavior extends Behavior {
 		$conditions = [
 			'id' => $id,
 			'ip' => $ip,
-			'session_id' => $sessionId
+			'session_id' => $sessionId,
 		];
 		$this->_captchas[$id] = $this->_captchasTable->find()->where($conditions)->first();
 		return $this->_captchas[$id];
