@@ -1,4 +1,5 @@
 <?php
+
 namespace Captcha\Model\Entity;
 
 use Cake\ORM\Entity;

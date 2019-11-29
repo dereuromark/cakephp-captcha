@@ -1,4 +1,5 @@
 <?php
+
 namespace Captcha\Test\TestCase\Controller;
 
 use Cake\Controller\ComponentRegistry;

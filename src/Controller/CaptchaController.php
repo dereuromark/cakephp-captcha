@@ -1,4 +1,5 @@
 <?php
+
 namespace Captcha\Controller;
 
 use App\Controller\AppController;

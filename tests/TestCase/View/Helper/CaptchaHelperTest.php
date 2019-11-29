@@ -1,4 +1,5 @@
 <?php
+
 namespace Captcha\Test\TestCase\View\Helper;
 
 use Cake\Core\Configure;

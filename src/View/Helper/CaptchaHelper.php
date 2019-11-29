@@ -1,4 +1,5 @@
 <?php
+
 namespace Captcha\View\Helper;
 
 use Cake\ORM\TableRegistry;

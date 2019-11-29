@@ -1,4 +1,5 @@
 <?php
+
 namespace Captcha\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;

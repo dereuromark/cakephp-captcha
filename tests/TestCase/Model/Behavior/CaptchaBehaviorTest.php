@@ -1,4 +1,5 @@
 <?php
+
 namespace Captcha\Test\Model\Behavior;
 
 use Cake\Core\Configure;

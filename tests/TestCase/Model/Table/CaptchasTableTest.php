@@ -1,4 +1,5 @@
 <?php
+
 namespace Captcha\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;

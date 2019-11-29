@@ -1,4 +1,5 @@
 <?php
+
 namespace Captcha\Model\Table;
 
 use BadMethodCallException;

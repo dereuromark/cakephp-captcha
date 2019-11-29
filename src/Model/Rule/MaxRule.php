@@ -1,4 +1,5 @@
 <?php
+
 namespace Captcha\Model\Rule;
 
 use Cake\Core\Configure;
