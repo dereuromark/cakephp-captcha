@@ -8,10 +8,10 @@
 
 Allows any type of image-based captchas for your forms.
 
-## A CakePHP 3.x plugin to
+## A CakePHP plugin to
 - Easily integrate captchas in your CakePHP application.
 
-This plugin requires CakePHP 3.7+.
+This plugin requires **CakePHP 3.7+**. See [version map](https://github.com/dereuromark/cakephp-captcha/wiki#cakephp-version-map) for details.
 
 ### Whats in this plugin
 - Simple match captchas that will already do the trick without annoying "I can't read those letters".
@@ -62,7 +62,7 @@ Saving a new ad would now require a valid captcha solution.
 ```php
 // This would come from the form POST
 $postData = [
-    'title' => 'Looking for a friend'
+    'title' => 'Looking for a friend',
 ];
 $ad = $this->Ads->newEntity($postData);
 $success = $this->Users->save($user);
