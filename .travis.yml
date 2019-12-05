@@ -1,7 +1,5 @@
 language: php
 
-dist: precise
-
 sudo: true
 
 php:
