@@ -12,6 +12,10 @@ env:
   global:
     - DEFAULT=1
 
+services:
+  - postgresql
+  - mysql
+
 matrix:
   include:
     - php: 7.1
