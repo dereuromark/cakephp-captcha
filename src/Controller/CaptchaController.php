@@ -27,7 +27,7 @@ class CaptchaController extends AppController {
 
 	/**
 	 * @param \Cake\Event\Event $event
-	 * @return \Cake\Http\Response|null
+	 * @return \Cake\Http\Response|null|void
 	 */
 	public function beforeFilter(Event $event) {
 		if (isset($this->Auth)) {
@@ -39,7 +39,7 @@ class CaptchaController extends AppController {
 	 * Displays a captcha image
 	 *
 	 * @param int|null $id
-	 * @return \Cake\Http\Response|void
+	 * @return \Cake\Http\Response|null|void
 	 */
 	public function display($id = null) {
 		$captcha = $this->Captchas->get($id);

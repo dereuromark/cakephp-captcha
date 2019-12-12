@@ -1,8 +1,8 @@
 parameters:
     autoload_files:
-        - %rootDir%/../../../tests/bootstrap.php
-        - %rootDir%/../../../tests/shim.php
+        - bootstrap.php
+        - shim.php
     ignoreErrors:
         - '#Access to an undefined property Cake\\Controller\\Controller::\$Captchas#'
-        - '#Call to an undefined method Captcha\\Model\\Table\\CaptchasTable::addValidation\(\)#'
         - '#Property Captcha\\Model\\Behavior\\CaptchaBehavior::\$\_captchasTable \(Captcha\\Model\\Table\\CaptchasTable\) does not accept Cake\\ORM\\Table#'
+        - '#Method .+::.+() should return .+|void|null but return statement is missing.#'
