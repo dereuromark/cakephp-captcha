@@ -29,6 +29,10 @@ matrix:
       env: CODECOVERAGE=1 DEFAULT=0 DB=mysql db_dsn='mysql://root@127.0.0.1/cakephp_test'
 
   fast_finish: true
+  
+before_install:
+  - if [[ ${TRAVIS_PHP_VERSION} != "7.4" && $CODECOVERAGE != 1 ]]; then phpenv config-rm xdebug.ini ; fi
+  - if [[ ${TRAVIS_PHP_VERSION} != "7.4" ]]; then sudo apt install php7.4-gd ; fi
 
 before_script:
   - if [[ $PREFER_LOWEST != 1 ]]; then composer install --prefer-source --no-interaction ; fi
