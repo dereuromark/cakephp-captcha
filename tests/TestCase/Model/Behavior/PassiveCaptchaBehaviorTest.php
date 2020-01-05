@@ -2,20 +2,20 @@
 
 namespace Captcha\Test\Model\Behavior;
 
-use App\Form\PassiveCaptchaTestForm;
 use Cake\TestSuite\TestCase;
+use TestApp\Form\PassiveCaptchaTestForm;
 
 class PassiveCaptchaBehaviorTest extends TestCase {
 
 	/**
-	 * @var \App\Form\PassiveCaptchaTestForm
+	 * @var \TestApp\Form\PassiveCaptchaTestForm
 	 */
 	protected $Form;
 
 	/**
 	 * @return void
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		$this->Form = new PassiveCaptchaTestForm();
@@ -24,7 +24,7 @@ class PassiveCaptchaBehaviorTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function tearDown() {
+	public function tearDown(): void {
 		parent::tearDown();
 
 		unset($this->Form);

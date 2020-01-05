@@ -17,7 +17,7 @@ class CaptchasTableTest extends TestCase {
 	 *
 	 * @var array
 	 */
-	public $fixtures = [
+	protected $fixtures = [
 		'plugin.Captcha.Captchas',
 	];
 
@@ -26,7 +26,7 @@ class CaptchasTableTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$config = TableRegistry::exists('Captchas') ? [] : ['className' => 'Captcha\Model\Table\CaptchasTable'];
 		$this->Captchas = TableRegistry::get('Captchas', $config);
@@ -37,7 +37,7 @@ class CaptchasTableTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function tearDown() {
+	public function tearDown(): void {
 		unset($this->Captchas);
 
 		parent::tearDown();

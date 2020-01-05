@@ -30,7 +30,7 @@ require ROOT . '/vendor/autoload.php';
 require CORE_PATH . 'config/bootstrap.php';
 
 Cake\Core\Configure::write('App', [
-	'namespace' => 'App',
+	'namespace' => 'TestApp',
 ]);
 
 Cake\Core\Configure::write('debug', true);
@@ -59,13 +59,14 @@ $cache = [
 Cake\Cache\Cache::setConfig($cache);
 
 if (file_exists(CONFIG . 'app_local.php')) {
-	\Cake\Core\Configure::load('app_local', 'default');
+	Cake\Core\Configure::load('app_local', 'default');
 }
 
-\Cake\Core\Plugin::load('Captcha', ['path' => ROOT . DS, 'autoload' => true, 'bootstrap' => true, 'routes' => true]);
+class_alias(TestApp\Application::class, 'App\Application');
+class_alias(TestApp\Controller\AppController::class, 'App\Controller\AppController');
+class_alias(TestApp\View\AppView::class, 'App\View\AppView');
 
-\Cake\Routing\DispatcherFactory::add('Routing');
-\Cake\Routing\DispatcherFactory::add('ControllerFactory');
+Cake\Core\Plugin::getCollection()->add(new Captcha\Plugin());
 
 // Ensure default test connection is defined
 if (!getenv('db_class')) {
@@ -75,11 +76,8 @@ if (!getenv('db_class')) {
 
 Cake\Datasource\ConnectionManager::setConfig('test', [
 	'className' => 'Cake\Database\Connection',
-	'driver' => getenv('db_class'),
-	'dsn' => getenv('db_dsn'),
-	'database' => getenv('db_database'),
-	'username' => getenv('db_username'),
-	'password' => getenv('db_password'),
+	'driver' => getenv('db_class') ?: null,
+	'dsn' => getenv('db_dsn') ?: null,
 	'timezone' => 'UTC',
 	'quoteIdentifiers' => true,
 	'cacheMetadata' => true,

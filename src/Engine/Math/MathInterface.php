@@ -7,11 +7,11 @@ interface MathInterface {
 	/**
 	 * @return string
 	 */
-	public function getExpression();
+	public function getExpression(): string;
 
 	/**
 	 * @return string
 	 */
-	public function getValue();
+	public function getValue(): string;
 
 }

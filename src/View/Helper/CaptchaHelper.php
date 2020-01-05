@@ -15,14 +15,7 @@ class CaptchaHelper extends Helper {
 	/**
 	 * @var array
 	 */
-	public $helpers = ['Form', 'Html', 'Url'];
-
-	/**
-	 * Default configuration.
-	 *
-	 * @var array
-	 */
-	protected $_defaultConfig = [];
+	protected $helpers = ['Form', 'Html', 'Url'];
 
 	/**
 	 * @var int|null
@@ -107,7 +100,8 @@ class CaptchaHelper extends Helper {
 	 */
 	public function imageUrl() {
 		$id = $this->_getId();
-		return $this->Url->build(['prefix' => false, 'plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'display', $id], true);
+
+		return $this->Url->build(['prefix' => false, 'plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'display', $id], ['fullBase' => true]);
 	}
 
 	/**

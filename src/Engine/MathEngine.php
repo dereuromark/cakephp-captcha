@@ -38,7 +38,7 @@ class MathEngine implements EngineInterface {
 	/**
 	 * @return array
 	 */
-	public function generate() {
+	public function generate(): array {
 		$class = $this->_getTypeClass();
 
 		$expression = $class->getExpression();
@@ -57,7 +57,7 @@ class MathEngine implements EngineInterface {
 	 *
 	 * @return void
 	 */
-	public function buildValidator(Validator $validator) {
+	public function buildValidator(Validator $validator): void {
 		$validator->add('captcha_result', [
 			'valid' => [
 				'rule' => 'validateCaptchaResult',

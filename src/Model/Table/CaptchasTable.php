@@ -4,7 +4,7 @@ namespace Captcha\Model\Table;
 
 use BadMethodCallException;
 use Cake\Core\Configure;
-use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\I18n\Time;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -25,12 +25,13 @@ use Captcha\Model\Rule\MaxRule;
 class CaptchasTable extends Table {
 
 	/**
-	 * @param \Cake\Database\Schema\TableSchema $schema
+	 * @param \Cake\Database\Schema\TableSchemaInterface $schema
 	 *
-	 * @return \Cake\Database\Schema\TableSchema
+	 * @return \Cake\Database\Schema\TableSchemaInterface
 	 */
-	protected function _initializeSchema(TableSchema $schema) {
+	protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface {
 		$schema->setColumnType('image', 'image');
+
 		return $schema;
 	}
 
@@ -40,7 +41,7 @@ class CaptchasTable extends Table {
 	 * @param array $config The configuration for the Table.
 	 * @return void
 	 */
-	public function initialize(array $config) {
+	public function initialize(array $config): void {
 		parent::initialize($config);
 
 		$this->setTable('captchas');
@@ -56,25 +57,25 @@ class CaptchasTable extends Table {
 	 * @param \Cake\Validation\Validator $validator Validator instance.
 	 * @return \Cake\Validation\Validator
 	 */
-	public function validationDefault(Validator $validator) {
+	public function validationDefault(Validator $validator): Validator {
 		$validator
 			->integer('id')
-			->allowEmpty('id', 'create');
+			->allowEmptyString('id', 'create');
 
 		$validator
 			->requirePresence('ip', 'create')
-			->notEmpty('ip');
+			->notEmptyString('ip');
 
 		$validator
 			->requirePresence('session_id', 'create')
-			->notEmpty('session_id');
+			->notEmptyString('session_id');
 
 		$validator
-			->allowEmpty('result');
+			->allowEmptyString('result');
 
 		$validator
 			->dateTime('used')
-			->allowEmpty('used');
+			->allowEmptyDateTime('used');
 
 		return $validator;
 	}
@@ -86,7 +87,7 @@ class CaptchasTable extends Table {
 	 * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
 	 * @return \Cake\ORM\RulesChecker
 	 */
-	public function buildRules(RulesChecker $rules) {
+	public function buildRules(RulesChecker $rules): RulesChecker {
 		$rules->addCreate(new MaxRule());
 
 		return $rules;
@@ -95,6 +96,8 @@ class CaptchasTable extends Table {
 	/**
 	 * @param string $sessionId
 	 * @param string $ip
+	 *
+	 * @throws \BadMethodCallException
 	 *
 	 * @return int
 	 */
@@ -135,7 +138,7 @@ class CaptchasTable extends Table {
 		if (!$probability) {
 			return 0;
 		}
-		$randomNumber = mt_rand(1, 100);
+		$randomNumber = random_int(1, 100);
 		if ((int)$probability < $randomNumber) {
 			return 0;
 		}

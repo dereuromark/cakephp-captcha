@@ -28,7 +28,7 @@ class PreparerComponent extends Component {
 	 * @param array $config The config data.
 	 * @return void
 	 */
-	public function initialize(array $config) {
+	public function initialize(array $config): void {
 		$controller = $this->_registry->getController();
 		$this->setEventManager($controller->getEventManager());
 

@@ -14,20 +14,22 @@ class CaptchaView extends AppView {
 	 * is the filename of the layout in /app/Template/Layout without the .ctp
 	 * extension.
 	 *
-	 * @var bool
+	 * @var string
 	 */
-	public $layout = false;
+	public $layout = '';
 
 	/**
 	 * Initialization hook method.
 	 *
 	 * @return void
 	 */
-	public function initialize() {
+	public function initialize(): void {
 		parent::initialize();
 
-		$this->response->type('png');
-		$this->response->header(['Content-Transfer-Encoding' => 'binary']);
+		$this->disableAutoLayout();
+
+		$this->response = $this->response->withType('png')
+			->withHeader('Content-Transfer-Encoding', 'binary');
 	}
 
 }

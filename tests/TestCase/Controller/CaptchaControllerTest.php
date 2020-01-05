@@ -12,9 +12,9 @@ class CaptchaControllerTest extends IntegrationTestCase {
 	 *
 	 * @var array
 	 */
-	public $fixtures = [
-		'plugin.captcha.captchas',
-		'core.sessions',
+	protected $fixtures = [
+		'plugin.Captcha.Captchas',
+		'core.Sessions',
 	];
 
 	/**
@@ -22,7 +22,7 @@ class CaptchaControllerTest extends IntegrationTestCase {
 	 *
 	 * @return void
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		Configure::write('Captcha', [
@@ -34,6 +34,8 @@ class CaptchaControllerTest extends IntegrationTestCase {
 	 * @return void
 	 */
 	public function testDisplay() {
+		$this->disableErrorHandlerMiddleware();
+
 		$id = 1;
 		$this->get(['plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'display', $id]);
 
