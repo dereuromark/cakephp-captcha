@@ -3,6 +3,7 @@
 namespace Captcha\Controller;
 
 use App\Controller\AppController;
+use Cake\Event\EventInterface;
 
 /**
  * @property \Captcha\Model\Table\CaptchasTable $Captchas
@@ -13,7 +14,7 @@ class CaptchaController extends AppController {
 	/**
 	 * @var string
 	 */
-	public $modelClass = 'Captcha.Captchas';
+	protected $modelClass = 'Captcha.Captchas';
 
 	/**
 	 * @return void
