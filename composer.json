@@ -14,8 +14,7 @@
 	],
 	"require": {
 		"php": ">=7.2",
-		"cakephp/cakephp": "^4.0.0",
-		"paragonie/random_compat": "@stable"
+		"cakephp/cakephp": "^4.0.0"
 	},
 	"require-dev": {
 		"cakephp/migrations": "^3.0.0",
