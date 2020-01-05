@@ -10,11 +10,6 @@ use App\View\AppView;
 class CaptchaView extends AppView {
 
 	/**
-	 * @var string
-	 */
-	protected $layout = '';
-
-	/**
 	 * Initialization hook method.
 	 *
 	 * @return void
@@ -22,7 +17,9 @@ class CaptchaView extends AppView {
 	public function initialize(): void {
 		parent::initialize();
 
+		$this->layout = '';
 		$this->disableAutoLayout();
+		dd($this);
 
 		$this->response = $this->response->withType('png')
 			->withHeader('Content-Transfer-Encoding', 'binary');
