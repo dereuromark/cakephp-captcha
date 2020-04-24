@@ -46,4 +46,36 @@ class CaptchaControllerTest extends IntegrationTestCase {
 		$this->assertResponseNotEmpty();
 	}
 
+	/**
+	 * @return void
+	 */
+	public function testDisplayExt() {
+		$this->disableErrorHandlerMiddleware();
+
+		$id = 1;
+		$this->get(['plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'display', $id, '_ext' => 'png']);
+
+		$this->assertResponseCode(200);
+
+		$this->assertContentType('image/png');
+		$this->assertHeaderContains('Content-Transfer-Encoding', 'binary');
+		$this->assertResponseNotEmpty();
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDisplayExtJpg() {
+		$this->disableErrorHandlerMiddleware();
+
+		$id = 1;
+		$this->get(['plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'display', $id, '_ext' => 'jpg']);
+
+		$this->assertResponseCode(200);
+
+		$this->assertContentType('image/jpeg');
+		$this->assertHeaderContains('Content-Transfer-Encoding', 'binary');
+		$this->assertResponseNotEmpty();
+	}
+
 }

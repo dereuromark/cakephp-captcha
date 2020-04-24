@@ -27,7 +27,7 @@ class CaptchaComponent extends Component {
 	 */
 	public function beforeFilter(EventInterface $event) {
 		$actions = $this->getConfig('actions');
-		if ($actions && !in_array($this->getController()->getRequest()->getParam('action'), $actions)) {
+		if ($actions && !in_array($this->getController()->getRequest()->getParam('action'), $actions, true)) {
 			return;
 		}
 
@@ -60,7 +60,7 @@ class CaptchaComponent extends Component {
 	 */
 	public function beforeRender(EventInterface $event): void {
 		$helpers = $this->getController()->viewBuilder()->getHelpers();
-		if (in_array('Captcha.Captcha', $helpers) || isset($helpers['Captcha.Captcha'])) {
+		if (in_array('Captcha.Captcha', $helpers, true) || isset($helpers['Captcha.Captcha'])) {
 			return;
 		}
 
