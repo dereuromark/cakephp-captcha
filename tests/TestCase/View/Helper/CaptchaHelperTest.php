@@ -3,9 +3,10 @@
 namespace Captcha\Test\TestCase\View\Helper;
 
 use Cake\Core\Configure;
-use Cake\Network\Request;
-use Cake\Network\Session;
+use Cake\Http\ServerRequest;
+use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
+use Cake\Routing\Route\DashedRoute;
 use Cake\TestSuite\TestCase;
 use Cake\View\View;
 use Captcha\View\Helper\CaptchaHelper;
@@ -15,7 +16,9 @@ class CaptchaHelperTest extends TestCase {
 	/**
 	 * @var array
 	 */
-	public $fixtures = ['plugin.captcha.captchas'];
+	protected $fixtures = [
+		'plugin.Captcha.Captchas',
+	];
 
 	/**
 	 * @var \Cake\View\View
@@ -33,7 +36,7 @@ class CaptchaHelperTest extends TestCase {
 	protected $request;
 
 	/**
-	 * @var \Cake\Network\Session
+	 * @var \Cake\Http\Session
 	 */
 	protected $session;
 
@@ -42,20 +45,19 @@ class CaptchaHelperTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
-		Configure::write('Captcha', [
-			]
-		);
+		Configure::write('Captcha', []);
 
-		Router::reload();
-
-		$this->request = new Request();
-		$this->session = new Session();
-		$this->request->session($this->session);
+		$this->request = new ServerRequest();
 		$this->View = new View($this->request);
 		$this->Captcha = new CaptchaHelper($this->View);
+
+		Router::plugin('Captcha', function (RouteBuilder $routes) {
+			$routes->fallbacks(DashedRoute::class);
+		});
+
 	}
 
 	/**
@@ -63,7 +65,7 @@ class CaptchaHelperTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function tearDown() {
+	public function tearDown(): void {
 		parent::tearDown();
 
 		unset($this->Captcha);
@@ -73,11 +75,44 @@ class CaptchaHelperTest extends TestCase {
 	 * @return void
 	 */
 	public function testRender() {
-		$this->request->env('REMOTE_ADDR', '127.0.0.1');
+		$this->request = $this->request->withEnv('REMOTE_ADDR', '127.0.0.1');
+		$this->View->setRequest($this->request);
 
 		$result = $this->Captcha->render();
 		$expected = <<<HTML
 <div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2" alt=""/></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result"/></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"/><div style="display: none"><div class="input text"><label for="email-homepage">Email Homepage</label><input type="text" name="email_homepage" id="email-homepage" value=""/></div></div>
+HTML;
+		$this->assertSame($expected, $result);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testRenderPng() {
+		$this->Captcha->setConfig(['ext' => 'png']);
+
+		$this->request = $this->request->withEnv('REMOTE_ADDR', '127.0.0.1');
+		$this->View->setRequest($this->request);
+
+		$result = $this->Captcha->render();
+		$expected = <<<HTML
+<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2.png" alt=""/></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result"/></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"/><div style="display: none"><div class="input text"><label for="email-homepage">Email Homepage</label><input type="text" name="email_homepage" id="email-homepage" value=""/></div></div>
+HTML;
+		$this->assertSame($expected, $result);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testRenderJpg() {
+		$this->Captcha->setConfig(['ext' => 'jpg']);
+
+		$this->request = $this->request->withEnv('REMOTE_ADDR', '127.0.0.1');
+		$this->View->setRequest($this->request);
+
+		$result = $this->Captcha->render();
+		$expected = <<<HTML
+<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2.jpg" alt=""/></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result"/></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"/><div style="display: none"><div class="input text"><label for="email-homepage">Email Homepage</label><input type="text" name="email_homepage" id="email-homepage" value=""/></div></div>
 HTML;
 		$this->assertSame($expected, $result);
 	}

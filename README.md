@@ -1,7 +1,7 @@
 # Captcha Plugin for CakePHP
 [![Build Status](https://api.travis-ci.com/dereuromark/cakephp-captcha.svg)](https://travis-ci.com/dereuromark/cakephp-captcha)
 [![Coverage Status](https://codecov.io/gh/dereuromark/cakephp-captcha/branch/master/graph/badge.svg)](https://codecov.io/gh/dereuromark/cakephp-captcha)
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.6-8892BF.svg)](https://php.net/)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg)](https://php.net/)
 [![License](https://poser.pugx.org/dereuromark/cakephp-captcha/license)](https://packagist.org/packages/dereuromark/cakephp-captcha)
 [![Total Downloads](https://poser.pugx.org/dereuromark/cakephp-captcha/d/total.svg)](https://packagist.org/packages/dereuromark/cakephp-captcha)
 [![Coding Standards](https://img.shields.io/badge/cs-PSR--2--R-yellow.svg)](https://github.com/php-fig-rectified/fig-rectified-standards)
@@ -11,7 +11,7 @@ Allows any type of image-based captchas for your forms.
 ## A CakePHP plugin to
 - Easily integrate captchas in your CakePHP application.
 
-This plugin requires **CakePHP 3.7+**. See [version map](https://github.com/dereuromark/cakephp-captcha/wiki#cakephp-version-map) for details.
+This plugin requires **CakePHP 4.0+**. See [version map](https://github.com/dereuromark/cakephp-captcha/wiki#cakephp-version-map) for details.
 
 ### Whats in this plugin
 - Simple match captchas that will already do the trick without annoying "I can't read those letters".

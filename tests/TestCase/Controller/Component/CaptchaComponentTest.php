@@ -15,9 +15,9 @@ class CaptchaComponentTest extends IntegrationTestCase {
 	 *
 	 * @var array
 	 */
-	public $fixtures = [
-		'plugin.captcha.captchas',
-		'core.sessions',
+	protected $fixtures = [
+		'plugin.Captcha.Captchas',
+		'core.Sessions',
 	];
 
 	/**
@@ -25,7 +25,7 @@ class CaptchaComponentTest extends IntegrationTestCase {
 	 *
 	 * @return void
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		Configure::write('Captcha', []);
@@ -39,7 +39,7 @@ class CaptchaComponentTest extends IntegrationTestCase {
 
 		$contactForm = new Form();
 
-		$captchaComponent->addValidation($contactForm->validator());
+		$captchaComponent->addValidation($contactForm->getValidator());
 
 		$this->assertFalse($contactForm->execute([]));
 	}

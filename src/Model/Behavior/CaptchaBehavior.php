@@ -3,7 +3,7 @@
 namespace Captcha\Model\Behavior;
 
 use Cake\Core\Configure;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\I18n\Time;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
@@ -25,7 +25,6 @@ class CaptchaBehavior extends Behavior {
 		'minTime' => 2, // Seconds the form will need to be filled in by a human
 		'maxTime' => DAY, // Seconds the form will need to be submitted in
 		'engine' => 'Captcha\Engine\MathEngine',
-		'dummyField' => 'email_homepage', /* @deprecated Use PassiveCaptcha behavior */
 	];
 
 	/**
@@ -49,7 +48,7 @@ class CaptchaBehavior extends Behavior {
 	 * @param array $config
 	 * @return void
 	 */
-	public function initialize(array $config = []) {
+	public function initialize(array $config): void {
 		$config += (array)Configure::read('Captcha');
 		parent::initialize($config);
 
@@ -59,12 +58,12 @@ class CaptchaBehavior extends Behavior {
 	}
 
 	/**
-	 * @param \Cake\Event\Event $event
+	 * @param \Cake\Event\EventInterface $event
 	 * @param \Cake\Validation\Validator $validator
 	 * @param string $name
 	 * @return void
 	 */
-	public function buildValidator(Event $event, Validator $validator, $name) {
+	public function buildValidator(EventInterface $event, Validator $validator, $name) {
 		$this->addValidation($validator);
 	}
 
@@ -81,20 +80,6 @@ class CaptchaBehavior extends Behavior {
 				'last' => true,
 			],
 		]);
-
-		/** @deprecated Use PassiveCaptcha Behavior */
-		if ($this->getConfig('dummyField')) {
-			$validator->requirePresence($this->getConfig('dummyField'));
-			$validator->allowEmpty($this->getConfig('dummyField'));
-			$validator->add($this->getConfig('dummyField'), [
-				'dummyField' => [
-					'rule' => function ($value, $context) {
-						return $value === '';
-					},
-					'last' => true,
-				],
-			]);
-		}
 
 		$this->_engine->buildValidator($validator);
 		if ($this->getConfig('minTime')) {

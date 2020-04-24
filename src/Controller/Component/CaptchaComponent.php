@@ -3,10 +3,11 @@
 namespace Captcha\Controller\Component;
 
 use Cake\Controller\Component;
-use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use ReflectionClass;
 
 class CaptchaComponent extends Component {
 
@@ -20,49 +21,50 @@ class CaptchaComponent extends Component {
 	];
 
 	/**
-	 * @var \Cake\Controller\Controller
-	 */
-	public $controller;
-
-	/**
-	 * Initialize properties.
-	 *
-	 * @param array $config The config data.
-	 * @return void
-	 */
-	public function initialize(array $config) {
-		$this->controller = $this->_registry->getController();
-	}
-
-	/**
-	 * @param \Cake\Event\Event $event
+	 * @param \Cake\Event\EventInterface $event
 	 *
 	 * @return void
 	 */
-	public function beforeFilter(Event $event) {
+	public function beforeFilter(EventInterface $event) {
 		$actions = $this->getConfig('actions');
-		if ($actions && !in_array($this->controller->request->param('action'), $actions)) {
+		if ($actions && !in_array($this->getController()->getRequest()->getParam('action'), $actions, true)) {
 			return;
 		}
 
-		$model = $this->controller->modelClass;
-		if (!isset($this->controller->$model) || $this->controller->$model->hasBehavior('Captcha')) {
+		$model = $this->getControllerModelClass();
+		if (!$model) {
 			return;
 		}
-		$this->controller->$model->addBehavior('Captcha.Captcha');
+
+		if (!isset($this->getController()->$model) || $this->getController()->$model->hasBehavior('Captcha')) {
+			return;
+		}
+		$this->getController()->$model->addBehavior('Captcha.Captcha');
 	}
 
 	/**
-	 * @param \Cake\Event\Event $event
+	 * @return string
+	 */
+	protected function getControllerModelClass(): string {
+		$reflection = new ReflectionClass($this->getController());
+		$property = $reflection->getProperty('modelClass');
+		$property->setAccessible(true);
+
+		return $property->getValue($this->getController());
+	}
+
+	/**
+	 * @param \Cake\Event\EventInterface $event
 	 *
 	 * @return void
 	 */
-	public function beforeRender(Event $event) {
-		if (in_array('Captcha.Captcha', $this->controller->helpers) || isset($this->controller->helpers['Captcha.Captcha'])) {
+	public function beforeRender(EventInterface $event): void {
+		$helpers = $this->getController()->viewBuilder()->getHelpers();
+		if (in_array('Captcha.Captcha', $helpers, true) || isset($helpers['Captcha.Captcha'])) {
 			return;
 		}
 
-		$this->controller->helpers[] = 'Captcha.Captcha';
+		$this->getController()->viewBuilder()->setHelpers(['Captcha.Captcha']);
 	}
 
 	/**

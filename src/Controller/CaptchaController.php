@@ -3,7 +3,7 @@
 namespace Captcha\Controller;
 
 use App\Controller\AppController;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 
 /**
  * @property \Captcha\Model\Table\CaptchasTable $Captchas
@@ -14,22 +14,22 @@ class CaptchaController extends AppController {
 	/**
 	 * @var string
 	 */
-	public $modelClass = 'Captcha.Captchas';
+	protected $modelClass = 'Captcha.Captchas';
 
 	/**
 	 * @return void
 	 */
-	public function initialize() {
+	public function initialize(): void {
 		parent::initialize();
 
 		$this->loadComponent('Captcha.Preparer');
 	}
 
 	/**
-	 * @param \Cake\Event\Event $event
+	 * @param \Cake\Event\EventInterface $event
 	 * @return \Cake\Http\Response|null|void
 	 */
-	public function beforeFilter(Event $event) {
+	public function beforeFilter(EventInterface $event) {
 		if (isset($this->Auth)) {
 			$this->Auth->allow();
 		}
@@ -48,6 +48,7 @@ class CaptchaController extends AppController {
 		$this->set(compact('captcha'));
 
 		$this->viewBuilder()->setClassName('Captcha.Captcha');
+		$this->viewBuilder()->setTemplatePath('Captcha');
 	}
 
 }

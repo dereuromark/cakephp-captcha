@@ -3,8 +3,7 @@
 namespace Captcha\Test\Model\Behavior;
 
 use Cake\Core\Configure;
-use Cake\Network\Request;
-use Cake\Network\Session;
+use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
@@ -15,8 +14,9 @@ class CaptchaBehaviorTest extends TestCase {
 	/**
 	 * @var array
 	 */
-	public $fixtures = [
-		'plugin.Captcha.Captchas', 'plugin.Captcha.Comments',
+	protected $fixtures = [
+		'plugin.Captcha.Captchas',
+		'plugin.Captcha.Comments',
 	];
 
 	/**
@@ -35,14 +35,14 @@ class CaptchaBehaviorTest extends TestCase {
 	protected $request;
 
 	/**
-	 * @var \Cake\Network\Session
+	 * @var \Cake\Http\Session
 	 */
 	protected $session;
 
 	/**
 	 * @return void
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		Configure::write('Captcha', [
@@ -50,11 +50,9 @@ class CaptchaBehaviorTest extends TestCase {
 			]
 		);
 
-		$this->request = new Request();
-		$this->request->env('REMOTE_ADDR', '127.0.0.1');
-		$this->session = new Session();
-		$this->request->session($this->session);
-		Router::pushRequest($this->request);
+		$this->request = new ServerRequest();
+		$this->request = $this->request->withEnv('REMOTE_ADDR', '127.0.0.1');
+		Router::setRequest($this->request);
 
 		$this->Captchas = TableRegistry::get('Captcha.Captchas');
 
@@ -65,7 +63,7 @@ class CaptchaBehaviorTest extends TestCase {
 	/**
 	 * @return void
 	 */
-	public function tearDown() {
+	public function tearDown(): void {
 		parent::tearDown();
 
 		unset($this->Comments, $this->Captchas);

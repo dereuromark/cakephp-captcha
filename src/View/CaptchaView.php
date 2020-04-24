@@ -10,24 +10,20 @@ use App\View\AppView;
 class CaptchaView extends AppView {
 
 	/**
-	 * The name of the layout file to render the view inside of. The name specified
-	 * is the filename of the layout in /app/Template/Layout without the .ctp
-	 * extension.
-	 *
-	 * @var bool
-	 */
-	public $layout = false;
-
-	/**
 	 * Initialization hook method.
 	 *
 	 * @return void
 	 */
-	public function initialize() {
+	public function initialize(): void {
 		parent::initialize();
 
-		$this->response->type('png');
-		$this->response->header(['Content-Transfer-Encoding' => 'binary']);
+		$this->layout = '';
+		$this->disableAutoLayout();
+
+		$ext = $this->request->getParam('_ext') ?: 'png';
+
+		$this->response = $this->response->withType($ext)
+			->withHeader('Content-Transfer-Encoding', 'binary');
 	}
 
 }

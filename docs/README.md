@@ -15,7 +15,7 @@ You can add the behavior to your model inside the specific action: or you can si
 $this->MyTable->addBehavior('Captcha.Captcha');
 ```
 
-You can also use the component (and the optional actions array) to auto-add the behavior to your model: 
+You can also use the component (and the optional actions array) to auto-add the behavior to your model:
 ```php
 // inside initialize() of controller
 $this->loadComponent('Captcha.Captcha');
@@ -43,7 +43,7 @@ $contactForm = new ContactForm();
 
 if ($this->request->is('post')) {
     $this->Captcha->addValidation($contactForm->validator());
-    
+
     if ($contactForm->execute($this->request->data)) {
         // Send email and redirect
     }
@@ -189,5 +189,5 @@ $contact->behaviors()->PassiveCaptcha->addValidation($contact->getValidator());
 ```
 
 ## Local Setup
-Make you you got the gd lib installed:
+Make sure you got the gd lib installed:
 - `sudo apt-get install php{version}-gd`
