@@ -88,6 +88,38 @@ HTML;
 	/**
 	 * @return void
 	 */
+	public function testRenderPng() {
+		$this->Captcha->setConfig(['ext' => 'png']);
+
+		$this->request = $this->request->withEnv('REMOTE_ADDR', '127.0.0.1');
+		$this->View->setRequest($this->request);
+
+		$result = $this->Captcha->render();
+		$expected = <<<HTML
+<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2.png" alt=""/></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result"/></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"/><div style="display: none"><div class="input text"><label for="email-homepage">Email Homepage</label><input type="text" name="email_homepage" id="email-homepage" value=""/></div></div>
+HTML;
+		$this->assertSame($expected, $result);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testRenderJpg() {
+		$this->Captcha->setConfig(['ext' => 'jpg']);
+
+		$this->request = $this->request->withEnv('REMOTE_ADDR', '127.0.0.1');
+		$this->View->setRequest($this->request);
+
+		$result = $this->Captcha->render();
+		$expected = <<<HTML
+<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2.jpg" alt=""/></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result"/></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"/><div style="display: none"><div class="input text"><label for="email-homepage">Email Homepage</label><input type="text" name="email_homepage" id="email-homepage" value=""/></div></div>
+HTML;
+		$this->assertSame($expected, $result);
+	}
+
+	/**
+	 * @return void
+	 */
 	public function testPassive() {
 		$result = $this->Captcha->passive();
 		$expected = '<div style="display: none"><div class="input text"><label for="email-homepage">Email Homepage</label><input type="text" name="email_homepage" id="email-homepage" value=""/></div></div>';

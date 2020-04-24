@@ -20,7 +20,9 @@ class CaptchaView extends AppView {
 		$this->layout = '';
 		$this->disableAutoLayout();
 
-		$this->response = $this->response->withType('png')
+		$ext = $this->request->getParam('_ext') ?: 'png';
+
+		$this->response = $this->response->withType($ext)
 			->withHeader('Content-Transfer-Encoding', 'binary');
 	}
 
