@@ -17,7 +17,7 @@ class PassiveCaptchaTestForm extends Form {
 	/**
 	 * @param \Cake\Event\EventManager|null $eventManager
 	 */
-	public function __construct(EventManager $eventManager = null) {
+	public function __construct(?EventManager $eventManager = null) {
 		parent::__construct($eventManager);
 
 		$this->_behaviors = new BehaviorRegistry();

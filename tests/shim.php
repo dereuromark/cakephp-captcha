@@ -1,4 +1,5 @@
 <?php
+
 use Cake\Core\Plugin;
 
 if (!function_exists('imagejpeg')) {

@@ -4,9 +4,9 @@ namespace Captcha\Test\TestCase\View\Helper;
 
 use Cake\Core\Configure;
 use Cake\Http\ServerRequest;
+use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
-use Cake\Routing\Route\DashedRoute;
 use Cake\TestSuite\TestCase;
 use Cake\View\View;
 use Captcha\View\Helper\CaptchaHelper;

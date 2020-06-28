@@ -156,6 +156,7 @@ class CaptchaBehavior extends Behavior {
 		}
 
 		$this->_captchasTable->markUsed($captcha);
+
 		return true;
 	}
 
@@ -184,6 +185,7 @@ class CaptchaBehavior extends Behavior {
 
 		if (!$id) {
 			$this->_captchas[$id] = null;
+
 			return null;
 		}
 
@@ -193,6 +195,7 @@ class CaptchaBehavior extends Behavior {
 			'session_id' => $sessionId,
 		];
 		$this->_captchas[$id] = $this->_captchasTable->find()->where($conditions)->first();
+
 		return $this->_captchas[$id];
 	}
 

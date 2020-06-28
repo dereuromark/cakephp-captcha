@@ -93,6 +93,7 @@ class CaptchaHelper extends Helper {
 		foreach ($dummyFields as $dummyField) {
 			$html[] = '<div style="display: none">' . $this->Form->control($dummyField, ['value' => '']) . '</div>';
 		}
+
 		return implode(PHP_EOL, $html);
 	}
 

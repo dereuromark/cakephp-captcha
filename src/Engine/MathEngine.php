@@ -11,8 +11,8 @@ require_once Plugin::path('Captcha') . 'vendor/' . 'mathpublisher.php';
 
 class MathEngine implements EngineInterface {
 
-	const FORMAT_JPEG = 'jpeg';
-	const FORMAT_PNG = 'png';
+	public const FORMAT_JPEG = 'jpeg';
+	public const FORMAT_PNG = 'png';
 
 	/**
 	 * @var array
@@ -79,9 +79,11 @@ class MathEngine implements EngineInterface {
 		switch ($this->_config['imageFormat']) {
 			case static::FORMAT_JPEG:
 				imagejpeg($formula->image);
+
 				break;
 			case static::FORMAT_PNG:
 				imagepng($formula->image);
+
 				break;
 		}
 		imagedestroy($formula->image);
@@ -94,6 +96,7 @@ class MathEngine implements EngineInterface {
 	 */
 	protected function _getTypeClass() {
 		$config = $this->_config;
+
 		return new $config['mathType']($config);
 	}
 

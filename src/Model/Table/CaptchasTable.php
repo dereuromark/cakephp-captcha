@@ -144,6 +144,7 @@ class CaptchasTable extends Table {
 		}
 
 		$maxTime = Configure::read('Captcha.maxTime');
+
 		return $this->deleteAll(['or' => ['created <' => new Time((string)(time() - $maxTime)), 'used IS NOT' => null]]);
 	}
 
@@ -154,6 +155,7 @@ class CaptchasTable extends Table {
 	 */
 	public function markUsed($captcha) {
 		$captcha->used = new Time();
+
 		return (bool)$this->save($captcha);
 	}
 

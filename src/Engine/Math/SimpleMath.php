@@ -82,6 +82,7 @@ class SimpleMath implements MathInterface {
 			'-',
 		];
 		$key = random_int(0, 1);
+
 		return $operators[$key];
 	}
 

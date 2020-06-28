@@ -45,6 +45,7 @@ class PreparerComponent extends Component {
 			$generated = $this->_getEngine()->generate();
 			$captcha = $this->Captchas->patchEntity($captcha, $generated);
 		}
+
 		return $this->Captchas->save($captcha);
 	}
 
@@ -54,6 +55,7 @@ class PreparerComponent extends Component {
 	protected function _getEngine() {
 		$config = (array)Configure::read('Captcha') + $this->_defaultConfig;
 		$engine = $config['engine'];
+
 		return new $engine($config);
 	}
 
