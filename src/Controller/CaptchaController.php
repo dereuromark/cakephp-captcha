@@ -32,6 +32,8 @@ class CaptchaController extends AppController {
 	public function beforeFilter(EventInterface $event) {
 		if (isset($this->Auth)) {
 			$this->Auth->allow();
+		} elseif (isset($this->Authentication) && method_exists($this->Authentication, 'addUnauthenticatedActions')) {
+			$this->Authentication->addUnauthenticatedActions(['display']);
 		}
 	}
 
