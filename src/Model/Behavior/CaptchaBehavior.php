@@ -9,6 +9,7 @@ use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Validation\Validator;
+use RuntimeException;
 
 /**
  * CaptchaBehavior
@@ -168,11 +169,14 @@ class CaptchaBehavior extends Behavior {
 	protected function _getCaptcha(array $data) {
 		$id = !empty($data['captcha_id']) ? (int)$data['captcha_id'] : null;
 
-		if (array_key_exists($id, $this->_captchas)) {
+		if ($id && array_key_exists($id, $this->_captchas)) {
 			return $this->_captchas[$id];
 		}
 
 		$request = Router::getRequest();
+		if ($request === null) {
+			throw new RuntimeException('No request found.');
+		}
 		if (!$request->getSession()->started()) {
 			$request->getSession()->start();
 		}

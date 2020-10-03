@@ -88,7 +88,7 @@ class MathEngine implements EngineInterface {
 		}
 		imagedestroy($formula->image);
 
-		return ob_get_clean();
+		return ob_get_clean() ?: '';
 	}
 
 	/**
