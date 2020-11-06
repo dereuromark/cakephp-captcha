@@ -53,6 +53,7 @@ class CaptchaHelper extends Helper {
 			'label' => ['escape' => false, 'text' => $this->image()],
 			'escapeLabel' => false,
 			'autocomplete' => 'off',
+			'value' => '',
 		];
 
 		return $this->Form->control('captcha_result', $options);

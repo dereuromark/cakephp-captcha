@@ -39,12 +39,14 @@ $this->loadComponent('Captcha.Captcha');
 
 Then inside your action, use `addValidation()` to inject the behavior's validation rules into the form validator:
 ```php
+use Tools\Form\ContactForm; // or any other form
+
 $contactForm = new ContactForm();
 
 if ($this->request->is('post')) {
-    $this->Captcha->addValidation($contactForm->validator());
+    $this->Captcha->addValidation($contactForm->getValidator());
 
-    if ($contactForm->execute($this->request->data)) {
+    if ($contactForm->execute($this->request->getData())) {
         // Send email and redirect
     }
     // Display validation errors
