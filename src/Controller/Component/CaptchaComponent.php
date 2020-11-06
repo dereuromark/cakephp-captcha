@@ -76,10 +76,10 @@ class CaptchaComponent extends Component {
 	 */
 	public function addValidation(Validator $validator, ?string $type = null) {
 		/** @var \Captcha\Model\Table\CaptchasTable $Captchas */
-		$Captchas = TableRegistry::get('CaptchasValidator', ['class' => 'Captcha.Captchas']);
+		$Captchas = TableRegistry::getTableLocator()->get('CaptchasValidator', ['class' => 'Captcha.Captchas']);
 
 		$Captchas->setValidator('captcha', $validator);
-		
+
 		$behavior = 'Captcha.Captcha';
 		if ($type === 'Passive') {
 			$behavior = 'Captcha.PassiveCaptcha';

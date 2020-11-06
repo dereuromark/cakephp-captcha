@@ -55,7 +55,7 @@ class CaptchaBehavior extends Behavior {
 
 		$engine = $this->getConfig('engine');
 		$this->_engine = new $engine($this->getConfig());
-		$this->_captchasTable = TableRegistry::get('Captcha.Captchas');
+		$this->_captchasTable = TableRegistry::getTableLocator()->get('Captcha.Captchas');
 	}
 
 	/**

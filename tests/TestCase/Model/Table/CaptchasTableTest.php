@@ -28,8 +28,8 @@ class CaptchasTableTest extends TestCase {
 	 */
 	public function setUp(): void {
 		parent::setUp();
-		$config = TableRegistry::exists('Captchas') ? [] : ['className' => 'Captcha\Model\Table\CaptchasTable'];
-		$this->Captchas = TableRegistry::get('Captchas', $config);
+		$config = $this->getTableLocator()->exists('Captchas') ? [] : ['className' => 'Captcha\Model\Table\CaptchasTable'];
+		$this->Captchas = $this->getTableLocator()->get('Captchas', $config);
 	}
 
 	/**

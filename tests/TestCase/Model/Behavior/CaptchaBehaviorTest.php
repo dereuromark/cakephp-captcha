@@ -54,9 +54,9 @@ class CaptchaBehaviorTest extends TestCase {
 		$this->request = $this->request->withEnv('REMOTE_ADDR', '127.0.0.1');
 		Router::setRequest($this->request);
 
-		$this->Captchas = TableRegistry::get('Captcha.Captchas');
+		$this->Captchas = $this->getTableLocator()->get('Captcha.Captchas');
 
-		$this->Comments = TableRegistry::get('Captcha.Comments');
+		$this->Comments = $this->getTableLocator()->get('Captcha.Comments');
 		$this->Comments->addBehavior('Captcha.Captcha');
 	}
 
