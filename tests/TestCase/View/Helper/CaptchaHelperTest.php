@@ -80,7 +80,7 @@ class CaptchaHelperTest extends TestCase {
 
 		$result = $this->Captcha->render();
 		$expected = <<<HTML
-<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2" alt=""/></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result" value=""/></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"/><div style="display: none"><div class="input text"><label for="email-homepage">Email Homepage</label><input type="text" name="email_homepage" id="email-homepage" value=""/></div></div>
+<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2" alt=""/></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result" value=""/></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"/><div style="display: none"><input type="text" name="email_homepage" value=""/></div>
 HTML;
 		$this->assertSame($expected, $result);
 	}
@@ -96,7 +96,7 @@ HTML;
 
 		$result = $this->Captcha->render();
 		$expected = <<<HTML
-<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2.png" alt=""/></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result" value=""/></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"/><div style="display: none"><div class="input text"><label for="email-homepage">Email Homepage</label><input type="text" name="email_homepage" id="email-homepage" value=""/></div></div>
+<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2.png" alt=""/></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result" value=""/></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"/><div style="display: none"><input type="text" name="email_homepage" value=""/></div>
 HTML;
 		$this->assertSame($expected, $result);
 	}
@@ -112,7 +112,7 @@ HTML;
 
 		$result = $this->Captcha->render();
 		$expected = <<<HTML
-<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2.jpg" alt=""/></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result" value=""/></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"/><div style="display: none"><div class="input text"><label for="email-homepage">Email Homepage</label><input type="text" name="email_homepage" id="email-homepage" value=""/></div></div>
+<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2.jpg" alt=""/></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result" value=""/></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"/><div style="display: none"><input type="text" name="email_homepage" value=""/></div>
 HTML;
 		$this->assertSame($expected, $result);
 	}
@@ -122,7 +122,7 @@ HTML;
 	 */
 	public function testPassive() {
 		$result = $this->Captcha->passive();
-		$expected = '<div style="display: none"><div class="input text"><label for="email-homepage">Email Homepage</label><input type="text" name="email_homepage" id="email-homepage" value=""/></div></div>';
+		$expected = '<div style="display: none"><input type="text" name="email_homepage" value=""/></div>';
 		$this->assertSame($expected, $result);
 	}
 

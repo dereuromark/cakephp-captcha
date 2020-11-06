@@ -18,6 +18,7 @@ class CaptchaComponent extends Component {
 	 */
 	protected $_defaultConfig = [
 		'actions' => [],
+		'auto' => true, // Auto load behavior
 	];
 
 	/**
@@ -32,7 +33,7 @@ class CaptchaComponent extends Component {
 		}
 
 		$model = $this->getControllerModelClass();
-		if (!$model) {
+		if (!$model || !$this->_config['auto']) {
 			return;
 		}
 
@@ -69,17 +70,23 @@ class CaptchaComponent extends Component {
 
 	/**
 	 * @param \Cake\Validation\Validator $validator
+	 * @param string|null $type Default or Passive
 	 *
 	 * @return void
 	 */
-	public function addValidation(Validator $validator) {
+	public function addValidation(Validator $validator, ?string $type = null) {
 		/** @var \Captcha\Model\Table\CaptchasTable $Captchas */
 		$Captchas = TableRegistry::get('CaptchasValidator', ['class' => 'Captcha.Captchas']);
 
 		$Captchas->setValidator('captcha', $validator);
+		
+		$behavior = 'Captcha.Captcha';
+		if ($type === 'Passive') {
+			$behavior = 'Captcha.PassiveCaptcha';
+		}
 
-		$Captchas->addBehavior('Captcha.Captcha');
-		/** @var \Captcha\Model\Behavior\CaptchaBehavior $Captchas */
+		$Captchas->addBehavior($behavior);
+		/** @var \Captcha\Model\Behavior\CaptchaBehavior|\Captcha\Model\Behavior\PassiveCaptchaBehavior $Captchas */
 		$Captchas->addValidation($validator);
 	}
 
