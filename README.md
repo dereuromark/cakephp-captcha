@@ -13,11 +13,12 @@ Allows any type of image-based captchas for your forms.
 
 This plugin requires **CakePHP 4.0+**. See [version map](https://github.com/dereuromark/cakephp-captcha/wiki#cakephp-version-map) for details.
 
-### Whats in this plugin
+### What's in this plugin
 - Simple match captchas that will already do the trick without annoying "I can't read those letters".
+- Passive captcha option for basic protection without requiring user input ("honeypot trap").
 - Extendable interface approach to easily hook in your own engine.
 
-### Whats the gotchas
+### What are the gotchas
 - Dead simple, no fancy JS or alike.
 - Cross-tab safe (not session based as in overwriting each other per request).
 - Completely stand-alone plugin, no third party stuff involved/needed.
