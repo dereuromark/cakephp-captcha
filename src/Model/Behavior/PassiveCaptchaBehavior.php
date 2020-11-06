@@ -18,7 +18,7 @@ class PassiveCaptchaBehavior extends Behavior {
 	 */
 	protected $_defaultConfig = [
 		'dummyField' => 'email_homepage', // Honeypot trap
-		'log' => null // Auto detect based on debug mode
+		'log' => null, // Auto detect based on debug mode
 	];
 
 	/**

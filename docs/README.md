@@ -37,7 +37,7 @@ E.g. for a contact form, first add this in your controller's `initialize()`:
 $this->loadComponent('Captcha.Captcha');
 ```
 
-Then inside your action, use `addValidation()` to inject the behavior's validation rules into the form validator:
+Then inside your action, use `addValidation()` to inject the plugin's validation rules into the form validator:
 ```php
 use Tools\Form\ContactForm; // or any other form
 
