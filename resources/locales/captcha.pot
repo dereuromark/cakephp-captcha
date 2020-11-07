@@ -25,4 +25,3 @@ msgstr ""
 #: Model/Behavior/CaptchaBehavior.php:101
 msgid "You were too slow"
 msgstr ""
-

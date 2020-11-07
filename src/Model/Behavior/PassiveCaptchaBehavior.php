@@ -44,7 +44,7 @@ class PassiveCaptchaBehavior extends Behavior {
 	 * @return void
 	 */
 	public function buildValidator(EventInterface $event, Validator $validator, $name) {
-		$this->addPassiveValidation($validator);
+		$this->addPassiveCaptchaValidation($validator);
 	}
 
 	/**
