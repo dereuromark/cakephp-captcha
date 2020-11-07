@@ -36,11 +36,15 @@ class CaptchaComponent extends Component {
 		if (!$model || !$this->_config['auto']) {
 			return;
 		}
+		if (strpos($model, '.') !== false) {
+			[$plugin, $model] = pluginSplit($model);
+		}
 
-		if (!isset($this->getController()->$model) || $this->getController()->$model->hasBehavior('Captcha')) {
+		$controller = $this->getController();
+		if ($controller->$model->hasBehavior('Captcha')) {
 			return;
 		}
-		$this->getController()->$model->addBehavior('Captcha.Captcha');
+		$controller->$model->addBehavior('Captcha.Captcha');
 	}
 
 	/**
