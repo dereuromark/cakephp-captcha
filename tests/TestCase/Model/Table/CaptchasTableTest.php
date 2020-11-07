@@ -2,7 +2,6 @@
 
 namespace Captcha\Test\TestCase\Model\Table;
 
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 class CaptchasTableTest extends TestCase {
