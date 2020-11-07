@@ -65,7 +65,7 @@ class CaptchaBehavior extends Behavior {
 	 * @return void
 	 */
 	public function buildValidator(EventInterface $event, Validator $validator, $name) {
-		$this->addValidation($validator);
+		$this->addCaptchaValidation($validator);
 	}
 
 	/**
@@ -73,7 +73,7 @@ class CaptchaBehavior extends Behavior {
 	 *
 	 * @return void
 	 */
-	public function addValidation(Validator $validator): void {
+	public function addCaptchaValidation(Validator $validator): void {
 		$validator->requirePresence('captcha_result');
 		$validator->add('captcha_result', [
 			'required' => [

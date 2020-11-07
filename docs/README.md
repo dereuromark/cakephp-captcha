@@ -13,7 +13,43 @@ But since this plugin ships with a highly extensible interface solution, you can
 
 This plugin ships with two different types of captchas:
 
-- [Active](/docs/Active.md): User input required
-- [Passive](/docs/Passive.md): Honeypot trap and additional bot protection
+- [Active](Active.md): User input required
+- [Passive](Passive.md): Honeypot trap and additional bot protection
 
 They can also be combined for maximum captcha effectiveness.
+
+
+## Basic Usage
+Using the default MathEngine we can simply attach the behavior to the Table class.
+
+Load the helper, e.g in your AppView:
+```php
+$this->loadHelper('Captcha.Captcha');
+```
+
+Add a captcha control (active + passive) in your form:
+```php
+echo $this->Captcha->render(['placeholder' => __('Please solve the riddle')]);
+```
+
+Add the behavior at runtime in your controller action:
+```php
+$this->Ads->addBehavior('Captcha.Captcha');
+```
+If you want to also use the passive one, also add:
+```php
+$this->Ads->addBehavior('Captcha.PassiveCaptcha');
+```
+
+Saving a new ad would now require a valid captcha solution.
+```php
+// This would come from the form POST
+$postData = [
+    'title' => 'Looking for a friend',
+];
+
+$ad = $this->Ads->newEntity($postData);
+$success = $this->Ads->save($ad);
+```
+
+For detailed documentation see the above docs on active and passive ones.

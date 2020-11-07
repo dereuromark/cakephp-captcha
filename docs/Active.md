@@ -22,13 +22,27 @@ $this->loadComponent('Captcha.Captcha');
 The component has the advantage that it also auto-loads the Captcha helper for your template forms.
 Otherwise you need to manually load it.
 
-If you only want to validate captchas for certain actions, the component can be skipped for the actions not in the "actions" array:
+If you only want to validate captchas for certain actions, the component can be white-listed to certain actions:
 ```php
 $this->loadComponent('Captcha.Captcha', [
     'actions' => ['add', 'edit'],
 ]);
 ```
 
+Now load the helper, e.g in your AppView:
+```php
+$this->loadHelper('Captcha.Captcha');
+```
+
+Add a captcha control in your form:
+```php
+echo $this->Captcha->render(['placeholder' => __('Please solve the riddle')]);
+```
+
+That's it, it should now display the images to solve.
+
+`render()` by default adds both active and passive form elements.
+You can use `control()` to only use active ones.
 
 ### Working with model-less forms
 E.g. for a contact form, first add this in your controller's `initialize()`:
@@ -51,6 +65,8 @@ if ($this->request->is('post')) {
     // Display validation errors
 }
 ```
+
+Also here, don't forget to add the helper call.
 
 ### Configuration
 
@@ -80,14 +96,14 @@ class ComplexMath implements MathInterface {
     /**
      * @return string
      */
-    public function getExpression() {
+    public function getExpression(): string {
         ...
     }
 
     /**
      * @return string
      */
-    public function getValue() {
+    public function getValue(): string {
         ...
     }
 
@@ -112,7 +128,7 @@ class WordEngine implements EngineInterface {
     /**
      * @return array
      */
-    public function generate() {
+    public function generate(): array {
         ...
     }
 
@@ -120,7 +136,7 @@ class WordEngine implements EngineInterface {
      * @param \Cake\Validation\Validator $validator
      * @return void
      */
-    public function buildValidator(Validator $validator) {
+    public function buildValidator(Validator $validator): void {
         ...
     }
 

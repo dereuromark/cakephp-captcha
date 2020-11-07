@@ -14,6 +14,19 @@ $this->MyTable->addBehavior('Captcha.PassiveCaptcha');
 
 They can also be combined, though.
 
+
+Now load the helper, e.g in your AppView:
+```php
+$this->loadHelper('Captcha.Captcha');
+```
+
+Add a passive captcha control in your form:
+```php
+echo $this->Captcha->passive();
+```
+
+That's it, now it should not validate the form if the honeypot was triggered.
+
 ### Working with model-less forms
 E.g. for a contact form, first add this in your controller's `initialize()`:
 ```php
@@ -35,6 +48,8 @@ if ($this->request->is('post')) {
     // Display validation errors
 }
 ```
+
+Also here, don't forget to add the helper call.
 
 ### Configuration
 

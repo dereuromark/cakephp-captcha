@@ -80,14 +80,15 @@ class CaptchaComponent extends Component {
 
 		$Captchas->setValidator('captcha', $validator);
 
-		$behavior = 'Captcha.Captcha';
+		$behavior = 'Captcha';
 		if ($type === 'Passive') {
-			$behavior = 'Captcha.PassiveCaptcha';
+			$behavior = 'PassiveCaptcha';
 		}
 
-		$Captchas->addBehavior($behavior);
+		$Captchas->addBehavior('Captcha.' . $behavior);
 		/** @var \Captcha\Model\Behavior\CaptchaBehavior|\Captcha\Model\Behavior\PassiveCaptchaBehavior $Captchas */
-		$Captchas->addValidation($validator);
+		$method = 'add' . $behavior . 'Validation';
+		$Captchas->$method($validator);
 	}
 
 }

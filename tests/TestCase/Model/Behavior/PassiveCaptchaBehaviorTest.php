@@ -35,7 +35,7 @@ class PassiveCaptchaBehaviorTest extends TestCase {
 	 */
 	public function testExecute() {
 		$this->Form->addBehavior('Captcha.PassiveCaptcha');
-		$this->Form->behaviors()->PassiveCaptcha->addValidation($this->Form->getValidator());
+		$this->Form->behaviors()->PassiveCaptcha->addPassiveCaptchaValidation($this->Form->getValidator());
 
 		$data = [
 			'foo' => 'bar',
@@ -66,7 +66,7 @@ class PassiveCaptchaBehaviorTest extends TestCase {
 			'dummyField' => ['dummy_one', 'dummy_two'],
 		];
 		$this->Form->addBehavior('Captcha.PassiveCaptcha', $config);
-		$this->Form->behaviors()->PassiveCaptcha->addValidation($this->Form->getValidator());
+		$this->Form->behaviors()->PassiveCaptcha->addPassiveCaptchaValidation($this->Form->getValidator());
 
 		$data = [
 			'dummy_one' => '1',

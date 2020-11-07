@@ -44,7 +44,7 @@ class PassiveCaptchaBehavior extends Behavior {
 	 * @return void
 	 */
 	public function buildValidator(EventInterface $event, Validator $validator, $name) {
-		$this->addValidation($validator);
+		$this->addPassiveValidation($validator);
 	}
 
 	/**
@@ -52,7 +52,7 @@ class PassiveCaptchaBehavior extends Behavior {
 	 *
 	 * @return void
 	 */
-	public function addValidation(Validator $validator): void {
+	public function addPassiveCaptchaValidation(Validator $validator): void {
 		$fields = (array)$this->getConfig('dummyField');
 		foreach ($fields as $field) {
 			$validator->requirePresence($field);

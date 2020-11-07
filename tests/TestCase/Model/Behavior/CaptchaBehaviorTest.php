@@ -67,7 +67,7 @@ class CaptchaBehaviorTest extends TestCase {
 		parent::tearDown();
 
 		unset($this->Comments, $this->Captchas);
-		TableRegistry::clear();
+		TableRegistry::getTableLocator()->clear();
 	}
 
 	/**
