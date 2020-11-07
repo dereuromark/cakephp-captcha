@@ -6,6 +6,9 @@ use Cake\Controller\Component;
 use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 
+/**
+ * @internal Only for use inside this plugin's controller
+ */
 class PreparerComponent extends Component {
 
 	use EventDispatcherTrait;
