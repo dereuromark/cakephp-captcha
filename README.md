@@ -35,11 +35,14 @@ and
 bin/cake plugin load Captcha -b -r
 ```
 
-You also need to import the SQL schema.
+For active captchas you also need to import the SQL schema.
 The quickest way is using Migrations plugin:
 ```
 bin/cake migrations migrate -p Captcha
 ```
+
+For the match captcha, make sure you got the gd lib installed:
+- `sudo apt-get install php{version}-gd`
 
 ## Usage
 See [Docs](docs/).

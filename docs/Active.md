@@ -4,10 +4,6 @@ By default, the plugin provides an unobtrusive math captcha as images.
 Simple math captchas are also usually a bit more fun than trying to figure out some unreadable words behind colorful bars.
 But since this plugin ships with a highly extensible interface solution, you can write and use your own captcha image solution.
 
-### Local Setup
-For the match captcha, make sure you got the gd lib installed:
-- `sudo apt-get install php{version}-gd`
-
 ### Forms with tables
 You can add the behavior to your model inside the specific action: or you can simply
 ```php

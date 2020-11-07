@@ -1,6 +1,7 @@
 ## Passive Captchas
 
-By default, the plugin provides an unobtrusive passive captcha as "bot trap" aka "honeyput".
+By default, the plugin provides an unobtrusive passive captcha as "bot trap" aka "honeypot".
+It does not need a DB table.
 
 ### Honeypot field
 The `dummyField` config sets an input field (by default `email_homepage` control) as hidden field, and will fail if filled out.
