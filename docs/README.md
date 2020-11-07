@@ -53,3 +53,25 @@ $success = $this->Ads->save($ad);
 ```
 
 For detailed documentation see the above docs on active and passive ones.
+
+## Tips
+
+I usually like to secure any public form with a captcha.
+But only for visitors that are not logged in.
+So once someone is, the captcha security is usually not needed anymore.
+
+Using [TinyAuth](https://github.com/dereuromark/cakephp-tinyauth) or session directly:
+```
+// in controller
+if (PHP_SAPI !== 'cli' && !$this->AuthUser->id()) {
+    $this->loadComponent('Captcha.Captcha');
+}
+
+// in template
+if (PHP_SAPI !== 'cli' && !$this->AuthUser->id()) {
+    echo $this->Captcha->render();
+}
+```
+
+Note: The PHP_SAPI check can be helpful to keep this out of the unit testing.
+So the controller test will be simpler and you don't have to mock around the captcha validation here.
