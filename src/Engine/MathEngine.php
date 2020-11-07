@@ -62,7 +62,7 @@ class MathEngine implements EngineInterface {
 			'valid' => [
 				'rule' => 'validateCaptchaResult',
 				'provider' => 'table',
-				'message' => __('The solution is not correct'),
+				'message' => __d('captcha', 'The solution is not correct'),
 				'last' => true,
 			],
 		]);

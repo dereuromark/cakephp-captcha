@@ -1,0 +1,28 @@
+# LANGUAGE translation of CakePHP Application
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2020-11-05 17:22+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: Engine/MathEngine.php:65
+msgid "The solution is not correct"
+msgstr ""
+
+#: Model/Behavior/CaptchaBehavior.php:91
+msgid "You were too fast"
+msgstr ""
+
+#: Model/Behavior/CaptchaBehavior.php:101
+msgid "You were too slow"
+msgstr ""
+

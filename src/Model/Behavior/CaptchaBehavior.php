@@ -88,7 +88,7 @@ class CaptchaBehavior extends Behavior {
 				'minTime' => [
 					'rule' => 'validateCaptchaMinTime',
 					'provider' => 'table',
-					'message' => __('You were too fast'),
+					'message' => __d('captcha', 'You were too fast'),
 					'last' => true,
 				],
 			]);
@@ -98,7 +98,7 @@ class CaptchaBehavior extends Behavior {
 				'maxTime' => [
 					'rule' => 'validateCaptchaMaxTime',
 					'provider' => 'table',
-					'message' => __('You were too slow'),
+					'message' => __d('captcha', 'You were too slow'),
 					'last' => true,
 				],
 			]);
