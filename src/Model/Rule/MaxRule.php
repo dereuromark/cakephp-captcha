@@ -19,7 +19,7 @@ class MaxRule {
 		/** @var \Captcha\Model\Table\CaptchasTable $repository */
 		$repository = $options['repository'];
 
-		return $repository->getCount($entity->ip, $entity->session_id) < $limit;
+		return $repository->getCount($entity->ip, $entity->session_id) < (int)$limit;
 	}
 
 }

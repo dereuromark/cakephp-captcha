@@ -102,8 +102,9 @@ class CaptchasTable extends Table {
 	 * @return int
 	 */
 	public function touch($sessionId, $ip) {
-		$probability = (int)Configure::read('Captcha.cleanupProbability');
-		$this->cleanup($probability);
+		/** @var int $probability */
+		$probability = Configure::read('Captcha.cleanupProbability') ?? 10;
+		$this->cleanup((int)$probability);
 
 		$captcha = $this->newEntity(
 			[
@@ -132,20 +133,22 @@ class CaptchasTable extends Table {
 
 	/**
 	 * @param int $probability
+	 *
 	 * @return int
 	 */
-	public function cleanup($probability = 100) {
+	public function cleanup(int $probability = 100): int {
 		if (!$probability) {
 			return 0;
 		}
 		$randomNumber = random_int(1, 100);
-		if ((int)$probability < $randomNumber) {
+		if ($probability < $randomNumber) {
 			return 0;
 		}
 
-		$maxTime = Configure::read('Captcha.maxTime');
+		/** @var int $maxTime */
+		$maxTime = Configure::read('Captcha.maxTime') ?? DAY;
 
-		return $this->deleteAll(['or' => ['created <' => new Time((string)(time() - $maxTime)), 'used IS NOT' => null]]);
+		return $this->deleteAll(['or' => ['created <' => new Time((string)(time() - (int)$maxTime)), 'used IS NOT' => null]]);
 	}
 
 	/**
@@ -153,7 +156,7 @@ class CaptchasTable extends Table {
 	 *
 	 * @return bool
 	 */
-	public function markUsed($captcha) {
+	public function markUsed($captcha): bool {
 		$captcha->used = new Time();
 
 		return (bool)$this->save($captcha);
