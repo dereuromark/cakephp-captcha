@@ -1,5 +1,5 @@
 # Captcha Plugin for CakePHP
-[![Build Status](https://api.travis-ci.com/dereuromark/cakephp-captcha.svg)](https://travis-ci.com/dereuromark/cakephp-captcha)
+[![Build Status](https://api.travis-ci.com/dereuromark/cakephp-captcha.svg)](https://github.com/dereuromark/cakephp-captcha/actions?query=workflow%3ACI+branch%3Amaster)
 [![Coverage Status](https://codecov.io/gh/dereuromark/cakephp-captcha/branch/master/graph/badge.svg)](https://codecov.io/gh/dereuromark/cakephp-captcha)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg)](https://php.net/)
 [![License](https://poser.pugx.org/dereuromark/cakephp-captcha/license)](https://packagist.org/packages/dereuromark/cakephp-captcha)
