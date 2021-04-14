@@ -8,6 +8,7 @@ use Cake\Event\EventInterface;
 /**
  * @property \Captcha\Model\Table\CaptchasTable $Captchas
  * @property \Captcha\Controller\Component\PreparerComponent $Preparer
+ * @property object|null $Authentication
  */
 class CaptchaController extends AppController {
 

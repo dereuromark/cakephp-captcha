@@ -198,7 +198,9 @@ class CaptchaBehavior extends Behavior {
 			'ip' => $ip,
 			'session_id' => $sessionId,
 		];
-		$this->_captchas[$id] = $this->_captchasTable->find()->where($conditions)->first();
+		/** @var \Captcha\Model\Entity\Captcha|null $captcha */
+		$captcha = $this->_captchasTable->find()->where($conditions)->first();
+		$this->_captchas[$id] = $captcha;
 
 		return $this->_captchas[$id];
 	}
