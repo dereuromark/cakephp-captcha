@@ -12,8 +12,8 @@ use Cake\ORM\Entity;
  * @property string $ip
  * @property string $result
  * @property string $image
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $used
+ * @property \Cake\I18n\FrozenTime $created
+ * @property \Cake\I18n\FrozenTime $used
  */
 class Captcha extends Entity {
 

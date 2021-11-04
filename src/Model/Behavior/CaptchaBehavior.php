@@ -4,7 +4,7 @@ namespace Captcha\Model\Behavior;
 
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -117,7 +117,7 @@ class CaptchaBehavior extends Behavior {
 		if (!$captcha) {
 			return false;
 		}
-		if ($captcha->created >= new Time('- ' . $this->getConfig('minTime') . ' seconds')) {
+		if ($captcha->created >= new FrozenTime('- ' . $this->getConfig('minTime') . ' seconds')) {
 			return false;
 		}
 
@@ -135,7 +135,7 @@ class CaptchaBehavior extends Behavior {
 		if (!$captcha) {
 			return false;
 		}
-		if ($captcha->created <= new Time('- ' . $this->getConfig('maxTime') . ' seconds')) {
+		if ($captcha->created <= new FrozenTime('- ' . $this->getConfig('maxTime') . ' seconds')) {
 			return false;
 		}
 

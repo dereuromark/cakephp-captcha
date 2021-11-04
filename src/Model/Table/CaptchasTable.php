@@ -5,7 +5,7 @@ namespace Captcha\Model\Table;
 use BadMethodCallException;
 use Cake\Core\Configure;
 use Cake\Database\Schema\TableSchemaInterface;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -148,7 +148,7 @@ class CaptchasTable extends Table {
 		/** @var int $maxTime */
 		$maxTime = Configure::read('Captcha.maxTime') ?? DAY;
 
-		return $this->deleteAll(['or' => ['created <' => new Time((string)(time() - (int)$maxTime)), 'used IS NOT' => null]]);
+		return $this->deleteAll(['or' => ['created <' => new FrozenTime((string)(time() - (int)$maxTime)), 'used IS NOT' => null]]);
 	}
 
 	/**
@@ -157,7 +157,7 @@ class CaptchasTable extends Table {
 	 * @return bool
 	 */
 	public function markUsed($captcha): bool {
-		$captcha->used = new Time();
+		$captcha->used = new FrozenTime();
 
 		return (bool)$this->save($captcha);
 	}
