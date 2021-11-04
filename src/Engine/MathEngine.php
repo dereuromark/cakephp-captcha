@@ -11,11 +11,18 @@ require_once Plugin::path('Captcha') . 'vendor/' . 'mathpublisher.php';
 
 class MathEngine implements EngineInterface {
 
+	/**
+	 * @var string
+	 */
 	public const FORMAT_JPEG = 'jpeg';
+
+	/**
+	 * @var string
+	 */
 	public const FORMAT_PNG = 'png';
 
 	/**
-	 * @var array
+	 * @var array<string, mixed>
 	 */
 	protected $_defaultConfig = [
 		'size' => 14,
@@ -97,7 +104,10 @@ class MathEngine implements EngineInterface {
 	protected function _getTypeClass() {
 		$config = $this->_config;
 
-		return new $config['mathType']($config);
+		/** @phpstan-var class-string<\Captcha\Engine\Math\MathInterface> $class */
+		$class = $config['mathType'];
+
+		return new $class($config);
 	}
 
 }

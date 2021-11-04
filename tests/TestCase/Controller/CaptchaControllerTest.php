@@ -26,7 +26,7 @@ class CaptchaControllerTest extends IntegrationTestCase {
 		parent::setUp();
 
 		Configure::write('Captcha', [
-			]
+			],
 		);
 	}
 

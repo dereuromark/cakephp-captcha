@@ -47,7 +47,7 @@ class CaptchaBehaviorTest extends TestCase {
 
 		Configure::write('Captcha', [
 				'debug' => false,
-			]
+			],
 		);
 
 		$this->request = new ServerRequest();

@@ -26,7 +26,7 @@ class CaptchaHelper extends Helper {
 	 * Options:
 	 * - ext: jpg, png (defaults to none)
 	 *
-	 * @var array
+	 * @var array<string, mixed>
 	 */
 	protected $_defaultConfig = [
 		'ext' => null,
@@ -79,7 +79,7 @@ class CaptchaHelper extends Helper {
 	 *
 	 * If you pass null, it will use the configured default field name.
 	 *
-	 * @param string|array|null $field
+	 * @param array|string|null $field
 	 *
 	 * @return string
 	 */

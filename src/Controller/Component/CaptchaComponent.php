@@ -14,7 +14,7 @@ class CaptchaComponent extends Component {
 	use EventDispatcherTrait;
 
 	/**
-	 * @var array
+	 * @var array<string, mixed>
 	 */
 	protected $_defaultConfig = [
 		'actions' => [],

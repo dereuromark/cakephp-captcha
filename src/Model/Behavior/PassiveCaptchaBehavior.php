@@ -14,7 +14,7 @@ use Cake\Validation\Validator;
 class PassiveCaptchaBehavior extends Behavior {
 
 	/**
-	 * @var array
+	 * @var array<string, mixed>
 	 */
 	protected $_defaultConfig = [
 		'dummyField' => 'email_homepage', // Honeypot trap

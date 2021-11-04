@@ -20,7 +20,7 @@ use RuntimeException;
 class CaptchaBehavior extends Behavior {
 
 	/**
-	 * @var array
+	 * @var array<string, mixed>
 	 */
 	protected $_defaultConfig = [
 		'minTime' => 2, // Seconds the form will need to be filled in by a human
@@ -53,6 +53,7 @@ class CaptchaBehavior extends Behavior {
 		$config += (array)Configure::read('Captcha');
 		parent::initialize($config);
 
+		/** @phpstan-var class-string<\Captcha\Engine\EngineInterface> $engine */
 		$engine = $this->getConfig('engine');
 		$this->_engine = new $engine($this->getConfig());
 		$this->_captchasTable = TableRegistry::getTableLocator()->get('Captcha.Captchas');

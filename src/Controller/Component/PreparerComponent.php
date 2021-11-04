@@ -19,7 +19,7 @@ class PreparerComponent extends Component {
 	protected $Captchas;
 
 	/**
-	 * @var array
+	 * @var array<string, mixed>
 	 */
 	protected $_defaultConfig = [
 		'engine' => 'Captcha\Engine\MathEngine',
@@ -41,7 +41,7 @@ class PreparerComponent extends Component {
 	/**
 	 * @param \Captcha\Model\Entity\Captcha $captcha
 	 *
-	 * @return bool|\Captcha\Model\Entity\Captcha
+	 * @return \Captcha\Model\Entity\Captcha|bool
 	 */
 	public function prepare($captcha) {
 		if ($captcha->result === null || $captcha->result === '') {
@@ -57,6 +57,7 @@ class PreparerComponent extends Component {
 	 */
 	protected function _getEngine() {
 		$config = (array)Configure::read('Captcha') + $this->_defaultConfig;
+		/** @phpstan-var class-string<\Captcha\Engine\EngineInterface> $engine */
 		$engine = $config['engine'];
 
 		return new $engine($config);

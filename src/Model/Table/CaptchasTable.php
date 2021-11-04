@@ -15,10 +15,10 @@ use Captcha\Model\Rule\MaxRule;
  * @property \Cake\ORM\Association\BelongsTo $Sessions
  * @method \Captcha\Model\Entity\Captcha get($primaryKey, $options = [])
  * @method \Captcha\Model\Entity\Captcha newEntity($data = null, array $options = [])
- * @method \Captcha\Model\Entity\Captcha[] newEntities(array $data, array $options = [])
+ * @method array<\Captcha\Model\Entity\Captcha> newEntities(array $data, array $options = [])
  * @method \Captcha\Model\Entity\Captcha|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
  * @method \Captcha\Model\Entity\Captcha patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \Captcha\Model\Entity\Captcha[] patchEntities($entities, array $data, array $options = [])
+ * @method array<\Captcha\Model\Entity\Captcha> patchEntities($entities, array $data, array $options = [])
  * @method \Captcha\Model\Entity\Captcha findOrCreate($search, callable $callback = null, $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
@@ -110,7 +110,7 @@ class CaptchasTable extends Table {
 			[
 				'session_id' => $sessionId,
 				'ip' => $ip,
-			]
+			],
 		);
 		if (!$this->save($captcha)) {
 			throw new BadMethodCallException('Sth went wrong: ' . print_r($captcha->getErrors(), true));

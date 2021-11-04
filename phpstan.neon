@@ -1,7 +1,10 @@
 parameters:
+	level: 8
+	paths:
+		- src/
 	bootstrapFiles:
-		- bootstrap.php
-		- shim.php
+		- tests/bootstrap.php
+		- tests/shim.php
 	checkMissingIterableValueType: false
 	ignoreErrors:
 		- '#Access to an undefined property Cake\\Controller\\Controller::\$Captchas#'

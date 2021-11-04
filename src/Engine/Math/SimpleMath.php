@@ -5,7 +5,7 @@ namespace Captcha\Engine\Math;
 class SimpleMath implements MathInterface {
 
 	/**
-	 * @var array
+	 * @var array<string, mixed>
 	 */
 	protected $_defaultConfig = [
 		'complexity' => 2,
