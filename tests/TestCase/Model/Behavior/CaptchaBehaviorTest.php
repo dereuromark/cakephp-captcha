@@ -12,7 +12,7 @@ use DateTime;
 class CaptchaBehaviorTest extends TestCase {
 
 	/**
-	 * @var array
+	 * @var array<string>
 	 */
 	protected $fixtures = [
 		'plugin.Captcha.Captchas',

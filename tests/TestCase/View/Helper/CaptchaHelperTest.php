@@ -14,7 +14,7 @@ use Captcha\View\Helper\CaptchaHelper;
 class CaptchaHelperTest extends TestCase {
 
 	/**
-	 * @var array
+	 * @var array<string>
 	 */
 	protected $fixtures = [
 		'plugin.Captcha.Captchas',

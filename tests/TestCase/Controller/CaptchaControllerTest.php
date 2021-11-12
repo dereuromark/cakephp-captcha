@@ -10,7 +10,7 @@ class CaptchaControllerTest extends IntegrationTestCase {
 	/**
 	 * Fixtures
 	 *
-	 * @var array
+	 * @var array<string>
 	 */
 	protected $fixtures = [
 		'plugin.Captcha.Captchas',
