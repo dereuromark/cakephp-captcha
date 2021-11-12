@@ -21,9 +21,7 @@ class MathEngineTest extends TestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		Configure::write('Captcha', [
-			],
-		);
+		Configure::write('Captcha', []);
 		$config = [];
 		$this->Math = new MathEngine($config);
 	}

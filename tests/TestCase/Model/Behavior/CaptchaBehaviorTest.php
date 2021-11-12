@@ -46,9 +46,8 @@ class CaptchaBehaviorTest extends TestCase {
 		parent::setUp();
 
 		Configure::write('Captcha', [
-				'debug' => false,
-			],
-		);
+			'debug' => false,
+		]);
 
 		$this->request = new ServerRequest();
 		$this->request = $this->request->withEnv('REMOTE_ADDR', '127.0.0.1');
