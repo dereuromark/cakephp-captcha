@@ -26,7 +26,7 @@ class PassiveCaptchaTestForm extends Form {
 
 	/**
 	 * @param string $name
-	 * @param array $options
+	 * @param array<string, mixed> $options
 	 *
 	 * @return $this
 	 */

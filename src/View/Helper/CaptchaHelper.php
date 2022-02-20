@@ -35,7 +35,7 @@ class CaptchaHelper extends Helper {
 	/**
 	 * @deprecated Use control()
 	 *
-	 * @param array $options
+	 * @param array<string, mixed> $options
 	 *
 	 * @return string
 	 */
@@ -44,7 +44,7 @@ class CaptchaHelper extends Helper {
 	}
 
 	/**
-	 * @param array $options
+	 * @param array<string, mixed> $options
 	 *
 	 * @return string
 	 */
@@ -60,7 +60,7 @@ class CaptchaHelper extends Helper {
 	}
 
 	/**
-	 * @param array $options
+	 * @param array<string, mixed> $options
 	 *
 	 * @return string
 	 */
@@ -98,7 +98,7 @@ class CaptchaHelper extends Helper {
 	}
 
 	/**
-	 * @param array $options
+	 * @param array<string, mixed> $options
 	 *
 	 * @return string HTML
 	 */

@@ -9,7 +9,7 @@ class MaxRule {
 
 	/**
 	 * @param \Captcha\Model\Entity\Captcha $entity
-	 * @param array $options
+	 * @param array<string, mixed> $options
 	 *
 	 * @return bool
 	 */
