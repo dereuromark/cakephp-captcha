@@ -11,7 +11,7 @@ Allows any type of image-based captchas for your forms.
 ## A CakePHP plugin to
 - Easily integrate captchas in your CakePHP application.
 
-This plugin requires **CakePHP 4.2+**. See [version map](https://github.com/dereuromark/cakephp-captcha/wiki#cakephp-version-map) for details.
+This plugin requires **CakePHP 4.3+**. See [version map](https://github.com/dereuromark/cakephp-captcha/wiki#cakephp-version-map) for details.
 
 ### What's in this plugin
 - Simple match captchas that will already do the trick without annoying "I can't read those letters".
