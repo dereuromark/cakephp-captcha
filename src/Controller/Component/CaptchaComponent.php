@@ -69,7 +69,11 @@ class CaptchaComponent extends Component {
 			return;
 		}
 
-		$this->getController()->viewBuilder()->setHelpers(['Captcha.Captcha']);
+		if(\method_exists($this->getController()->viewBuilder(), 'addHelpers')) {
+			$this->getController()->viewBuilder()->addHelpers(['Captcha.Captcha']);
+		} else {
+			$this->getController()->viewBuilder()->setHelpers(['Captcha.Captcha']);
+		}
 	}
 
 	/**
