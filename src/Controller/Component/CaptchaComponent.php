@@ -67,18 +67,25 @@ class CaptchaComponent extends Component {
 
 	/**
 	 * @param \Cake\Validation\Validator $validator
+	 * @param string|null $type Default or Passive
 	 *
 	 * @return void
 	 */
-	public function addValidation(Validator $validator) {
+	public function addValidation(Validator $validator, ?string $type = null) {
 		/** @var \Captcha\Model\Table\CaptchasTable $Captchas */
-		$Captchas = TableRegistry::get('CaptchasValidator', ['class' => 'Captcha.Captchas']);
+		$Captchas = TableRegistry::getTableLocator()->get('CaptchasValidator', ['class' => 'Captcha.Captchas']);
 
 		$Captchas->setValidator('captcha', $validator);
 
-		$Captchas->addBehavior('Captcha.Captcha');
-		/** @var \Captcha\Model\Behavior\CaptchaBehavior $Captchas */
-		$Captchas->addValidation($validator);
+		$behavior = 'Captcha';
+		if ($type === 'Passive') {
+			$behavior = 'PassiveCaptcha';
+		}
+
+		$Captchas->addBehavior('Captcha.' . $behavior);
+		/** @var \Captcha\Model\Behavior\CaptchaBehavior|\Captcha\Model\Behavior\PassiveCaptchaBehavior $Captchas */
+		$method = 'add' . $behavior . 'Validation';
+		$Captchas->$method($validator);
 	}
 
 }

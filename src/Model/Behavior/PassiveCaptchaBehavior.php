@@ -4,6 +4,7 @@ namespace Captcha\Model\Behavior;
 
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\Log\Log;
 use Cake\ORM\Behavior;
 use Cake\Validation\Validator;
 
@@ -17,6 +18,7 @@ class PassiveCaptchaBehavior extends Behavior {
 	 */
 	protected $_defaultConfig = [
 		'dummyField' => 'email_homepage', // Honeypot trap
+		'log' => null, // Auto detect based on debug mode
 	];
 
 	/**
@@ -25,9 +27,14 @@ class PassiveCaptchaBehavior extends Behavior {
 	 * @param array $config
 	 * @return void
 	 */
-	public function initialize(array $config = []) {
+	public function initialize(array $config = []): void {
 		$config += (array)Configure::read('Captcha');
+
 		parent::initialize($config);
+
+		if ($this->_config['log'] === null) {
+			$this->_config['log'] = (bool)Configure::read('debug');
+		}
 	}
 
 	/**
@@ -49,7 +56,7 @@ class PassiveCaptchaBehavior extends Behavior {
 		$fields = (array)$this->getConfig('dummyField');
 		foreach ($fields as $field) {
 			$validator->requirePresence($field);
-			$validator->allowEmpty($field);
+			$validator->allowEmptyString($field);
 			$validator->add($field, [
 				$field => [
 					'rule' => function ($value, $context) {
@@ -61,4 +68,29 @@ class PassiveCaptchaBehavior extends Behavior {
 		}
 	}
 
+	/**
+	 * @param \Cake\Validation\Validator $validator
+	 *
+	 * @return void
+	 */
+	public function addPassiveCaptchaValidation(Validator $validator): void {
+		$fields = (array)$this->getConfig('dummyField');
+		foreach ($fields as $field) {
+			$validator->requirePresence($field);
+			$validator->allowEmptyString($field);
+			$validator->add($field, [
+				$field => [
+					'rule' => function ($value) {
+						$ok = $value === '';
+						if (!$ok && $this->_config['log']) {
+							Log::write('info', 'PassiveCaptcha trigger, field value `' . (string)$value . '`');
+						}
+
+						return $ok;
+					},
+					'last' => true,
+				],
+			]);
+		}
+	}
 }
