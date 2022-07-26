@@ -1,9 +1,9 @@
 {
-	"name": "dereuromark/cakephp-captcha",
+	"name": "magic-77/cakephp-captcha",
 	"type": "cakephp-plugin",
 	"description": "A CakePHP plugin to integrate captchas.",
 	"keywords": ["cakephp", "plugin", "captchas", "security"],
-	"homepage": "https://github.com/dereuromark/cakephp-captcha",
+	"homepage": "https://github.com/magic-77/cakephp-captcha",
 	"license": "MIT",
 	"authors": [
 		{
@@ -36,7 +36,7 @@
 		}
 	},
 	"support": {
-		"source": "https://github.com/dereuromark/cakephp-captcha"
+		"source": "https://github.com/magic-77/cakephp-captcha"
 	},
 	"scripts": {
 		"test": "php phpunit.phar",
