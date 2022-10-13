@@ -80,7 +80,7 @@ class CaptchaComponent extends Component {
 	 */
 	public function addValidation(Validator $validator, ?string $type = null) {
 		/** @var \Captcha\Model\Table\CaptchasTable $Captchas */
-		$Captchas = TableRegistry::getTableLocator()->get('Captchas', ['class' => 'Captcha.Captchas']);
+		$Captchas = TableRegistry::getTableLocator()->get('Captcha.Captchas');
 
 		$Captchas->setValidator('captcha', $validator);
 
