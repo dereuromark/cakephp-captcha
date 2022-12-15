@@ -102,14 +102,16 @@ class CaptchasTable extends Table {
 	 * @return int
 	 */
 	public function touch($sessionId, $ip) {
-		/** @var int $probability */
-		$probability = Configure::read('Captcha.cleanupProbability') ?? 10;
-		$this->cleanup((int)$probability);
+		$probability = (int)Configure::read('Captcha.cleanupProbability') ?: 10;
+		$this->cleanup($probability);
 
 		$captcha = $this->newEntity(
 			[
 				'session_id' => $sessionId,
 				'ip' => $ip,
+			],
+			[
+				'validate' => false,
 			],
 		);
 		if (!$this->save($captcha)) {
