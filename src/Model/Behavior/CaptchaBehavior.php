@@ -4,7 +4,7 @@ namespace Captcha\Model\Behavior;
 
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -22,7 +22,7 @@ class CaptchaBehavior extends Behavior {
 	/**
 	 * @var array<string, mixed>
 	 */
-	protected $_defaultConfig = [
+	protected array $_defaultConfig = [
 		'minTime' => 2, // Seconds the form will need to be filled in by a human
 		'maxTime' => DAY, // Seconds the form will need to be submitted in
 		'engine' => 'Captcha\Engine\MathEngine',
@@ -41,7 +41,7 @@ class CaptchaBehavior extends Behavior {
 	/**
 	 * @var array
 	 */
-	protected $_captchas = [];
+	protected array $_captchas = [];
 
 	/**
 	 * Behavior configuration
@@ -117,7 +117,7 @@ class CaptchaBehavior extends Behavior {
 		if (!$captcha) {
 			return false;
 		}
-		if ($captcha->created >= new FrozenTime('- ' . $this->getConfig('minTime') . ' seconds')) {
+		if ($captcha->created >= new DateTime('- ' . $this->getConfig('minTime') . ' seconds')) {
 			return false;
 		}
 
@@ -135,7 +135,7 @@ class CaptchaBehavior extends Behavior {
 		if (!$captcha) {
 			return false;
 		}
-		if ($captcha->created <= new FrozenTime('- ' . $this->getConfig('maxTime') . ' seconds')) {
+		if ($captcha->created <= new DateTime('- ' . $this->getConfig('maxTime') . ' seconds')) {
 			return false;
 		}
 

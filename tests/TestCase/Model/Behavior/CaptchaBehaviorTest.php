@@ -14,7 +14,7 @@ class CaptchaBehaviorTest extends TestCase {
 	/**
 	 * @var array<string>
 	 */
-	protected $fixtures = [
+	protected array $fixtures = [
 		'plugin.Captcha.Captchas',
 		'plugin.Captcha.Comments',
 	];

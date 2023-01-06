@@ -12,8 +12,8 @@ use Cake\ORM\Entity;
  * @property string $ip
  * @property string $result
  * @property string $image
- * @property \Cake\I18n\FrozenTime $created
- * @property \Cake\I18n\FrozenTime $used
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $used
  */
 class Captcha extends Entity {
 
@@ -26,7 +26,7 @@ class Captcha extends Entity {
 	 *
 	 * @var array<string, bool>
 	 */
-	protected $_accessible = [
+	protected array $_accessible = [
 		'*' => true,
 		'id' => false,
 	];

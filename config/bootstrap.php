@@ -1,5 +1,5 @@
 <?php
 
-use Cake\Database\Type;
+use Cake\Database\TypeFactory;
 
-Type::map('image', 'Captcha\Database\Type\ImageType');
+TypeFactory::map('image', 'Captcha\Database\Type\ImageType');

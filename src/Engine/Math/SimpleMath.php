@@ -7,7 +7,7 @@ class SimpleMath implements MathInterface {
 	/**
 	 * @var array<string, mixed>
 	 */
-	protected $_defaultConfig = [
+	protected array $_defaultConfig = [
 		'complexity' => 2,
 	];
 
@@ -19,7 +19,7 @@ class SimpleMath implements MathInterface {
 	/**
 	 * @var array
 	 */
-	protected $data = [];
+	protected array $data = [];
 
 	/**
 	 * @param array $config

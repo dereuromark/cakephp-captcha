@@ -3,16 +3,19 @@
 namespace Captcha\Test\TestCase\Controller;
 
 use Cake\Core\Configure;
-use Cake\TestSuite\IntegrationTestCase;
+use Cake\TestSuite\IntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 
-class CaptchaControllerTest extends IntegrationTestCase {
+class CaptchaControllerTest extends TestCase {
+
+	use IntegrationTestTrait;
 
 	/**
 	 * Fixtures
 	 *
 	 * @var array<string>
 	 */
-	protected $fixtures = [
+	protected array $fixtures = [
 		'plugin.Captcha.Captchas',
 		'core.Sessions',
 	];

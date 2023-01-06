@@ -16,7 +16,7 @@ class CaptchaHelperTest extends TestCase {
 	/**
 	 * @var array<string>
 	 */
-	protected $fixtures = [
+	protected array $fixtures = [
 		'plugin.Captcha.Captchas',
 	];
 
@@ -54,10 +54,9 @@ class CaptchaHelperTest extends TestCase {
 		$this->View = new View($this->request);
 		$this->Captcha = new CaptchaHelper($this->View);
 
-		Router::plugin('Captcha', function (RouteBuilder $routes) {
+		Router::plugin('Captcha', function (RouteBuilder $routes): void {
 			$routes->fallbacks(DashedRoute::class);
 		});
-
 	}
 
 	/**

@@ -15,7 +15,7 @@ class CaptchaHelper extends Helper {
 	/**
 	 * @var array
 	 */
-	protected $helpers = ['Form', 'Html', 'Url'];
+	protected array $helpers = ['Form', 'Html', 'Url'];
 
 	/**
 	 * @var int|null
@@ -28,7 +28,7 @@ class CaptchaHelper extends Helper {
 	 *
 	 * @var array<string, mixed>
 	 */
-	protected $_defaultConfig = [
+	protected array $_defaultConfig = [
 		'ext' => null,
 	];
 

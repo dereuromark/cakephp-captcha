@@ -14,19 +14,19 @@ class Plugin extends BasePlugin {
 	/**
 	 * @var bool
 	 */
-	protected $middlewareEnabled = false;
+	protected bool $middlewareEnabled = false;
 
 	/**
 	 * @var bool
 	 */
-	protected $consoleEnabled = false;
+	protected bool $consoleEnabled = false;
 
 	/**
 	 * @param \Cake\Routing\RouteBuilder $routes The route builder to update.
 	 * @return void
 	 */
 	public function routes(RouteBuilder $routes): void {
-		$routes->plugin('Captcha', ['path' => '/captcha'], function (RouteBuilder $routes) {
+		$routes->plugin('Captcha', ['path' => '/captcha'], function (RouteBuilder $routes): void {
 			$routes->setExtensions(['png', 'jpg']);
 			$routes->fallbacks(DashedRoute::class);
 		});

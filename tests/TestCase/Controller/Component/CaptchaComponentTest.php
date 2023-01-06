@@ -1,21 +1,23 @@
 <?php
 
-namespace Captcha\Test\TestCase\Controller;
+namespace Captcha\Test\TestCase\Controller\Component;
 
 use Cake\Controller\ComponentRegistry;
+use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Form\Form;
-use Cake\TestSuite\IntegrationTestCase;
+use Cake\Http\ServerRequest;
+use Cake\TestSuite\TestCase;
 use Captcha\Controller\Component\CaptchaComponent;
 
-class CaptchaComponentTest extends IntegrationTestCase {
+class CaptchaComponentTest extends TestCase {
 
 	/**
 	 * Fixtures
 	 *
 	 * @var array<string>
 	 */
-	protected $fixtures = [
+	protected array $fixtures = [
 		'plugin.Captcha.Captchas',
 		'core.Sessions',
 	];
@@ -35,7 +37,7 @@ class CaptchaComponentTest extends IntegrationTestCase {
 	 * @return void
 	 */
 	public function testAddValidation() {
-		$captchaComponent = new CaptchaComponent(new ComponentRegistry());
+		$captchaComponent = new CaptchaComponent(new ComponentRegistry(new Controller(new ServerRequest())));
 
 		$contactForm = new Form();
 

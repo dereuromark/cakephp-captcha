@@ -5,7 +5,7 @@ namespace Captcha\Model\Table;
 use BadMethodCallException;
 use Cake\Core\Configure;
 use Cake\Database\Schema\TableSchemaInterface;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -25,11 +25,10 @@ use Captcha\Model\Rule\MaxRule;
 class CaptchasTable extends Table {
 
 	/**
-	 * @param \Cake\Database\Schema\TableSchemaInterface $schema
-	 *
 	 * @return \Cake\Database\Schema\TableSchemaInterface
 	 */
-	protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface {
+	public function getSchema(): TableSchemaInterface {
+		$schema = parent::getSchema();
 		$schema->setColumnType('image', 'image');
 
 		return $schema;
@@ -150,7 +149,7 @@ class CaptchasTable extends Table {
 		/** @var int $maxTime */
 		$maxTime = Configure::read('Captcha.maxTime') ?? DAY;
 
-		return $this->deleteAll(['or' => ['created <' => new FrozenTime((string)(time() - (int)$maxTime)), 'used IS NOT' => null]]);
+		return $this->deleteAll(['or' => ['created <' => new DateTime((string)(time() - (int)$maxTime)), 'used IS NOT' => null]]);
 	}
 
 	/**
@@ -159,7 +158,7 @@ class CaptchasTable extends Table {
 	 * @return bool
 	 */
 	public function markUsed($captcha): bool {
-		$captcha->used = new FrozenTime();
+		$captcha->used = new DateTime();
 
 		return (bool)$this->save($captcha);
 	}

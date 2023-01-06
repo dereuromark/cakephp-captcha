@@ -31,6 +31,7 @@ require CORE_PATH . 'config/bootstrap.php';
 
 Cake\Core\Configure::write('App', [
 	'namespace' => 'TestApp',
+	'encoding' => 'UTF-8',
 ]);
 
 Cake\Core\Configure::write('debug', true);
@@ -82,3 +83,8 @@ Cake\Datasource\ConnectionManager::setConfig('test', [
 	'quoteIdentifiers' => true,
 	'cacheMetadata' => true,
 ]);
+
+if (env('FIXTURE_SCHEMA_METADATA')) {
+	$loader = new Cake\TestSuite\Fixture\SchemaLoader();
+	$loader->loadInternalFile(env('FIXTURE_SCHEMA_METADATA'));
+}

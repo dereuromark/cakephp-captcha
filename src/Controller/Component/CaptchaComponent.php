@@ -16,7 +16,7 @@ class CaptchaComponent extends Component {
 	/**
 	 * @var array<string, mixed>
 	 */
-	protected $_defaultConfig = [
+	protected array $_defaultConfig = [
 		'actions' => [],
 		'auto' => true, // Auto load behavior
 	];

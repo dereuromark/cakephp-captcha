@@ -15,7 +15,7 @@ class CaptchasFixture extends TestFixture {
 	 * @var array
 	 */
 	// @codingStandardsIgnoreStart
-	public $fields = [
+	public array $fields = [
 		'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
 		'session_id' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
 		'ip' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
@@ -37,7 +37,7 @@ class CaptchasFixture extends TestFixture {
 	 *
 	 * @var array
 	 */
-	public $records = [
+	public array $records = [
 		[
 			'session_id' => 'Lorem ipsum dolor sit amet',
 			'ip' => 'Lorem ipsum dolor sit amet',

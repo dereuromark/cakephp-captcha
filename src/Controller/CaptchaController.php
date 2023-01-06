@@ -8,6 +8,7 @@ use Cake\Event\EventInterface;
 /**
  * @property \Captcha\Model\Table\CaptchasTable $Captchas
  * @property \Captcha\Controller\Component\PreparerComponent $Preparer
+ * @property object|null $Auth
  * @property object|null $Authentication
  */
 class CaptchaController extends AppController {
@@ -15,7 +16,7 @@ class CaptchaController extends AppController {
 	/**
 	 * @var string
 	 */
-	protected $modelClass = 'Captcha.Captchas';
+	protected ?string $defaultTable = 'Captcha.Captchas';
 
 	/**
 	 * @return void
@@ -31,7 +32,7 @@ class CaptchaController extends AppController {
 	 * @return \Cake\Http\Response|null|void
 	 */
 	public function beforeFilter(EventInterface $event) {
-		if (isset($this->Auth)) {
+		if (isset($this->Auth) && method_exists($this->Auth, 'allow')) {
 			$this->Auth->allow();
 		} elseif (isset($this->Authentication) && method_exists($this->Authentication, 'addUnauthenticatedActions')) {
 			$this->Authentication->addUnauthenticatedActions(['display']);

@@ -24,7 +24,7 @@ class MathEngine implements EngineInterface {
 	/**
 	 * @var array<string, mixed>
 	 */
-	protected $_defaultConfig = [
+	protected array $_defaultConfig = [
 		'size' => 14,
 		'imageFormat' => self::FORMAT_PNG,
 		'mathType' => SimpleMath::class,

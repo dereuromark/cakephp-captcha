@@ -21,7 +21,7 @@ class PreparerComponent extends Component {
 	/**
 	 * @var array<string, mixed>
 	 */
-	protected $_defaultConfig = [
+	protected array $_defaultConfig = [
 		'engine' => 'Captcha\Engine\MathEngine',
 	];
 
