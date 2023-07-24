@@ -4,6 +4,7 @@ use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
+use Captcha\Plugin as CaptchaPlugin;
 use TestApp\Application;
 use TestApp\Controller\AppController;
 use TestApp\View\AppView;
@@ -74,7 +75,7 @@ class_alias(Application::class, 'App\Application');
 class_alias(AppController::class, 'App\Controller\AppController');
 class_alias(AppView::class, 'App\View\AppView');
 
-Plugin::getCollection()->add(new Captcha\Plugin());
+Plugin::getCollection()->add(new CaptchaPlugin());
 
 // Ensure default test connection is defined
 if (!getenv('db_class')) {
