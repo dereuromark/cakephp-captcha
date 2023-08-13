@@ -14,7 +14,7 @@ class MaxRule {
 	 * @return bool
 	 */
 	public function __invoke(EntityInterface $entity, array $options): bool {
-		$limit = Configure::read('maxPerUser') ?: 1000;
+		$limit = Configure::read('Captcha.maxPerUser') ?: 1000;
 
 		/** @var \Captcha\Model\Table\CaptchasTable $repository */
 		$repository = $options['repository'];
