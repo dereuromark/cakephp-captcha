@@ -76,6 +76,16 @@ class CaptchaBehavior extends Behavior {
 	 */
 	public function addCaptchaValidation(Validator $validator): void {
 		$validator->requirePresence('captcha_result');
+
+		$validator->add('captcha_result', [
+			'maxPerUser' => [
+				'rule' => 'validateCaptchaMaxPerUser',
+				'provider' => 'table',
+				'message' => __d('captcha', 'Too many attempts'),
+				'last' => true,
+			],
+		]);
+
 		$validator->add('captcha_result', [
 			'required' => [
 				'rule' => 'notBlank',
@@ -140,6 +150,23 @@ class CaptchaBehavior extends Behavior {
 		}
 
 		return true;
+	}
+
+	/**
+	 * @param string $value
+	 * @param array $context
+	 *
+	 * @return bool
+	 */
+	public function validateCaptchaMaxPerUser($value, $context) {
+		$captcha = $this->_getCaptcha($context['data']);
+		if (!$captcha) {
+			return false;
+		}
+
+		$expected = $captcha->result;
+
+		return ($expected !== null) && ($expected !== '');
 	}
 
 	/**
