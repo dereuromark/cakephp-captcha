@@ -153,11 +153,12 @@ class CaptchaBehavior extends Behavior {
 		if (!$captcha) {
 			return false;
 		}
+
+		$this->_captchasTable->markUsed($captcha);
+
 		if ((string)$value !== $captcha->result) {
 			return false;
 		}
-
-		$this->_captchasTable->markUsed($captcha);
 
 		return true;
 	}

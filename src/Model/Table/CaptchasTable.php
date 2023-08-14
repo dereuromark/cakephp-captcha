@@ -161,7 +161,7 @@ class CaptchasTable extends Table {
 	public function markUsed($captcha): bool {
 		$captcha->used = new FrozenTime();
 
-		return (bool)$this->save($captcha);
+		return (bool)$this->save($captcha, ['checkRules' => false]);
 	}
 
 }
