@@ -55,7 +55,9 @@ class PreparerComponent extends Component {
 		 * submission to fail intentionally since the expected result will still be
 		 * NULL.
 		 */
-		$this->Captchas->save($captcha);
+		if (!$this->Captchas->save($captcha)) {
+			$this->Captchas->delete($captcha);  // Now useless if not updated
+		}
 
 		return $captcha;
 	}
