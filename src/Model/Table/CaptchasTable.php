@@ -88,7 +88,7 @@ class CaptchasTable extends Table {
 	 * @return \Cake\ORM\RulesChecker
 	 */
 	public function buildRules(RulesChecker $rules): RulesChecker {
-		$rules->addCreate(new MaxRule());
+		$rules->addUpdate(new MaxRule());
 
 		return $rules;
 	}

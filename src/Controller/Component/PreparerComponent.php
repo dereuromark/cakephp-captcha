@@ -49,7 +49,15 @@ class PreparerComponent extends Component {
 			$captcha = $this->Captchas->patchEntity($captcha, $generated);
 		}
 
-		return $this->Captchas->save($captcha);
+		/*
+		 * Silently ignore saving failures, especially because of application rules.
+		 * This will result in the captcha to be displayed, but in the form
+		 * submission to fail intentionally since the expected result will still be
+		 * NULL.
+		 */
+		$this->Captchas->save($captcha);
+
+		return $captcha;
 	}
 
 	/**
