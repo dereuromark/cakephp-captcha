@@ -2,10 +2,10 @@
 
 namespace Captcha\Model\Table;
 
-use BadMethodCallException;
 use Cake\Core\Configure;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\I18n\FrozenTime;
+use Cake\Log\Log;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -99,7 +99,7 @@ class CaptchasTable extends Table {
 	 *
 	 * @throws \BadMethodCallException
 	 *
-	 * @return int
+	 * @return int|null
 	 */
 	public function touch($sessionId, $ip) {
 		$probability = (int)Configure::read('Captcha.cleanupProbability') ?: 10;
@@ -115,7 +115,9 @@ class CaptchasTable extends Table {
 			],
 		);
 		if (!$this->save($captcha)) {
-			throw new BadMethodCallException('Sth went wrong: ' . print_r($captcha->getErrors(), true));
+			Log::write('info', 'Sth went wrong with Captcha creation: ' . print_r($captcha->getErrors(), true));
+
+			return null;
 		}
 
 		return $captcha->id;

@@ -68,7 +68,9 @@ class CaptchaHelper extends Helper {
 		$id = $this->_getId();
 
 		$html = $this->control($options);
-		$html .= $this->Form->control('captcha_id', ['type' => 'hidden', 'value' => $id]);
+		if ($id) {
+			$html .= $this->Form->control('captcha_id', ['type' => 'hidden', 'value' => $id]);
+		}
 		$html .= $this->passive();
 
 		return $html;
@@ -111,13 +113,17 @@ class CaptchaHelper extends Helper {
 	 */
 	public function imageUrl() {
 		$id = $this->_getId();
+		if (!$id) {
+			return '';
+		}
+
 		$ext = $this->getConfig('ext');
 
 		return $this->Url->build(['prefix' => false, 'plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'display', $id, '_ext' => $ext], ['fullBase' => true]);
 	}
 
 	/**
-	 * @return int
+	 * @return int|null
 	 */
 	protected function _getId() {
 		if ($this->_id) {
