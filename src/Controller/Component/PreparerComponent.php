@@ -5,6 +5,7 @@ namespace Captcha\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Log\Log;
 
 /**
  * @internal Only for use inside this plugin's controller
@@ -49,14 +50,10 @@ class PreparerComponent extends Component {
 			$captcha = $this->Captchas->patchEntity($captcha, $generated);
 		}
 
-		/*
-		 * Silently ignore saving failures, especially because of application rules.
-		 * This will result in the captcha to be displayed, but in the form
-		 * submission to fail intentionally since the expected result will still be
-		 * NULL.
-		 */
+		// If maxPerUser is exceeded, the secret patch will fail intentionally
 		if (!$this->Captchas->save($captcha)) {
-			$this->Captchas->delete($captcha);  // Now useless if not updated
+			$this->Captchas->delete($captcha); // Now useless if not updated
+			Log::write('info', "Captcha dismissed for $captcha->ip.");
 		}
 
 		return $captcha;
