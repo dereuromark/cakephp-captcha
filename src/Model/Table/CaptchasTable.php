@@ -2,7 +2,6 @@
 
 namespace Captcha\Model\Table;
 
-use BadMethodCallException;
 use Cake\Core\Configure;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\I18n\FrozenTime;
@@ -88,7 +87,7 @@ class CaptchasTable extends Table {
 	 * @return \Cake\ORM\RulesChecker
 	 */
 	public function buildRules(RulesChecker $rules): RulesChecker {
-		$rules->addUpdate(new MaxRule());
+		$rules->addCreate(new MaxRule());
 
 		return $rules;
 	}
@@ -99,7 +98,7 @@ class CaptchasTable extends Table {
 	 *
 	 * @throws \BadMethodCallException
 	 *
-	 * @return int
+	 * @return int|null
 	 */
 	public function touch($sessionId, $ip) {
 		$probability = (int)Configure::read('Captcha.cleanupProbability') ?: 10;
@@ -114,11 +113,11 @@ class CaptchasTable extends Table {
 				'validate' => false,
 			],
 		);
-		if (!$this->save($captcha)) {
-			throw new BadMethodCallException('Sth went wrong: ' . print_r($captcha->getErrors(), true));
+		if ($this->save($captcha)) {
+			return $captcha->id;
 		}
 
-		return $captcha->id;
+		return null;
 	}
 
 	/**
@@ -161,7 +160,7 @@ class CaptchasTable extends Table {
 	public function markUsed($captcha): bool {
 		$captcha->used = new FrozenTime();
 
-		return (bool)$this->save($captcha, ['checkRules' => false]);
+		return (bool)$this->save($captcha);
 	}
 
 }

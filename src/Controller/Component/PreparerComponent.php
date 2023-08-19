@@ -5,7 +5,6 @@ namespace Captcha\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
-use Cake\Log\Log;
 
 /**
  * @internal Only for use inside this plugin's controller
@@ -50,10 +49,12 @@ class PreparerComponent extends Component {
 			$captcha = $this->Captchas->patchEntity($captcha, $generated);
 		}
 
-		// If maxPerUser is exceeded, the secret patch will fail intentionally
-		if (!$this->Captchas->save($captcha)) {
-			$this->Captchas->delete($captcha); // Now useless if not updated
-			Log::write('info', "Captcha dismissed for $captcha->ip.");
+		/*
+		 * If the captcha doesn't exist in DB, don't create it.
+		 * It will just be displayed as dummy challenge.
+		 */
+		if (!$captcha->isNew()) {
+			$this->Captchas->save($captcha);
 		}
 
 		return $captcha;

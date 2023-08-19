@@ -117,7 +117,7 @@ class CaptchaHelper extends Helper {
 	}
 
 	/**
-	 * @return int
+	 * @return int|null
 	 */
 	protected function _getId() {
 		if ($this->_id) {

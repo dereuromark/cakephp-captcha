@@ -76,7 +76,6 @@ class CaptchaBehavior extends Behavior {
 	 */
 	public function addCaptchaValidation(Validator $validator): void {
 		$validator->requirePresence('captcha_result');
-
 		$validator->add('captcha_result', [
 			'maxPerUser' => [
 				'rule' => 'validateCaptchaMaxPerUser',
@@ -160,13 +159,8 @@ class CaptchaBehavior extends Behavior {
 	 */
 	public function validateCaptchaMaxPerUser($value, $context) {
 		$captcha = $this->_getCaptcha($context['data']);
-		if (!$captcha) {
-			return false;
-		}
 
-		$expected = $captcha->result;
-
-		return ($expected !== null) && ($expected !== '');
+		return (bool)$captcha;
 	}
 
 	/**
