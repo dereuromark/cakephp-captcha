@@ -4,6 +4,7 @@ namespace Captcha\Model\Rule;
 
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
+use Cake\Log\Log;
 
 class MaxRule {
 
@@ -19,7 +20,12 @@ class MaxRule {
 		/** @var \Captcha\Model\Table\CaptchasTable $repository */
 		$repository = $options['repository'];
 
-		return $repository->getCount($entity->ip, $entity->session_id) < (int)$limit;
+		$success = $repository->getCount($entity->ip, $entity->session_id) < (int)$limit;
+		if (!$success) {
+			Log::write('info', "Too many captchas attempts for $entity->ip");
+		}
+
+		return $success;
 	}
 
 }

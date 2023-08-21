@@ -4,6 +4,7 @@ namespace Captcha\Controller;
 
 use App\Controller\AppController;
 use Cake\Event\EventInterface;
+use Captcha\Model\Entity\Captcha;
 
 /**
  * @property \Captcha\Model\Table\CaptchasTable $Captchas
@@ -45,7 +46,11 @@ class CaptchaController extends AppController {
 	 * @return \Cake\Http\Response|null|void
 	 */
 	public function display($id = null) {
-		$captcha = $this->Captchas->get($id);
+		if ($id === null) {
+			$captcha = new Captcha();
+		} else {
+			$captcha = $this->Captchas->get($id);
+		}
 		$captcha = $this->Preparer->prepare($captcha);
 
 		$this->set(compact('captcha'));
