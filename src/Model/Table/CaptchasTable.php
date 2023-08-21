@@ -153,6 +153,15 @@ class CaptchasTable extends Table {
 	}
 
 	/**
+	 * @param string $ip
+	 *
+	 * @return int
+	 */
+	public function reset(string $ip): int {
+		return $this->deleteAll(['ip' => $ip]);
+	}
+
+	/**
 	 * @param \Captcha\Model\Entity\Captcha $captcha
 	 *
 	 * @return bool

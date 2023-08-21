@@ -95,4 +95,15 @@ class CaptchaComponent extends Component {
 		$Captchas->$method($validator);
 	}
 
+	/**
+	 * @param string $ip
+	 *
+	 * @return void
+	 */
+	public function resetFor(string $ip): void {
+		/** @var \Captcha\Model\Table\CaptchasTable $Captchas */
+		$Captchas = TableRegistry::getTableLocator()->get('Captcha.Captchas');
+		$Captchas->reset($ip);
+	}
+
 }
