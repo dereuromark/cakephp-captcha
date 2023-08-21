@@ -128,7 +128,7 @@ class CaptchasTable extends Table {
 	 */
 	public function getCount($ip, $sessionId) {
 		return $this->find()
-			->where(['or' => ['ip' => $ip, 'session_id' => $sessionId]])
+			->where(['used IS' => null, 'or' => ['ip' => $ip, 'session_id' => $sessionId]])
 			->count();
 	}
 
