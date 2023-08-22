@@ -84,14 +84,6 @@ class CaptchaBehavior extends Behavior {
 				'last' => true,
 			],
 		]);
-		$validator->add('captcha_result', [
-			'maxPerUser' => [
-				'rule' => 'validateCaptchaMaxPerUser',
-				'provider' => 'table',
-				'message' => __d('captcha', 'Too many attempts'),
-				'last' => true,
-			],
-		]);
 
 		$this->_engine->buildValidator($validator);
 		if ($this->getConfig('minTime')) {
@@ -150,18 +142,6 @@ class CaptchaBehavior extends Behavior {
 		}
 
 		return true;
-	}
-
-	/**
-	 * @param string $value
-	 * @param array $context
-	 *
-	 * @return bool
-	 */
-	public function validateCaptchaMaxPerUser($value, $context) {
-		$captcha = $this->_getCaptcha($context['data']);
-
-		return (bool)$captcha;
 	}
 
 	/**
