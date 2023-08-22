@@ -80,6 +80,7 @@ class CaptchaBehavior extends Behavior {
 		$validator->add('captcha_result', [
 			'required' => [
 				'rule' => 'notBlank',
+				'message' => __d('captcha', 'Please solve the riddle'),
 				'last' => true,
 			],
 		]);
