@@ -80,14 +80,7 @@ class CaptchaBehavior extends Behavior {
 		$validator->add('captcha_result', [
 			'required' => [
 				'rule' => 'notBlank',
-				'last' => true,
-			],
-		]);
-		$validator->add('captcha_result', [
-			'maxPerUser' => [
-				'rule' => 'validateCaptchaMaxPerUser',
-				'provider' => 'table',
-				'message' => __d('captcha', 'Too many attempts'),
+				'message' => __d('captcha', 'Please solve the riddle'),
 				'last' => true,
 			],
 		]);
@@ -157,29 +150,16 @@ class CaptchaBehavior extends Behavior {
 	 *
 	 * @return bool
 	 */
-	public function validateCaptchaMaxPerUser($value, $context) {
-		$captcha = $this->_getCaptcha($context['data']);
-
-		return (bool)$captcha;
-	}
-
-	/**
-	 * @param string $value
-	 * @param array $context
-	 *
-	 * @return bool
-	 */
 	public function validateCaptchaResult($value, $context) {
 		$captcha = $this->_getCaptcha($context['data']);
 		if (!$captcha) {
 			return false;
 		}
-
-		$this->_captchasTable->markUsed($captcha);
-
 		if ((string)$value !== $captcha->result) {
 			return false;
 		}
+
+		$this->_captchasTable->markUsed($captcha);
 
 		return true;
 	}
