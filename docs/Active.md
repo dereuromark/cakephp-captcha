@@ -148,5 +148,5 @@ You can also use a simple cron job that does it. Set `cleanupProbability` to `0`
 The `minTime` is by default 2 seconds and make sure you cannot auto-post a form too fast.
 
 One should also include a throttle limit, so you cannot fill up the DB.
-The built in mechanism is a `maxPerUser` value (defaults to 1000) which prevents entering more than this amount per ip or session.
-If a form gets built and sent too often, those captcha results will never validate then (as their result has not been persisted anymore due to this rate limit).
+The built in mechanism is a `maxPerUser` value (defaults to 100) which prevents entering more than this amount per ip or session.
+If a form gets built and failed too often, those captcha results will never validate then for one hour (as their result has not been persisted anymore due to this rate limit).
