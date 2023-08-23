@@ -75,7 +75,7 @@ class SimpleMath implements MathInterface {
 			$max = 50 * $this->_config['complexity'];
 		}
 
-		return random_int(1, $max);
+		return random_int(1, (int)$max);
 	}
 
 	/**
