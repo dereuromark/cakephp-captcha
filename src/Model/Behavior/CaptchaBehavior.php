@@ -85,6 +85,15 @@ class CaptchaBehavior extends Behavior {
 			],
 		]);
 
+		$validator->add('captcha_result', [
+			'maxPerUser' => [
+				'rule' => 'validateCaptchaMaxPerUser',
+				'provider' => 'table',
+				'message' => __d('captcha', 'Please retry later'),
+				'last' => true,
+			],
+		]);
+
 		$this->_engine->buildValidator($validator);
 		if ($this->getConfig('minTime')) {
 			$validator->add('captcha_result', [
@@ -106,6 +115,17 @@ class CaptchaBehavior extends Behavior {
 				],
 			]);
 		}
+	}
+
+	/**
+	 * @param string $value
+	 * @param array $context
+	 *
+	 * @return bool
+	 */
+	public function validateCaptchaMaxPerUser($value, $context) {
+		// If no id was provided, the captcha was dummy due to MaxRule failure
+		return !empty($context['data']['captcha_id']);
 	}
 
 	/**
