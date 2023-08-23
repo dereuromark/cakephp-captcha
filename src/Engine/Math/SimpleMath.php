@@ -8,7 +8,7 @@ class SimpleMath implements MathInterface {
 	 * @var array<string, mixed>
 	 */
 	protected $_defaultConfig = [
-		'complexity' => 10,
+		'complexity' => 2,
 	];
 
 	/**
@@ -28,7 +28,7 @@ class SimpleMath implements MathInterface {
 		$this->_config = $config + $this->_defaultConfig;
 		$this->data[0] = $this->_randomNumber();
 		$this->data[1] = $this->_randomOperator();
-		$this->data[2] = $this->_randomNumber(1);
+		$this->data[2] = $this->_randomNumber(10);
 		while ($this->data[2] === $this->data[0]) {
 			$this->data[2] = $this->_randomNumber(10);
 		}
@@ -67,15 +67,15 @@ class SimpleMath implements MathInterface {
 	}
 
 	/**
-	 * @param int $complexity
+	 * @param int $max
 	 * @return int
 	 */
-	protected function _randomNumber(int $complexity = 0) {
-		if (!$complexity) {
-			$complexity = $this->_config['complexity'];
+	protected function _randomNumber(int $max = 0) {
+		if (!$max) {
+			$max = 50 * $this->_config['complexity'];
 		}
 
-		return random_int(1, 10 * $complexity);
+		return random_int(1, $max);
 	}
 
 	/**
