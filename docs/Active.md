@@ -150,3 +150,5 @@ The `minTime` is by default 2 seconds and make sure you cannot auto-post a form 
 One should also include a throttle limit, so you cannot fill up the DB.
 The built in mechanism is a `maxPerUser` value (defaults to 100) which prevents entering more than this amount per ip or session.
 If a form gets built and failed too often, those captcha results will never validate then for one hour (as their result has not been persisted anymore due to this rate limit).
+The user will be blocked at most for 1 hour, customizable with `deadlockMinutes` config parameter. The user may submit new forms earlier depending on client IP and session ID.
+Note that this feature doesn't prevent the user to solve more captchas. Only unused or failed captchas throttling the DB are limited this way.

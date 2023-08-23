@@ -127,10 +127,12 @@ class CaptchasTable extends Table {
 	 * @return int
 	 */
 	public function getCount($ip, $sessionId) {
+		$deadlockMinutes = Configure::read('Captcha.deadlockMinutes') ?? 60;
+
 		return $this->find()
 			->where([
 				'used IS' => null,
-				'created >' => FrozenTime::now()->subHour(),
+				'created >' => FrozenTime::now()->subMinutes($deadlockMinutes),
 				'or' => [
 					'ip' => $ip,
 					'session_id' => $sessionId,
