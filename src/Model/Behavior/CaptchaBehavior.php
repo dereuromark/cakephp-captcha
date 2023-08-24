@@ -94,7 +94,6 @@ class CaptchaBehavior extends Behavior {
 			],
 		]);
 
-		$this->_engine->buildValidator($validator);
 		if ($this->getConfig('minTime')) {
 			$validator->add('captcha_result', [
 				'minTime' => [
@@ -115,6 +114,8 @@ class CaptchaBehavior extends Behavior {
 				],
 			]);
 		}
+
+		$this->_engine->buildValidator($validator);
 	}
 
 	/**
