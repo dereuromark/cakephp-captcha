@@ -68,7 +68,7 @@ class CaptchaHelper extends Helper {
 		$id = $this->_getId();
 
 		$html = $this->control($options);
-		$html .= $this->Form->control('captcha_id', ['type' => 'hidden', 'value' => $id]);
+		$html .= $this->Form->control('captcha_id', ['type' => 'hidden', 'value' => $id ?? '']);
 		$html .= $this->passive();
 
 		return $html;
