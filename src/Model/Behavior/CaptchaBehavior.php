@@ -89,7 +89,7 @@ class CaptchaBehavior extends Behavior {
 			'maxPerUser' => [
 				'rule' => 'validateCaptchaMaxPerUser',
 				'provider' => 'table',
-				'message' => __d('captcha', 'Please retry later'),
+				'message' => __d('captcha', 'Limit reached. Please retry later'),
 				'last' => true,
 			],
 		]);
