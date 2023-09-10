@@ -37,6 +37,9 @@ define('LOGS', TMP);
 
 require ROOT . '/vendor/autoload.php';
 require CORE_PATH . 'config/bootstrap.php';
+require CAKE . 'functions.php';
+
+require ROOT . '/config/bootstrap.php';
 
 Configure::write('App', [
 	'namespace' => 'TestApp',

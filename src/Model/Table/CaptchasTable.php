@@ -131,7 +131,7 @@ class CaptchasTable extends Table {
 		return $this->find()
 			->where([
 				'used IS' => null,
-				'created >' => FrozenTime::now()->subMinutes($deadlockMinutes),
+				'created >' => DateTime::now()->subMinutes($deadlockMinutes),
 				'or' => [
 					'ip' => $ip,
 					'session_id' => $sessionId,
