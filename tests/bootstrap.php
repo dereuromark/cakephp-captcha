@@ -4,6 +4,7 @@ use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
+use Cake\TestSuite\Fixture\SchemaLoader;
 use Captcha\Plugin as CaptchaPlugin;
 use TestApp\Application;
 use TestApp\Controller\AppController;
@@ -97,6 +98,6 @@ ConnectionManager::setConfig('test', [
 ]);
 
 if (env('FIXTURE_SCHEMA_METADATA')) {
-	$loader = new Cake\TestSuite\Fixture\SchemaLoader();
+	$loader = new SchemaLoader();
 	$loader->loadInternalFile(env('FIXTURE_SCHEMA_METADATA'));
 }
