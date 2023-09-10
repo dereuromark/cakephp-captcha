@@ -2,6 +2,7 @@
 
 namespace Captcha\Test\TestCase\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
 
 class CaptchasTableTest extends TestCase {
@@ -29,6 +30,8 @@ class CaptchasTableTest extends TestCase {
 		parent::setUp();
 		$config = $this->getTableLocator()->exists('Captchas') ? [] : ['className' => 'Captcha\Model\Table\CaptchasTable'];
 		$this->Captchas = $this->getTableLocator()->get('Captchas', $config);
+
+		Configure::delete('Captcha.maxPerUser');
 	}
 
 	/**
@@ -48,6 +51,22 @@ class CaptchasTableTest extends TestCase {
 	public function testTouch() {
 		$sessionId = 'cli';
 		$ip = '123';
+		$result = $this->Captchas->touch($sessionId, $ip);
+
+		$this->assertNotEmpty($result);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testTouchTooManyAttemps() {
+		$sessionId = 'cli';
+		$ip = '123';
+
+		// Simulate too many attempts by setting the limit to zero
+		Configure::write('Captcha.maxPerUser', 0);
+
+		// Shouldn't throw an exception
 		$result = $this->Captchas->touch($sessionId, $ip);
 
 		$this->assertNotEmpty($result);

@@ -49,7 +49,15 @@ class PreparerComponent extends Component {
 			$captcha = $this->Captchas->patchEntity($captcha, $generated);
 		}
 
-		return $this->Captchas->save($captcha);
+		/*
+		 * If the captcha doesn't exist in DB, don't create it.
+		 * It will just be displayed as dummy challenge.
+		 */
+		if (!$captcha->isNew()) {
+			$this->Captchas->save($captcha);
+		}
+
+		return $captcha;
 	}
 
 	/**

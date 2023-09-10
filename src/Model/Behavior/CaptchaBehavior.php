@@ -76,14 +76,24 @@ class CaptchaBehavior extends Behavior {
 	 */
 	public function addCaptchaValidation(Validator $validator): void {
 		$validator->requirePresence('captcha_result');
+
 		$validator->add('captcha_result', [
 			'required' => [
 				'rule' => 'notBlank',
+				'message' => __d('captcha', 'Please solve the riddle'),
 				'last' => true,
 			],
 		]);
 
-		$this->_engine->buildValidator($validator);
+		$validator->add('captcha_result', [
+			'maxPerUser' => [
+				'rule' => 'validateCaptchaMaxPerUser',
+				'provider' => 'table',
+				'message' => __d('captcha', 'Limit reached. Please retry later'),
+				'last' => true,
+			],
+		]);
+
 		if ($this->getConfig('minTime')) {
 			$validator->add('captcha_result', [
 				'minTime' => [
@@ -104,6 +114,19 @@ class CaptchaBehavior extends Behavior {
 				],
 			]);
 		}
+
+		$this->_engine->buildValidator($validator);
+	}
+
+	/**
+	 * @param string $value
+	 * @param array $context
+	 *
+	 * @return bool
+	 */
+	public function validateCaptchaMaxPerUser($value, $context) {
+		// If no id was provided, the captcha was dummy due to MaxRule failure
+		return !empty($context['data']['captcha_id']);
 	}
 
 	/**

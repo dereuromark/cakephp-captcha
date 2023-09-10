@@ -2,7 +2,6 @@
 
 namespace Captcha\Model\Table;
 
-use BadMethodCallException;
 use Cake\Core\Configure;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\I18n\DateTime;
@@ -98,7 +97,7 @@ class CaptchasTable extends Table {
 	 *
 	 * @throws \BadMethodCallException
 	 *
-	 * @return int
+	 * @return int|null
 	 */
 	public function touch($sessionId, $ip) {
 		$probability = (int)Configure::read('Captcha.cleanupProbability') ?: 10;
@@ -113,11 +112,11 @@ class CaptchasTable extends Table {
 				'validate' => false,
 			],
 		);
-		if (!$this->save($captcha)) {
-			throw new BadMethodCallException('Sth went wrong: ' . print_r($captcha->getErrors(), true));
+		if ($this->save($captcha)) {
+			return $captcha->id;
 		}
 
-		return $captcha->id;
+		return null;
 	}
 
 	/**
@@ -127,8 +126,17 @@ class CaptchasTable extends Table {
 	 * @return int
 	 */
 	public function getCount($ip, $sessionId) {
+		$deadlockMinutes = Configure::read('Captcha.deadlockMinutes') ?? 60;
+
 		return $this->find()
-			->where(['or' => ['ip' => $ip, 'session_id' => $sessionId]])
+			->where([
+				'used IS' => null,
+				'created >' => FrozenTime::now()->subMinutes($deadlockMinutes),
+				'or' => [
+					'ip' => $ip,
+					'session_id' => $sessionId,
+				],
+			])
 			->count();
 	}
 
@@ -150,6 +158,15 @@ class CaptchasTable extends Table {
 		$maxTime = Configure::read('Captcha.maxTime') ?? DAY;
 
 		return $this->deleteAll(['or' => ['created <' => new DateTime((string)(time() - (int)$maxTime)), 'used IS NOT' => null]]);
+	}
+
+	/**
+	 * @param string $ip
+	 *
+	 * @return int
+	 */
+	public function reset(string $ip): int {
+		return $this->deleteAll(['ip' => $ip]);
 	}
 
 	/**
