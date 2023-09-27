@@ -51,8 +51,10 @@ class CaptchaComponent extends Component {
 	 * @return string
 	 */
 	protected function getControllerModelClass(): string {
+		$property = property_exists($this->getController(), 'modelClass') ? 'modelClass' : 'defaultTable';
+
 		$reflection = new ReflectionClass($this->getController());
-		$property = $reflection->getProperty('modelClass');
+		$property = $reflection->getProperty($property);
 		$property->setAccessible(true);
 
 		return $property->getValue($this->getController());
