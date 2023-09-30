@@ -33,10 +33,14 @@ class CaptchaController extends AppController {
 	 * @return \Cake\Http\Response|null|void
 	 */
 	public function beforeFilter(EventInterface $event) {
-		if (isset($this->Auth) && method_exists($this->Auth, 'allow')) {
-			$this->Auth->allow();
-		} elseif (isset($this->Authentication) && method_exists($this->Authentication, 'addUnauthenticatedActions')) {
-			$this->Authentication->addUnauthenticatedActions(['display']);
+		if ($this->components()->has('Security')) {
+			$this->components()->get('Security')->setConfig('validatePost', false);
+		}
+
+		if ($this->components()->has('Auth') && method_exists($this->components()->get('Auth'), 'allow')) {
+			$this->components()->get('Auth')->allow();
+		} elseif ($this->components()->has('Authentication') && method_exists($this->components()->get('Authentication'), 'addUnauthenticatedActions')) {
+			$this->components()->get('Authentication')->addUnauthenticatedActions(['display']);
 		}
 	}
 
