@@ -9,7 +9,7 @@ class Binary extends AbstractMigration {
 	 */
 	public function change() {
 		$table = $this->table('captchas');
-		$table->changeColumn('image', 'varbinary', [
+		$table->changeColumn('image', 'blob', [
 			'default' => null,
 			'limit' => 60000,
 			'null' => true,
