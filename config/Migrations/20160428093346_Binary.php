@@ -9,9 +9,11 @@ class Binary extends AbstractMigration {
 	 */
 	public function change() {
 		$table = $this->table('captchas');
+
+		$type = $this->getAdapter()->getAdapterType();
 		$table->changeColumn('image', 'blob', [
 			'default' => null,
-			'limit' => 60000,
+			'limit' => ($type !== 'pgsql') ? 6000 : null,
 			'null' => true,
 		]);
 		$table->update();
