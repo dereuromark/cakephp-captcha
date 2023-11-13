@@ -27,4 +27,4 @@ if (!function_exists('imagedestroy')) {
 	}
 }
 
-require_once Plugin::path('Captcha') . 'vendor/' . 'mathpublisher.php';
+require_once Plugin::path('Captcha') . 'resources/' . 'mathpublisher.php';

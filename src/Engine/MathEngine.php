@@ -7,7 +7,7 @@ use Cake\Validation\Validator;
 use Captcha\Engine\Math\SimpleMath;
 use expression_math;
 
-require_once Plugin::path('Captcha') . 'vendor/' . 'mathpublisher.php';
+require_once Plugin::path('Captcha') . 'resources/' . 'mathpublisher.php';
 
 class MathEngine implements EngineInterface {
 
