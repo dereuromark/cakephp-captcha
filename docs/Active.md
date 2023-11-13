@@ -152,3 +152,9 @@ The built in mechanism is a `maxPerUser` value (defaults to 100) which prevents 
 If a form gets built and failed too often, those captcha results will never validate then for one hour (as their result has not been persisted anymore due to this rate limit).
 The user will be blocked at most for 1 hour, customizable with `deadlockMinutes` config parameter. The user may submit new forms earlier depending on client IP and session ID.
 Note that this feature doesn't prevent the user to solve more captchas. Only unused or failed captchas throttling the DB are limited this way.
+
+### Larger captcha images
+
+When dealing with larger images, the default DB type `binary` will not work for sure.
+For MySQL the type `blob` is used when detected as DB.
+For other systems please use own migration then and set your preferred type that can hold enough information.

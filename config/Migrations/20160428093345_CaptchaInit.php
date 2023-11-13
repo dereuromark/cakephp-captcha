@@ -8,6 +8,8 @@ class CaptchaInit extends AbstractMigration {
 	 * @return void
 	 */
 	public function change() {
+		$type = $this->getAdapter()->getAdapterType();
+
 		$table = $this->table('captchas');
 		$table->addColumn('session_id', 'string', [
 			'default' => null,
@@ -19,7 +21,7 @@ class CaptchaInit extends AbstractMigration {
 			'limit' => 255,
 			'null' => false,
 		]);
-		$table->addColumn('image', 'binary', [
+		$table->addColumn('image', ($type === 'mysql' ? 'blob' : 'binary'), [
 			'default' => null,
 			'null' => true,
 		]);
