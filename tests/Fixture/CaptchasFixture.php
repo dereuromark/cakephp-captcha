@@ -17,10 +17,10 @@ class CaptchasFixture extends TestFixture {
 	// @codingStandardsIgnoreStart
 	public array $fields = [
 		'id' => ['type' => 'integer', 'length' => 11, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
-		'session_id' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
-		'ip' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
+		'session_id' => ['type' => 'string', 'length' => 190, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
+		'ip' => ['type' => 'string', 'length' => 190, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
 		'image' => ['type' => 'blob', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
-		'result' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
+		'result' => ['type' => 'string', 'length' => 190, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
 		'created' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
 		'used' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
 		'_constraints' => [
