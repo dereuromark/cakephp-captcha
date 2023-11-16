@@ -16,7 +16,7 @@ class CaptchasFixture extends TestFixture {
 	 */
 	// @codingStandardsIgnoreStart
 	public array $fields = [
-		'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
+		'id' => ['type' => 'integer', 'length' => 11, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
 		'session_id' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
 		'ip' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
 		'image' => ['type' => 'blob', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
