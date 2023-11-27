@@ -6,6 +6,9 @@ use Cake\Core\Configure;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
+/**
+ * @uses \Captcha\Controller\CaptchaController
+ */
 class CaptchaControllerTest extends TestCase {
 
 	use IntegrationTestTrait;
