@@ -1,15 +1,14 @@
 {
 	"name": "dereuromark/cakephp-captcha",
-	"type": "cakephp-plugin",
 	"description": "A CakePHP plugin to integrate captchas.",
+	"license": "MIT",
+	"type": "cakephp-plugin",
 	"keywords": [
 		"cakephp",
 		"plugin",
 		"captchas",
 		"security"
 	],
-	"homepage": "https://github.com/dereuromark/cakephp-captcha",
-	"license": "MIT",
 	"authors": [
 		{
 			"name": "Mark Scherer",
@@ -17,15 +16,21 @@
 			"role": "Maintainer"
 		}
 	],
+	"homepage": "https://github.com/dereuromark/cakephp-captcha",
+	"support": {
+		"source": "https://github.com/dereuromark/cakephp-captcha"
+	},
 	"require": {
 		"php": ">=8.1",
 		"cakephp/cakephp": "^5.0.0"
 	},
 	"require-dev": {
 		"cakephp/migrations": "^4.0.1",
-		"phpunit/phpunit": "^10.2",
-		"fig-r/psr2r-sniffer": "dev-next"
+		"fig-r/psr2r-sniffer": "dev-next",
+		"phpunit/phpunit": "^10.2"
 	},
+	"minimum-stability": "stable",
+	"prefer-stable": true,
 	"autoload": {
 		"psr-4": {
 			"Captcha\\": "src/",
@@ -34,29 +39,24 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
+			"Cake\\Test\\": "vendor/cakephp/cakephp/tests/",
 			"Captcha\\Test\\": "tests/",
-			"TestApp\\": "tests/test_app/src/",
-			"Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
+			"TestApp\\": "tests/test_app/src/"
 		}
-	},
-	"support": {
-		"source": "https://github.com/dereuromark/cakephp-captcha"
-	},
-	"prefer-stable": true,
-	"scripts": {
-		"test": "phpunit",
-		"test-coverage": "phpunit --log-junit tmp/coverage/unitreport.xml --coverage-html tmp/coverage --coverage-clover tmp/coverage/coverage.xml",
-		"stan": "phpstan analyse",
-		"stan-setup": "cp composer.json composer.backup && composer require --dev phpstan/phpstan:^1.0.0 && mv composer.backup composer.json",
-		"lowest": "validate-prefer-lowest",
-		"lowest-setup": "composer update --prefer-lowest --prefer-stable --prefer-dist --no-interaction && cp composer.json composer.backup && composer require --dev dereuromark/composer-prefer-lowest && mv composer.backup composer.json",
-		"cs-check": "phpcs --extensions=php",
-		"cs-fix": "phpcbf --extensions=php"
 	},
 	"config": {
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true
 		}
 	},
-	"minimum-stability": "stable"
+	"scripts": {
+		"cs-check": "phpcs --extensions=php",
+		"cs-fix": "phpcbf --extensions=php",
+		"lowest": "validate-prefer-lowest",
+		"lowest-setup": "composer update --prefer-lowest --prefer-stable --prefer-dist --no-interaction && cp composer.json composer.backup && composer require --dev dereuromark/composer-prefer-lowest && mv composer.backup composer.json",
+		"stan": "phpstan analyse",
+		"stan-setup": "cp composer.json composer.backup && composer require --dev phpstan/phpstan:^1.0.0 && mv composer.backup composer.json",
+		"test": "phpunit",
+		"test-coverage": "phpunit --log-junit tmp/coverage/unitreport.xml --coverage-html tmp/coverage --coverage-clover tmp/coverage/coverage.xml"
+	}
 }
