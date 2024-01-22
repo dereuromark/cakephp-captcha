@@ -5,7 +5,7 @@ use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\Fixture\SchemaLoader;
-use Captcha\CaptchaPlugin as CaptchaPlugin;
+use Captcha\CaptchaPlugin;
 use TestApp\Application;
 use TestApp\Controller\AppController;
 use TestApp\View\AppView;
