@@ -6,10 +6,7 @@ use Cake\Core\BasePlugin;
 use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 
-/**
- * Plugin for DatabaseLog
- */
-class Plugin extends BasePlugin {
+class CaptchaPlugin extends BasePlugin {
 
 	/**
 	 * @var bool
