@@ -42,6 +42,9 @@ class CaptchaController extends AppController {
 		} elseif ($this->components()->has('Authentication') && method_exists($this->components()->get('Authentication'), 'addUnauthenticatedActions')) {
 			$this->components()->get('Authentication')->addUnauthenticatedActions(['display']);
 		}
+		if ($this->components()->has('Authorization') && method_exists($this->components()->get('Authorization'), 'skipAuthorization')) {
+			$this->components()->get('Authorization')->skipAuthorization();
+		}
 	}
 
 	/**
