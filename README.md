@@ -33,8 +33,9 @@ composer require dereuromark/cakephp-captcha
 ```
 and
 ```
-bin/cake plugin load Captcha -b -r
+bin/cake plugin load Captcha
 ```
+or manually add it to your `plugins.php` or `Application::bootstrap()` setup.
 
 For active captchas you also need to import the SQL schema.
 The quickest way is using Migrations plugin:
