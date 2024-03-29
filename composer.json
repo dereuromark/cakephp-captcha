@@ -24,7 +24,7 @@
 	"require-dev": {
 		"cakephp/migrations": "^3.0.0",
 		"phpunit/phpunit": "^9.5",
-		"fig-r/psr2r-sniffer": "dev-master"
+		"fig-r/psr2r-sniffer": "^1.5.1"
 	},
 	"autoload": {
 		"psr-4": {
