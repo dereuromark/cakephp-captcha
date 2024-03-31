@@ -1,6 +1,6 @@
 <?php
 
-namespace Captcha\Test\Model\Behavior;
+namespace Captcha\Test\TestCase\Model\Behavior;
 
 use Cake\TestSuite\TestCase;
 use TestApp\Form\PassiveCaptchaTestForm;
