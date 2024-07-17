@@ -68,9 +68,6 @@ class CaptchaBehavior extends Behavior {
 		$this->_captchasTable = TableRegistry::getTableLocator()->get('Captcha.Captchas');
 		/** @phpstan-var class-string<\Captcha\Engine\EngineInterface> $engine */
 		$engine = $this->getConfig('engine');
-		if (!$engine) {
-			return;
-		}
 		$this->_engine = new $engine($this->getConfig());
 	}
 
