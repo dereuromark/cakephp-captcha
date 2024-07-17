@@ -12,7 +12,7 @@ class SimpleMath implements MathInterface {
 	];
 
 	/**
-	 * @var array
+	 * @var array<string, mixed>
 	 */
 	protected $_config;
 

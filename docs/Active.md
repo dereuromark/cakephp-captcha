@@ -4,6 +4,8 @@ By default, the plugin provides an unobtrusive math captcha as images.
 Simple math captchas are also usually a bit more fun than trying to figure out some unreadable words behind colorful bars.
 But since this plugin ships with a highly extensible interface solution, you can write and use your own captcha image solution.
 
+There is for example a built in NullEngine to also build hidden ones (mainly leveraging the min/max time).
+
 ### Forms with tables
 You can add the behavior to your model inside the specific action: or you can simply
 ```php
@@ -104,6 +106,18 @@ class ComplexMath implements MathInterface {
     }
 
 }
+```
+
+### NullEngine
+The Null engine with its hidden form input can be used for either more passive captchas (hidden from user),
+or just to validate min/max time.
+```php
+use Captcha\Engine\NullEngine;
+
+    ...
+    'Captcha' => [
+        'engine' => NullEngine::class,
+        'minTime' => 6, // seconds
 ```
 
 ### Use your own Captcha engine

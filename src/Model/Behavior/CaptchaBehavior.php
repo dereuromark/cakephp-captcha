@@ -6,9 +6,12 @@ use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\I18n\DateTime;
 use Cake\ORM\Behavior;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Validation\Validator;
+use Captcha\Engine\MathEngine;
+use Captcha\Engine\NullEngine;
 use RuntimeException;
 
 /**
@@ -25,7 +28,7 @@ class CaptchaBehavior extends Behavior {
 	protected array $_defaultConfig = [
 		'minTime' => 2, // Seconds the form will need to be filled in by a human
 		'maxTime' => DAY, // Seconds the form will need to be submitted in
-		'engine' => 'Captcha\Engine\MathEngine',
+		'engine' => MathEngine::class,
 	];
 
 	/**
@@ -44,19 +47,31 @@ class CaptchaBehavior extends Behavior {
 	protected array $_captchas = [];
 
 	/**
+	 * @param \Cake\ORM\Table $table
+	 * @param array<string, mixed> $config
+	 */
+	public function __construct(Table $table, array $config = []) {
+		$config += (array)Configure::read('Captcha');
+
+		parent::__construct($table, $config);
+	}
+
+	/**
 	 * Behavior configuration
 	 *
 	 * @param array $config
 	 * @return void
 	 */
 	public function initialize(array $config): void {
-		$config += (array)Configure::read('Captcha');
 		parent::initialize($config);
 
+		$this->_captchasTable = TableRegistry::getTableLocator()->get('Captcha.Captchas');
 		/** @phpstan-var class-string<\Captcha\Engine\EngineInterface> $engine */
 		$engine = $this->getConfig('engine');
+		if (!$engine) {
+			return;
+		}
 		$this->_engine = new $engine($this->getConfig());
-		$this->_captchasTable = TableRegistry::getTableLocator()->get('Captcha.Captchas');
 	}
 
 	/**
@@ -76,23 +91,24 @@ class CaptchaBehavior extends Behavior {
 	 */
 	public function addCaptchaValidation(Validator $validator): void {
 		$validator->requirePresence('captcha_result');
+		if ($this->getConfig('engine') !== NullEngine::class) {
+			$validator->add('captcha_result', [
+				'required' => [
+					'rule' => 'notBlank',
+					'message' => __d('captcha', 'Please solve the riddle'),
+					'last' => true,
+				],
+			]);
 
-		$validator->add('captcha_result', [
-			'required' => [
-				'rule' => 'notBlank',
-				'message' => __d('captcha', 'Please solve the riddle'),
-				'last' => true,
-			],
-		]);
-
-		$validator->add('captcha_result', [
-			'maxPerUser' => [
-				'rule' => 'validateCaptchaMaxPerUser',
-				'provider' => 'table',
-				'message' => __d('captcha', 'Limit reached. Please retry later'),
-				'last' => true,
-			],
-		]);
+			$validator->add('captcha_result', [
+				'maxPerUser' => [
+					'rule' => 'validateCaptchaMaxPerUser',
+					'provider' => 'table',
+					'message' => __d('captcha', 'Limit reached. Please retry later'),
+					'last' => true,
+				],
+			]);
+		}
 
 		if ($this->getConfig('minTime')) {
 			$validator->add('captcha_result', [
