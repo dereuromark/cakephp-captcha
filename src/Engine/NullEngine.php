@@ -2,32 +2,16 @@
 
 namespace Captcha\Engine;
 
-use Cake\Core\Plugin;
 use Cake\Validation\Validator;
-use Captcha\Engine\Math\SimpleMath;
-use expression_math;
+use Captcha\Engine\Null\Hidden;
 
-require_once Plugin::path('Captcha') . 'resources/' . 'mathpublisher.php';
-
-class MathEngine implements EngineInterface {
-
-	/**
-	 * @var string
-	 */
-	public const FORMAT_JPEG = 'jpeg';
-
-	/**
-	 * @var string
-	 */
-	public const FORMAT_PNG = 'png';
+class NullEngine implements EngineInterface {
 
 	/**
 	 * @var array<string, mixed>
 	 */
 	protected array $_defaultConfig = [
-		'size' => 14,
-		'imageFormat' => self::FORMAT_PNG,
-		'mathType' => SimpleMath::class,
+		'imageFormat' => null,
 	];
 
 	/**
@@ -65,14 +49,6 @@ class MathEngine implements EngineInterface {
 	 * @return void
 	 */
 	public function buildValidator(Validator $validator): void {
-		$validator->add('captcha_result', [
-			'valid' => [
-				'rule' => 'validateCaptchaResult',
-				'provider' => 'table',
-				'message' => __d('captcha', 'The solution is not correct'),
-				'last' => true,
-			],
-		]);
 	}
 
 	/**
@@ -80,22 +56,7 @@ class MathEngine implements EngineInterface {
 	 * @return string Binary image data
 	 */
 	protected function render($expression) {
-		$formula = new expression_math(tableau_expression($expression));
-		$formula->dessine($this->_config['size']);
-		ob_start();
-		switch ($this->_config['imageFormat']) {
-			case static::FORMAT_JPEG:
-				imagejpeg($formula->image);
-
-				break;
-			case static::FORMAT_PNG:
-				imagepng($formula->image);
-
-				break;
-		}
-		imagedestroy($formula->image);
-
-		return ob_get_clean() ?: '';
+		return '';
 	}
 
 	/**
@@ -105,7 +66,7 @@ class MathEngine implements EngineInterface {
 		$config = $this->_config;
 
 		/** @phpstan-var class-string<\Captcha\Engine\Math\MathInterface> $class */
-		$class = $config['mathType'];
+		$class = Hidden::class;
 
 		return new $class($config);
 	}

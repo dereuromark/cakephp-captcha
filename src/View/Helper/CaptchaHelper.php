@@ -2,8 +2,12 @@
 
 namespace Captcha\View\Helper;
 
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\View\Helper;
+use Cake\View\View;
+use Captcha\Engine\MathEngine;
+use Captcha\Engine\NullEngine;
 
 /**
  * @property \Cake\View\Helper\FormHelper $Form
@@ -30,7 +34,18 @@ class CaptchaHelper extends Helper {
 	 */
 	protected array $_defaultConfig = [
 		'ext' => null,
+		'engine' => MathEngine::class,
 	];
+
+	/**
+	 * @param \Cake\View\View $view
+	 * @param array<string, mixed> $config
+	 */
+	public function __construct(View $view, array $config = []) {
+		$config += (array)Configure::read('Captcha');
+
+		parent::__construct($view, $config);
+	}
 
 	/**
 	 * @deprecated Use control()
@@ -66,8 +81,11 @@ class CaptchaHelper extends Helper {
 	 */
 	public function render(array $options = []) {
 		$id = $this->_getId();
-
-		$html = $this->control($options);
+		if ($this->getConfig('engine') === NullEngine::class) {
+			$html = $this->Form->hidden('captcha_result');
+		} else {
+			$html = $this->control($options);
+		}
 		$html .= $this->Form->control('captcha_id', ['type' => 'hidden', 'value' => $id ?? '']);
 		$html .= $this->passive();
 

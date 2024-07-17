@@ -5,6 +5,7 @@ namespace Captcha\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
+use Captcha\Engine\MathEngine;
 
 /**
  * @internal Only for use inside this plugin's controller
@@ -22,7 +23,7 @@ class PreparerComponent extends Component {
 	 * @var array<string, mixed>
 	 */
 	protected array $_defaultConfig = [
-		'engine' => 'Captcha\Engine\MathEngine',
+		'engine' => MathEngine::class,
 	];
 
 	/**
