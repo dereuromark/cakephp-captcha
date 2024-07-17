@@ -43,7 +43,7 @@ class MathEngine implements EngineInterface {
 	}
 
 	/**
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	public function generate(): array {
 		$class = $this->_getTypeClass();

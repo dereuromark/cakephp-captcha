@@ -7,7 +7,7 @@ use Cake\Validation\Validator;
 interface EngineInterface {
 
 	/**
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	public function generate(): array;
 

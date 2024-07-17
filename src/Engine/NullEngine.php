@@ -27,7 +27,7 @@ class NullEngine implements EngineInterface {
 	}
 
 	/**
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	public function generate(): array {
 		$class = $this->_getTypeClass();
@@ -55,7 +55,7 @@ class NullEngine implements EngineInterface {
 	 * @param string $expression
 	 * @return string Binary image data
 	 */
-	protected function render($expression) {
+	protected function render(string $expression) {
 		return '';
 	}
 
