@@ -32,6 +32,8 @@ class CaptchaControllerTest extends TestCase {
 		parent::setUp();
 
 		Configure::write('Captcha', []);
+
+		$this->loadPlugins(['Captcha']);
 	}
 
 	/**
