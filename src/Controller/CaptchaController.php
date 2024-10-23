@@ -15,7 +15,7 @@ use Captcha\Model\Entity\Captcha;
 class CaptchaController extends AppController {
 
 	/**
-	 * @var string
+	 * @var string|null
 	 */
 	protected ?string $defaultTable = 'Captcha.Captchas';
 
