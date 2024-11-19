@@ -3,7 +3,6 @@
 namespace Captcha\Model\Table;
 
 use Cake\Core\Configure;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\I18n\DateTime;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
