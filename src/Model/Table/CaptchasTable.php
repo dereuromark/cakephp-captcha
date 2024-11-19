@@ -24,19 +24,7 @@ use Captcha\Model\Rule\MaxRule;
 class CaptchasTable extends Table {
 
 	/**
-	 * @return \Cake\Database\Schema\TableSchemaInterface
-	 */
-	public function getSchema(): TableSchemaInterface {
-		$schema = parent::getSchema();
-		$schema->setColumnType('image', 'image');
-
-		return $schema;
-	}
-
-	/**
-	 * Initialize method
-	 *
-	 * @param array $config The configuration for the Table.
+	 * @param array<string, mixed> $config
 	 * @return void
 	 */
 	public function initialize(array $config): void {
@@ -47,6 +35,8 @@ class CaptchasTable extends Table {
 		$this->setPrimaryKey('id');
 
 		$this->addBehavior('Timestamp');
+
+		$this->getSchema()->setColumnType('image', 'image');
 	}
 
 	/**
