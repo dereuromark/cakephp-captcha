@@ -51,8 +51,7 @@ class CaptchaComponent extends Component {
 	 * @return string
 	 */
 	protected function getControllerModelClass(): string {
-		$property = property_exists($this->getController(), 'defaultTable') ? 'defaultTable' : 'modelClass';
-
+		$property = 'defaultTable';
 		$reflection = new ReflectionClass($this->getController());
 		$property = $reflection->getProperty($property);
 		$property->setAccessible(true);
@@ -81,7 +80,7 @@ class CaptchaComponent extends Component {
 	 * @return void
 	 */
 	public function addValidation(Validator $validator, ?string $type = null) {
-		/** @var \Captcha\Model\Table\CaptchasTable $Captchas */
+		/** @var \Cake\ORM\Table<array{Captcha: \Captcha\Model\Behavior\CaptchaBehavior, PassiveCaptcha: \Captcha\Model\Behavior\PassiveCaptchaBehavior}> $Captchas */
 		$Captchas = TableRegistry::getTableLocator()->get('Captcha.Captchas');
 
 		$Captchas->setValidator('captcha', $validator);
@@ -92,9 +91,9 @@ class CaptchaComponent extends Component {
 		}
 
 		$Captchas->addBehavior('Captcha.' . $behavior);
-		/** @var \Captcha\Model\Behavior\CaptchaBehavior|\Captcha\Model\Behavior\PassiveCaptchaBehavior $Captchas */
 		$method = 'add' . $behavior . 'Validation';
-		$Captchas->$method($validator);
+		/** @phpstan-ignore-next-line */
+		$Captchas->getBehavior($behavior)->$method($validator);
 	}
 
 	/**

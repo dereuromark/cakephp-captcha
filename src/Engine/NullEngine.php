@@ -60,12 +60,12 @@ class NullEngine implements EngineInterface {
 	}
 
 	/**
-	 * @return \Captcha\Engine\Math\MathInterface
+	 * @return \Captcha\Engine\Null\NullInterface
 	 */
 	protected function _getTypeClass() {
 		$config = $this->_config;
 
-		/** @phpstan-var class-string<\Captcha\Engine\Math\MathInterface> $class */
+		/** @phpstan-var class-string<\Captcha\Engine\Null\NullInterface> $class */
 		$class = Hidden::class;
 
 		return new $class($config);
