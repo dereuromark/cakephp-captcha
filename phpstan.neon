@@ -5,8 +5,8 @@ parameters:
 	bootstrapFiles:
 		- tests/bootstrap.php
 		- tests/shim.php
-	checkMissingIterableValueType: false
-	checkGenericClassInNonGenericObjectType: false
 	ignoreErrors:
+		- identifier: missingType.iterableValue
+		- identifier: missingType.generics
 		- '#Access to an undefined property Cake\\Controller\\Controller::\$Captchas#'
 		- '#Property Captcha\\Model\\Behavior\\CaptchaBehavior::\$\_captchasTable \(Captcha\\Model\\Table\\CaptchasTable\) does not accept Cake\\ORM\\Table#'
