@@ -36,7 +36,7 @@ class CaptchaComponent extends Component {
 		if (!$model || !$this->_config['auto']) {
 			return;
 		}
-		if (strpos($model, '.') !== false) {
+		if (str_contains($model, '.')) {
 			[$plugin, $model] = pluginSplit($model);
 		}
 
