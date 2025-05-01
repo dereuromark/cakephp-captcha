@@ -26,7 +26,7 @@ class CaptchaComponent extends Component {
 	 *
 	 * @return void
 	 */
-	public function beforeFilter(EventInterface $event) {
+	public function beforeFilter(EventInterface $event): void {
 		$actions = $this->getConfig('actions');
 		if ($actions && !in_array($this->getController()->getRequest()->getParam('action'), $actions, true)) {
 			return;
