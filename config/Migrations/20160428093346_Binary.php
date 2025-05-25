@@ -1,8 +1,8 @@
 <?php
 
-use Phinx\Migration\AbstractMigration;
+use Migrations\BaseMigration;
 
-class Binary extends AbstractMigration {
+class Binary extends BaseMigration {
 
 	/**
 	 * @return void

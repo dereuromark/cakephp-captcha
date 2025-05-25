@@ -1,8 +1,8 @@
 <?php
 
-use Phinx\Migration\AbstractMigration;
+use Migrations\BaseMigration;
 
-class CaptchaInit extends AbstractMigration {
+class CaptchaInit extends BaseMigration {
 
 	/**
 	 * @return void
