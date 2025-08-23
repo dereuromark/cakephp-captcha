@@ -7,8 +7,7 @@ class Hidden implements NullInterface {
 	/**
 	 * @var array<string, mixed>
 	 */
-	protected array $_defaultConfig = [
-	];
+	protected array $_defaultConfig = [];
 
 	/**
 	 * @var array<string, mixed>
