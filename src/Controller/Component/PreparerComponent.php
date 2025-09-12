@@ -45,7 +45,7 @@ class PreparerComponent extends Component {
 	 * @return \Captcha\Model\Entity\Captcha|bool
 	 */
 	public function prepare($captcha) {
-		if ($captcha->result === null || $captcha->result === '') {
+		if ((string)$captcha->result === '') {
 			$generated = $this->_getEngine()->generate();
 			$captcha = $this->Captchas->patchEntity($captcha, $generated);
 		}
