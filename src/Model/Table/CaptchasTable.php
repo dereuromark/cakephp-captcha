@@ -88,7 +88,7 @@ class CaptchasTable extends Table {
 	 *
 	 * @return int|null
 	 */
-	public function touch($sessionId, $ip) {
+	public function touch(string $sessionId, string $ip): ?int {
 		$probability = (int)Configure::read('Captcha.cleanupProbability') ?: 10;
 		$this->cleanup($probability);
 
@@ -114,7 +114,7 @@ class CaptchasTable extends Table {
 	 *
 	 * @return int
 	 */
-	public function getCount($ip, $sessionId) {
+	public function getCount(string $ip, string $sessionId): int {
 		$deadlockMinutes = Configure::read('Captcha.deadlockMinutes') ?? 60;
 
 		return $this->find()
