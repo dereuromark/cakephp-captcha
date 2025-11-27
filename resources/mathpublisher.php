@@ -601,7 +601,7 @@ function affiche_symbol($texte, $haut)
 			$tmp_blanc = imagecolorallocate($tmp_img, 255, 255, 255);
 			$tmp_blanc = imagecolortransparent($tmp_img, $tmp_blanc);
 			imagefilledrectangle($tmp_img, 0, 0, $tmp_largeur, $tmp_hauteur, $tmp_blanc);
-			imagettftext($tmp_img, $t, 0, 0, $tmp_hauteur / 4, $tmp_noir, $font, $texte);
+			imagettftext($tmp_img, $t, 0, 0, (int)($tmp_hauteur / 4), $tmp_noir, $font, $texte);
 // 	imagettftext($tmp_img, $t, 0,5,5,$tmp_noir, $font,$texte);
 //	$img=$tmp_img;
 			$toutblanc = true;
