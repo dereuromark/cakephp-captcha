@@ -33,7 +33,7 @@ class MathEngine implements EngineInterface {
 	/**
 	 * @var array<string, mixed>
 	 */
-	protected $_config;
+	protected array $_config;
 
 	/**
 	 * @param array<string, mixed> $config
@@ -93,7 +93,6 @@ class MathEngine implements EngineInterface {
 
 				break;
 		}
-		imagedestroy($formula->image);
 
 		return ob_get_clean() ?: '';
 	}

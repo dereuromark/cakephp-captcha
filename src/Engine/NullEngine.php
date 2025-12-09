@@ -17,7 +17,7 @@ class NullEngine implements EngineInterface {
 	/**
 	 * @var array<string, mixed>
 	 */
-	protected $_config;
+	protected array $_config;
 
 	/**
 	 * @param array<string, mixed> $config

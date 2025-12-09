@@ -10,8 +10,10 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Validation\Validator;
+use Captcha\Engine\EngineInterface;
 use Captcha\Engine\MathEngine;
 use Captcha\Engine\NullEngine;
+use Captcha\Model\Table\CaptchasTable;
 use RuntimeException;
 
 /**
@@ -34,12 +36,12 @@ class CaptchaBehavior extends Behavior {
 	/**
 	 * @var \Captcha\Engine\EngineInterface
 	 */
-	protected $_engine;
+	protected EngineInterface $_engine;
 
 	/**
 	 * @var \Captcha\Model\Table\CaptchasTable
 	 */
-	protected $_captchasTable;
+	protected CaptchasTable $_captchasTable;
 
 	/**
 	 * @var array

@@ -6,6 +6,7 @@ use Cake\Controller\Component;
 use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Captcha\Engine\MathEngine;
+use Captcha\Model\Table\CaptchasTable;
 
 /**
  * @internal Only for use inside this plugin's controller
@@ -17,7 +18,7 @@ class PreparerComponent extends Component {
 	/**
 	 * @var \Captcha\Model\Table\CaptchasTable
 	 */
-	protected $Captchas;
+	protected CaptchasTable $Captchas;
 
 	/**
 	 * @var array<string, mixed>

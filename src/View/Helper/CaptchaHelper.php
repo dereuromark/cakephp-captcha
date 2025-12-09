@@ -24,7 +24,7 @@ class CaptchaHelper extends Helper {
 	/**
 	 * @var int|null
 	 */
-	protected $_id;
+	protected ?int $_id = null;
 
 	/**
 	 * Options:
