@@ -11,7 +11,7 @@ class Binary extends BaseMigration {
 		$table = $this->table('captchas');
 
 		$type = $this->getAdapter()->getAdapterType();
-		$table->changeColumn('image', 'blob', [
+		$table->changeColumn('image', ($type === 'mysql' ? 'blob' : 'binary'), [
 			'default' => null,
 			'limit' => ($type !== 'pgsql') ? 6000 : null,
 			'null' => true,
