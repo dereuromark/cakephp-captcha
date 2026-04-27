@@ -18,6 +18,12 @@ This plugin ships with two different types of captchas:
 
 They can also be combined for maximum captcha effectiveness.
 
+## Admin Backend
+
+For monitoring captcha health and investigating abuse, the plugin ships with a self-contained admin backend:
+
+- [Admin](Admin.md): Setup, routing, auth, and feature reference
+
 
 ## Basic Usage
 Using the default MathEngine we can simply attach the behavior to the Table class.

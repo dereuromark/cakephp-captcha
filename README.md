@@ -49,3 +49,12 @@ For the match captcha, make sure you got the gd lib installed:
 
 ## Usage
 See [Docs](docs/).
+
+## Admin Backend
+A self-contained admin backend ships with the plugin. It mounts at `/admin/captcha/` by default and provides:
+
+- Health dashboard with stat tiles and an hourly heatmap
+- Per-IP investigation pages and currently rate-limited list
+- One-click maintenance: cleanup, hard reset, per-IP reset, rate-limit cache wipe
+
+Access is **deny-by-default** — register a `Captcha.adminAccess` closure to grant access. See [docs/Admin.md](docs/Admin.md) for setup.

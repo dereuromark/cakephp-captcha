@@ -15,6 +15,7 @@ use Cake\ORM\Entity;
  * @property string $image
  * @property \Cake\I18n\DateTime $created
  * @property \Cake\I18n\DateTime|null $used
+ * @property bool|null $solved
  */
 class Captcha extends Entity {
 

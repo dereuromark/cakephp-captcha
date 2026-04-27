@@ -13,6 +13,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Validation\Validator;
+use Captcha\Cache\RateLimitKey;
 use Captcha\Engine\EngineInterface;
 use Captcha\Engine\MathEngine;
 use Captcha\Engine\NullEngine;
@@ -237,6 +238,7 @@ class CaptchaBehavior extends Behavior {
 		}
 
 		$isValid = hash_equals((string)$captcha->result, (string)$value);
+		$captcha->solved = $isValid;
 		if (!$this->_captchasTable->markUsed($captcha)) {
 			return false;
 		}
@@ -416,16 +418,7 @@ class CaptchaBehavior extends Behavior {
 		$config = $this->_getVerifyRateLimitConfig();
 		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
 
-		$scope = $config['scope'];
-		if ($scope === 'ip') {
-			$keyData = $ip;
-		} else {
-			$keyData = $ip . '|' . $sessionId;
-		}
-		$window = max((int)$config['window'], 1);
-		$bucket = (int)floor(time() / $window);
-
-		return 'captcha_verify_rate_limit_' . sha1($keyData) . '_' . $bucket;
+		return RateLimitKey::build($ip, $sessionId, (string)$config['scope'], (int)$config['window']);
 	}
 
 	/**

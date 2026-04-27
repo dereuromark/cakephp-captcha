@@ -14,5 +14,16 @@ return [
 			'scope' => 'ip_session', // 'ip_session' or 'ip'
 			'cache' => 'default',
 		],
+
+		// Admin backend (mounted at /<adminPrefix><adminRoutePath> — default /admin/captcha)
+		'adminPrefix' => 'Admin', // Route prefix to mount the admin under
+		'adminRoutePath' => '/captcha', // Path segment under the prefix
+		'adminLayout' => null, // null = plugin layout, false = host layout, string = custom layout name
+
+		// REQUIRED for the admin backend. Default is deny — the closure must return true to allow access.
+		// 'adminAccess' => function (\Cake\Http\ServerRequest $request): bool {
+		//     $identity = $request->getAttribute('identity');
+		//     return $identity !== null && in_array('admin', (array)($identity->roles ?? []), true);
+		// },
 	],
 ];
