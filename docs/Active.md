@@ -38,6 +38,7 @@ echo $this->Captcha->render(['placeholder' => __('Please solve the riddle')]);
 ```
 
 That's it, it should now display the images to solve.
+The helper stores the active challenge UUID in a hidden `captcha_uuid` field and uses that UUID in the image URL instead of exposing the internal numeric database id.
 
 `render()` by default adds both active and passive form elements.
 You can use `control()` to only use active ones.
@@ -165,9 +166,25 @@ The `minTime` is by default 2 seconds and make sure you cannot auto-post a form 
 
 One should also include a throttle limit, so you cannot fill up the DB.
 The built in mechanism is a `maxPerUser` value (defaults to 100) which prevents entering more than this amount per ip or session.
-If a form gets built and failed too often, those captcha results will never validate then for one hour (as their result has not been persisted anymore due to this rate limit).
+If a form gets built too often, new captcha rows will stop being persisted temporarily once this limit is reached.
 The user will be blocked at most for 1 hour, customizable with `deadlockMinutes` config parameter. The user may submit new forms earlier depending on client IP and session ID.
-Note that this feature doesn't prevent the user to solve more captchas. Only unused or failed captchas throttling the DB are limited this way.
+Note that this feature is primarily about limiting DB growth from issued challenges.
+
+Separately, active captchas also include a verification-side rate limiter by default:
+
+```php
+'Captcha' => [
+    'verifyRateLimit' => [
+        'enabled' => true,
+        'maxFailures' => 5,
+        'window' => 600,
+        'scope' => 'ip_session', // 'ip_session' or 'ip'
+        'cache' => 'default',
+    ],
+],
+```
+
+This limiter applies to failed verification attempts, not challenge creation. It is enabled by default and is tracked via Cake Cache. The default policy counts wrong answers as well as invalid or already-used `captcha_uuid` submissions. Timing failures (`minTime`/`maxTime`) do not consume that budget.
 
 ### Larger captcha images
 
