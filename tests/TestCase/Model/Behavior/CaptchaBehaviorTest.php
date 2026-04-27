@@ -383,4 +383,87 @@ class CaptchaBehaviorTest extends TestCase {
 		);
 	}
 
+	/**
+	 * @return void
+	 */
+	public function testCorrectAnswerMarksSolvedTrue() {
+		$captcha = $this->Captchas->newEntity([
+			'uuid' => Text::uuid(),
+			'result' => 51,
+			'ip' => '127.0.0.1',
+			'session_id' => $this->request->getSession()->id() ?: 'test',
+			'created' => new DateTime('- 1 hour'),
+			'modified' => new DateTime('- 1 hour'),
+		]);
+		$this->assertTrue((bool)$this->Captchas->save($captcha));
+
+		$comment = $this->Comments->newEntity([
+			'comment' => 'Foo',
+			'captcha_uuid' => $captcha->uuid,
+			'captcha_result' => 51,
+			'email_homepage' => '',
+		]);
+		$this->assertTrue((bool)$this->Comments->save($comment));
+
+		$captcha = $this->Captchas->get($captcha->id);
+		$this->assertTrue($captcha->solved);
+		$this->assertNotEmpty($captcha->used);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testWrongAnswerMarksSolvedFalse() {
+		$captcha = $this->Captchas->newEntity([
+			'uuid' => Text::uuid(),
+			'result' => 61,
+			'ip' => '127.0.0.1',
+			'session_id' => $this->request->getSession()->id() ?: 'test',
+			'created' => new DateTime('- 1 hour'),
+			'modified' => new DateTime('- 1 hour'),
+		]);
+		$this->assertTrue((bool)$this->Captchas->save($captcha));
+
+		$comment = $this->Comments->newEntity([
+			'comment' => 'Foo',
+			'captcha_uuid' => $captcha->uuid,
+			'captcha_result' => 99,
+			'email_homepage' => '',
+		]);
+		$this->assertFalse((bool)$this->Comments->save($comment));
+
+		$captcha = $this->Captchas->get($captcha->id);
+		$this->assertFalse($captcha->solved);
+		$this->assertNotEmpty($captcha->used);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testReplayDoesNotChangeSolved() {
+		$captcha = $this->Captchas->newEntity([
+			'uuid' => Text::uuid(),
+			'result' => 71,
+			'ip' => '127.0.0.1',
+			'session_id' => $this->request->getSession()->id() ?: 'test',
+			'created' => new DateTime('- 1 hour'),
+			'modified' => new DateTime('- 1 hour'),
+		]);
+		$this->assertTrue((bool)$this->Captchas->save($captcha));
+
+		$data = [
+			'comment' => 'Foo',
+			'captcha_uuid' => $captcha->uuid,
+			'captcha_result' => 71,
+			'email_homepage' => '',
+		];
+		$this->assertTrue((bool)$this->Comments->save($this->Comments->newEntity($data)));
+
+		$data['captcha_result'] = 99;
+		$this->assertFalse((bool)$this->Comments->save($this->Comments->newEntity($data)));
+
+		$captcha = $this->Captchas->get($captcha->id);
+		$this->assertTrue($captcha->solved, 'Successful solve must not be overwritten by a later replay attempt');
+	}
+
 }

@@ -24,9 +24,13 @@ class CaptchasFixture extends TestFixture {
 		'result' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
 		'created' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
 		'used' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
+		'solved' => ['type' => 'boolean', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
 		'_constraints' => [
 			'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
 			'uuid' => ['type' => 'unique', 'columns' => ['uuid'], 'length' => []],
+		],
+		'_indexes' => [
+			'idx_solved_created' => ['type' => 'index', 'columns' => ['solved', 'created'], 'length' => []],
 		],
 		'_options' => [
 			'engine' => 'InnoDB',

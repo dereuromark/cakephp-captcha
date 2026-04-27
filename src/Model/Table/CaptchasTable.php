@@ -71,6 +71,10 @@ class CaptchasTable extends Table {
 			->dateTime('used')
 			->allowEmptyDateTime('used');
 
+		$validator
+			->boolean('solved')
+			->allowEmptyString('solved');
+
 		return $validator;
 	}
 
