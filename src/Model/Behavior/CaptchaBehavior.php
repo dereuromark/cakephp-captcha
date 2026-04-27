@@ -3,6 +3,8 @@
 namespace Captcha\Model\Behavior;
 
 use Cake\Cache\Cache;
+use Cake\Cache\Engine\FileEngine;
+use Cake\Cache\Engine\NullEngine as CacheNullEngine;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\I18n\DateTime;
@@ -57,11 +59,21 @@ class CaptchaBehavior extends Behavior {
 	protected array $_captchas = [];
 
 	/**
+	 * Tracks UUID-scoped verification failures already counted during the current request.
+	 *
+	 * @var array<string, bool>
+	 */
+	protected array $_countedFailures = [];
+
+	/**
 	 * @param \Cake\ORM\Table $table
 	 * @param array<string, mixed> $config
 	 */
 	public function __construct(Table $table, array $config = []) {
 		$config += (array)Configure::read('Captcha');
+		if (isset($config['verifyRateLimit']) && is_array($config['verifyRateLimit'])) {
+			$config['verifyRateLimit'] += $this->_defaultConfig['verifyRateLimit'];
+		}
 
 		parent::__construct($table, $config);
 	}
@@ -248,7 +260,15 @@ class CaptchaBehavior extends Behavior {
 		$uuid = !empty($data['captcha_uuid']) ? (string)$data['captcha_uuid'] : null;
 
 		if ($uuid && array_key_exists($uuid, $this->_captchas)) {
-			return $this->_captchas[$uuid];
+			$captcha = $this->_captchas[$uuid];
+			if ($captcha && $captcha->used === null) {
+				return $captcha;
+			}
+			if ($captcha) {
+				$this->_registerLookupFailure($uuid);
+			}
+
+			return null;
 		}
 
 		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
@@ -263,13 +283,19 @@ class CaptchaBehavior extends Behavior {
 			'uuid' => $uuid,
 			'ip' => $ip,
 			'session_id' => $sessionId,
-			'used IS' => null,
 		];
 		/** @var \Captcha\Model\Entity\Captcha|null $captcha */
 		$captcha = $this->_captchasTable->find()->where($conditions)->first();
+		if ($captcha && $captcha->used === null) {
+			$this->_captchas[$uuid] = $captcha;
+
+			return $this->_captchas[$uuid];
+		}
+
+		$this->_registerLookupFailure($uuid);
 		$this->_captchas[$uuid] = $captcha;
 
-		return $this->_captchas[$uuid];
+		return null;
 	}
 
 	/**
@@ -298,7 +324,7 @@ class CaptchaBehavior extends Behavior {
 	 * @return bool
 	 */
 	protected function _isVerifyRateLimitEnabled(): bool {
-		$config = (array)$this->getConfig('verifyRateLimit');
+		$config = $this->_getVerifyRateLimitConfig();
 
 		return !empty($config['enabled']);
 	}
@@ -311,20 +337,14 @@ class CaptchaBehavior extends Behavior {
 			return false;
 		}
 
-		$config = (array)$this->getConfig('verifyRateLimit');
+		$config = $this->_getVerifyRateLimitConfig();
 		$key = $this->_buildRateLimitKey();
-		$data = Cache::read($key, $config['cache']);
-		if (!is_array($data)) {
-			return false;
-		}
-		$expiresAt = isset($data['expiresAt']) ? (int)$data['expiresAt'] : 0;
-		if ($expiresAt <= time()) {
-			Cache::delete($key, $config['cache']);
-
+		$count = Cache::read($key, $config['cache']);
+		if (!is_int($count)) {
 			return false;
 		}
 
-		return ($data['count'] ?? 0) >= (int)$config['maxFailures'];
+		return $count >= (int)$config['maxFailures'];
 	}
 
 	/**
@@ -335,23 +355,23 @@ class CaptchaBehavior extends Behavior {
 			return;
 		}
 
-		$config = (array)$this->getConfig('verifyRateLimit');
+		$config = $this->_getVerifyRateLimitConfig();
 		$key = $this->_buildRateLimitKey();
-		$data = Cache::read($key, $config['cache']);
-		if (!is_array($data)) {
-			$data = [
-				'count' => 0,
-				'expiresAt' => time() + (int)$config['window'],
-			];
-		} elseif (($data['expiresAt'] ?? 0) <= time()) {
-			$data = [
-				'count' => 0,
-				'expiresAt' => time() + (int)$config['window'],
-			];
-		}
-		$data['count'] = (int)$data['count'] + 1;
 
-		Cache::write($key, $data, $config['cache']);
+		if (!Cache::add($key, 0, $config['cache'])) {
+			$cache = Cache::pool($config['cache']);
+			if (!$cache instanceof FileEngine && !$cache instanceof CacheNullEngine) {
+				$count = Cache::increment($key, 1, $config['cache']);
+				if ($count !== false) {
+					return;
+				}
+			}
+		}
+
+		$count = Cache::read($key, $config['cache']);
+		$count = is_int($count) ? $count + 1 : 1;
+
+		Cache::write($key, $count, $config['cache']);
 	}
 
 	/**
@@ -362,25 +382,50 @@ class CaptchaBehavior extends Behavior {
 			return;
 		}
 
-		$config = (array)$this->getConfig('verifyRateLimit');
+		$config = $this->_getVerifyRateLimitConfig();
 		Cache::delete($this->_buildRateLimitKey(), $config['cache']);
+	}
+
+	/**
+	 * @param string $uuid
+	 * @return void
+	 */
+	protected function _registerLookupFailure(string $uuid): void {
+		if (isset($this->_countedFailures[$uuid])) {
+			return;
+		}
+
+		$this->_incrementFailedAttemptCounter();
+		$this->_countedFailures[$uuid] = true;
+	}
+
+	/**
+	 * @return array{enabled: bool, maxFailures: int, window: int, scope: string, cache: string}
+	 */
+	protected function _getVerifyRateLimitConfig(): array {
+		/** @var array{enabled: bool, maxFailures: int, window: int, scope: string, cache: string} $config */
+		$config = (array)$this->getConfig('verifyRateLimit') + $this->_defaultConfig['verifyRateLimit'];
+
+		return $config;
 	}
 
 	/**
 	 * @return string
 	 */
 	protected function _buildRateLimitKey(): string {
-		$config = (array)$this->getConfig('verifyRateLimit');
+		$config = $this->_getVerifyRateLimitConfig();
 		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
 
-		$scope = $config['scope'] ?? 'ip_session';
+		$scope = $config['scope'];
 		if ($scope === 'ip') {
 			$keyData = $ip;
 		} else {
 			$keyData = $ip . '|' . $sessionId;
 		}
+		$window = max((int)$config['window'], 1);
+		$bucket = (int)floor(time() / $window);
 
-		return 'captcha_verify_rate_limit_' . sha1($keyData);
+		return 'captcha_verify_rate_limit_' . sha1($keyData) . '_' . $bucket;
 	}
 
 	/**
