@@ -8,12 +8,13 @@ use Cake\ORM\Entity;
  * Captcha Entity.
  *
  * @property int $id
+ * @property string $uuid
  * @property string $session_id
  * @property string $ip
  * @property string $result
  * @property string $image
  * @property \Cake\I18n\DateTime $created
- * @property \Cake\I18n\DateTime $used
+ * @property \Cake\I18n\DateTime|null $used
  */
 class Captcha extends Entity {
 

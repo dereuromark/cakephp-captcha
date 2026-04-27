@@ -2,10 +2,11 @@
 
 By default, the plugin provides an unobtrusive passive captcha as "bot trap" aka "honeypot".
 It does not need a DB table.
+This is low-assurance protection only and should be treated as nuisance filtering for unsophisticated bots, not as a primary anti-automation control.
 
 ### Honeypot field
 The `dummyField` config sets an input field (by default `email_homepage` control) as hidden field, and will fail if filled out.
-This can only happen by a bot, which usually fills out all fields it finds.
+This only catches simplistic bots that blindly fill every field they see. More capable bots can detect or ignore honeypots.
 
 If you want to only use this "passive captcha", then use the `Captcha.PassiveCaptcha` behavior instead.
 
@@ -27,6 +28,7 @@ echo $this->Captcha->passive();
 ```
 
 That's it, now it should not validate the form if the honeypot was triggered.
+For higher-risk forms, combine it with the active captcha or your own external bot-defense layer.
 
 ### Working with model-less forms
 E.g. for a contact form, first add this in your controller's `initialize()`:

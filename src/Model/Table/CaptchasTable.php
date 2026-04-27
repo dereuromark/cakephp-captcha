@@ -6,6 +6,7 @@ use Cake\Core\Configure;
 use Cake\I18n\DateTime;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Text;
 use Cake\Validation\Validator;
 use Captcha\Model\Rule\MaxRule;
 
@@ -50,6 +51,12 @@ class CaptchasTable extends Table {
 			->allowEmptyString('id', 'create');
 
 		$validator
+			->scalar('uuid')
+			->maxLength('uuid', 36)
+			->requirePresence('uuid', 'create')
+			->notEmptyString('uuid');
+
+		$validator
 			->requirePresence('ip', 'create')
 			->notEmptyString('ip');
 
@@ -86,14 +93,15 @@ class CaptchasTable extends Table {
 	 *
 	 * @throws \BadMethodCallException
 	 *
-	 * @return int|null
+	 * @return string|null
 	 */
-	public function touch(string $sessionId, string $ip): ?int {
+	public function touch(string $sessionId, string $ip): ?string {
 		$probability = (int)Configure::read('Captcha.cleanupProbability') ?: 10;
 		$this->cleanup($probability);
 
 		$captcha = $this->newEntity(
 			[
+				'uuid' => Text::uuid(),
 				'session_id' => $sessionId,
 				'ip' => $ip,
 			],
@@ -102,7 +110,7 @@ class CaptchasTable extends Table {
 			],
 		);
 		if ($this->save($captcha)) {
-			return $captcha->id;
+			return $captcha->uuid;
 		}
 
 		return null;

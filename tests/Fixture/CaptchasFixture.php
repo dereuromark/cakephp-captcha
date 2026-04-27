@@ -17,6 +17,7 @@ class CaptchasFixture extends TestFixture {
 	// phpcs:disable
 	public array $fields = [
 		'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
+		'uuid' => ['type' => 'string', 'length' => 36, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
 		'session_id' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
 		'ip' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
 		'image' => ['type' => 'binary', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
@@ -25,6 +26,7 @@ class CaptchasFixture extends TestFixture {
 		'used' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
 		'_constraints' => [
 			'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
+			'uuid' => ['type' => 'unique', 'columns' => ['uuid'], 'length' => []],
 		],
 		'_options' => [
 			'engine' => 'InnoDB',
@@ -39,6 +41,7 @@ class CaptchasFixture extends TestFixture {
 	 */
 	public array $records = [
 		[
+			'uuid' => '11111111-1111-4111-8111-111111111111',
 			'session_id' => 'Lorem ipsum dolor sit amet',
 			'ip' => 'Lorem ipsum dolor sit amet',
 			'image' => 'Lorem ipsum dolor sit amet',

@@ -7,6 +7,7 @@ use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Text;
 use DateTime;
 
 class CaptchaBehaviorTest extends TestCase {
@@ -74,6 +75,7 @@ class CaptchaBehaviorTest extends TestCase {
 	 */
 	public function testSave() {
 		$captcha = $this->Captchas->newEntity([
+			'uuid' => Text::uuid(),
 			'result' => 3,
 			'ip' => '127.0.0.1',
 			'session_id' => $this->request->getSession()->id() ?: 'test',
@@ -82,7 +84,7 @@ class CaptchaBehaviorTest extends TestCase {
 		]);
 		$result = $this->Captchas->save($captcha);
 		$this->assertTrue((bool)$result);
-		$id = $captcha->id;
+		$uuid = $captcha->uuid;
 
 		$data = [
 			'comment' => 'Foo',
@@ -91,22 +93,138 @@ class CaptchaBehaviorTest extends TestCase {
 		$res = $this->Comments->save($comment);
 		$this->assertFalse((bool)$res);
 
-		$data['captcha_id'] = $id;
-		$data['captcha_result'] = 2;
-		$data['email_homepage'] = '';
-
-		$comment = $this->Comments->newEntity($data);
-		$res = $this->Comments->save($comment);
-		$this->assertFalse((bool)$res);
-
+		$data['captcha_uuid'] = $uuid;
 		$data['captcha_result'] = 3;
+		$data['email_homepage'] = '';
 
 		$comment = $this->Comments->newEntity($data);
 		$res = $this->Comments->save($comment);
 		$this->assertTrue((bool)$res);
 
-		$captcha = $this->Captchas->get($id);
+		$captcha = $this->Captchas->get($captcha->id);
 		$this->assertNotEmpty($captcha->used);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testCaptchaCannotBeReplayedAfterSuccess() {
+		$captcha = $this->Captchas->newEntity([
+			'uuid' => Text::uuid(),
+			'result' => 7,
+			'ip' => '127.0.0.1',
+			'session_id' => $this->request->getSession()->id() ?: 'test',
+			'created' => new DateTime('- 1 hour'),
+			'modified' => new DateTime('- 1 hour'),
+		]);
+		$this->assertTrue((bool)$this->Captchas->save($captcha));
+
+		$data = [
+			'comment' => 'Foo',
+			'captcha_uuid' => $captcha->uuid,
+			'captcha_result' => 7,
+			'email_homepage' => '',
+		];
+
+		$comment = $this->Comments->newEntity($data);
+		$this->assertTrue((bool)$this->Comments->save($comment));
+
+		$comment = $this->Comments->newEntity($data);
+		$this->assertFalse((bool)$this->Comments->save($comment));
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testCaptchaIsConsumedAfterFailedAttempt() {
+		$captcha = $this->Captchas->newEntity([
+			'uuid' => Text::uuid(),
+			'result' => 9,
+			'ip' => '127.0.0.1',
+			'session_id' => $this->request->getSession()->id() ?: 'test',
+			'created' => new DateTime('- 1 hour'),
+			'modified' => new DateTime('- 1 hour'),
+		]);
+		$this->assertTrue((bool)$this->Captchas->save($captcha));
+
+		$data = [
+			'comment' => 'Foo',
+			'captcha_uuid' => $captcha->uuid,
+			'captcha_result' => 8,
+			'email_homepage' => '',
+		];
+
+		$comment = $this->Comments->newEntity($data);
+		$this->assertFalse((bool)$this->Comments->save($comment));
+
+		$data['captcha_result'] = 9;
+		$comment = $this->Comments->newEntity($data);
+		$this->assertFalse((bool)$this->Comments->save($comment));
+
+		$captcha = $this->Captchas->get($captcha->id);
+		$this->assertNotEmpty($captcha->used);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testCaptchaValidationRateLimit() {
+		Configure::write('Captcha.verifyRateLimit', [
+			'enabled' => true,
+			'maxFailures' => 2,
+			'window' => 600,
+			'scope' => 'ip_session',
+			'cache' => 'default',
+		]);
+		$this->Comments->removeBehavior('Captcha');
+		$this->Comments->addBehavior('Captcha.Captcha');
+
+		$captchaOne = $this->Captchas->newEntity([
+			'uuid' => Text::uuid(),
+			'result' => 11,
+			'ip' => '127.0.0.1',
+			'session_id' => $this->request->getSession()->id() ?: 'test',
+			'created' => new DateTime('- 1 hour'),
+			'modified' => new DateTime('- 1 hour'),
+		]);
+		$captchaTwo = $this->Captchas->newEntity([
+			'uuid' => Text::uuid(),
+			'result' => 13,
+			'ip' => '127.0.0.1',
+			'session_id' => $this->request->getSession()->id() ?: 'test',
+			'created' => new DateTime('- 1 hour'),
+			'modified' => new DateTime('- 1 hour'),
+		]);
+		$captchaThree = $this->Captchas->newEntity([
+			'uuid' => Text::uuid(),
+			'result' => 17,
+			'ip' => '127.0.0.1',
+			'session_id' => $this->request->getSession()->id() ?: 'test',
+			'created' => new DateTime('- 1 hour'),
+			'modified' => new DateTime('- 1 hour'),
+		]);
+		$this->assertTrue((bool)$this->Captchas->save($captchaOne));
+		$this->assertTrue((bool)$this->Captchas->save($captchaTwo));
+		$this->assertTrue((bool)$this->Captchas->save($captchaThree));
+
+		$data = [
+			'comment' => 'Foo',
+			'captcha_result' => 99,
+			'email_homepage' => '',
+		];
+
+		$comment = $this->Comments->newEntity($data + ['captcha_uuid' => $captchaOne->uuid]);
+		$this->assertFalse((bool)$this->Comments->save($comment));
+
+		$comment = $this->Comments->newEntity($data + ['captcha_uuid' => $captchaTwo->uuid]);
+		$this->assertFalse((bool)$this->Comments->save($comment));
+
+		$comment = $this->Comments->newEntity($data + ['captcha_uuid' => $captchaThree->uuid]);
+		$this->assertFalse((bool)$this->Comments->save($comment));
+		$this->assertSame(
+			'Too many failed attempts. Please retry later',
+			$comment->getError('captcha_result')['verifyRateLimit'] ?? null,
+		);
 	}
 
 }

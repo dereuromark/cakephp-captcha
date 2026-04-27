@@ -50,14 +50,14 @@ class CaptchaController extends AppController {
 	/**
 	 * Displays a captcha image
 	 *
-	 * @param int|null $id
+	 * @param string|null $id
 	 * @return \Cake\Http\Response|null|void
 	 */
 	public function display($id = null) {
 		if ($id === null) {
 			$captcha = new Captcha();
 		} else {
-			$captcha = $this->Captchas->get($id);
+			$captcha = $this->Captchas->find()->where(['uuid' => (string)$id])->firstOrFail();
 		}
 		$captcha = $this->Preparer->prepare($captcha);
 

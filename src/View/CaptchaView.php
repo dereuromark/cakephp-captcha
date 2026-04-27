@@ -23,7 +23,10 @@ class CaptchaView extends AppView {
 		$ext = $this->request->getParam('_ext') ?: 'png';
 
 		$this->response = $this->response->withType($ext)
-			->withHeader('Content-Transfer-Encoding', 'binary');
+			->withHeader('Content-Transfer-Encoding', 'binary')
+			->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+			->withHeader('Pragma', 'no-cache')
+			->withHeader('Expires', '0');
 	}
 
 }

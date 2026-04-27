@@ -41,6 +41,7 @@ That's it, it should now display the images to solve.
 
 `render()` by default adds both active and passive form elements.
 You can use `control()` to only use active ones.
+The passive element is only a low-assurance honeypot and should be treated as supplemental filtering, not as the main protection layer.
 
 ### Working with model-less forms
 E.g. for a contact form, first add this in your controller's `initialize()`:
@@ -111,6 +112,7 @@ class ComplexMath implements MathInterface {
 ### NullEngine
 The Null engine with its hidden form input can be used for either more passive captchas (hidden from user),
 or just to validate min/max time.
+This mode is also low-assurance and is only suitable where basic nuisance filtering is sufficient.
 ```php
 use Captcha\Engine\NullEngine;
 

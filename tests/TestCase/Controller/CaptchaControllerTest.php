@@ -42,13 +42,16 @@ class CaptchaControllerTest extends TestCase {
 	public function testDisplay() {
 		$this->disableErrorHandlerMiddleware();
 
-		$id = 1;
+		$id = '11111111-1111-4111-8111-111111111111';
 		$this->get(['plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'display', $id]);
 
 		$this->assertResponseCode(200);
 
 		$this->assertContentType('image/png');
 		$this->assertHeaderContains('Content-Transfer-Encoding', 'binary');
+		$this->assertHeaderContains('Cache-Control', 'no-store, no-cache, must-revalidate');
+		$this->assertHeaderContains('Pragma', 'no-cache');
+		$this->assertHeaderContains('Expires', '0');
 		$this->assertResponseNotEmpty();
 	}
 
@@ -58,13 +61,16 @@ class CaptchaControllerTest extends TestCase {
 	public function testDisplayExt() {
 		$this->disableErrorHandlerMiddleware();
 
-		$id = 1;
+		$id = '11111111-1111-4111-8111-111111111111';
 		$this->get(['plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'display', $id, '_ext' => 'png']);
 
 		$this->assertResponseCode(200);
 
 		$this->assertContentType('image/png');
 		$this->assertHeaderContains('Content-Transfer-Encoding', 'binary');
+		$this->assertHeaderContains('Cache-Control', 'no-store, no-cache, must-revalidate');
+		$this->assertHeaderContains('Pragma', 'no-cache');
+		$this->assertHeaderContains('Expires', '0');
 		$this->assertResponseNotEmpty();
 	}
 
@@ -74,13 +80,16 @@ class CaptchaControllerTest extends TestCase {
 	public function testDisplayExtJpg() {
 		$this->disableErrorHandlerMiddleware();
 
-		$id = 1;
+		$id = '11111111-1111-4111-8111-111111111111';
 		$this->get(['plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'display', $id, '_ext' => 'jpg']);
 
 		$this->assertResponseCode(200);
 
 		$this->assertContentType('image/jpeg');
 		$this->assertHeaderContains('Content-Transfer-Encoding', 'binary');
+		$this->assertHeaderContains('Cache-Control', 'no-store, no-cache, must-revalidate');
+		$this->assertHeaderContains('Pragma', 'no-cache');
+		$this->assertHeaderContains('Expires', '0');
 		$this->assertResponseNotEmpty();
 	}
 

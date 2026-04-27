@@ -80,10 +80,10 @@ class CaptchaHelperTest extends TestCase {
 		$this->View->setRequest($this->request);
 
 		$result = $this->Captcha->render();
-		$expected = <<<HTML
-<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2" alt=""></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result" value=""></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"><div style="display: none"><input type="text" name="email_homepage" value=""></div>
-HTML;
-		$this->assertSame($expected, $result);
+		$this->assertMatchesRegularExpression(
+			'#^<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/[0-9a-f-]{36}" alt=""></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result" value=""></div><input type="hidden" name="captcha_uuid" id="captcha-uuid" value="[0-9a-f-]{36}"><div style="display: none"><input type="text" name="email_homepage" value=""></div>$#',
+			$result,
+		);
 	}
 
 	/**
@@ -96,10 +96,10 @@ HTML;
 		$this->View->setRequest($this->request);
 
 		$result = $this->Captcha->render();
-		$expected = <<<HTML
-<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2.png" alt=""></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result" value=""></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"><div style="display: none"><input type="text" name="email_homepage" value=""></div>
-HTML;
-		$this->assertSame($expected, $result);
+		$this->assertMatchesRegularExpression(
+			'#^<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/[0-9a-f-]{36}\.png" alt=""></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result" value=""></div><input type="hidden" name="captcha_uuid" id="captcha-uuid" value="[0-9a-f-]{36}"><div style="display: none"><input type="text" name="email_homepage" value=""></div>$#',
+			$result,
+		);
 	}
 
 	/**
@@ -112,10 +112,10 @@ HTML;
 		$this->View->setRequest($this->request);
 
 		$result = $this->Captcha->render();
-		$expected = <<<HTML
-<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/2.jpg" alt=""></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result" value=""></div><input type="hidden" name="captcha_id" id="captcha-id" value="2"><div style="display: none"><input type="text" name="email_homepage" value=""></div>
-HTML;
-		$this->assertSame($expected, $result);
+		$this->assertMatchesRegularExpression(
+			'#^<div class="input text"><label for="captcha-result"><img src="/captcha/captcha/display/[0-9a-f-]{36}\.jpg" alt=""></label><input type="text" name="captcha_result" autocomplete="off" id="captcha-result" value=""></div><input type="hidden" name="captcha_uuid" id="captcha-uuid" value="[0-9a-f-]{36}"><div style="display: none"><input type="text" name="email_homepage" value=""></div>$#',
+			$result,
+		);
 	}
 
 	/**

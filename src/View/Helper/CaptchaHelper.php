@@ -22,9 +22,9 @@ class CaptchaHelper extends Helper {
 	protected array $helpers = ['Form', 'Html', 'Url'];
 
 	/**
-	 * @var int|null
+	 * @var string|null
 	 */
-	protected ?int $_id = null;
+	protected ?string $_id = null;
 
 	/**
 	 * Options:
@@ -86,7 +86,7 @@ class CaptchaHelper extends Helper {
 		} else {
 			$html = $this->control($options);
 		}
-		$html .= $this->Form->control('captcha_id', ['type' => 'hidden', 'value' => $id ?? '']);
+		$html .= $this->Form->control('captcha_uuid', ['type' => 'hidden', 'value' => $id ?? '']);
 		$html .= $this->passive();
 
 		return $html;
@@ -135,7 +135,7 @@ class CaptchaHelper extends Helper {
 	}
 
 	/**
-	 * @return int|null
+	 * @return string|null
 	 */
 	protected function _getId() {
 		if ($this->_id) {
