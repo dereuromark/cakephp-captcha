@@ -10,7 +10,9 @@
 		"security",
 		"form",
 		"spam-prevention",
-		"recaptcha"
+		"recaptcha",
+		"admin-panel",
+		"standalone-ui"		
 	],
 	"authors": [
 		{
