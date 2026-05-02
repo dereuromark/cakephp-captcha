@@ -54,6 +54,8 @@ class CaptchaController extends AppController {
 	 * @return \Cake\Http\Response|null|void
 	 */
 	public function display($id = null) {
+		$this->request->allowMethod('get');
+
 		if ($id === null) {
 			$captcha = new Captcha();
 		} else {

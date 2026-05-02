@@ -5,6 +5,7 @@ namespace Captcha\Controller\Admin;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\DateTime;
 use Captcha\Cache\RateLimitKey;
 
@@ -54,7 +55,7 @@ class IpsController extends CaptchaAdminAppController {
 	 * @return void
 	 */
 	public function view(?string $ip = null): void {
-		$ip = (string)$ip;
+		$ip = $this->assertValidIp($ip);
 		$query = $this->Captchas->find()
 			->where(['ip' => $ip])
 			->orderBy(['created' => 'DESC']);
@@ -87,7 +88,7 @@ class IpsController extends CaptchaAdminAppController {
 	 */
 	public function reset(?string $ip = null) {
 		$this->request->allowMethod('post');
-		$ip = (string)$ip;
+		$ip = $this->assertValidIp($ip);
 
 		$count = $this->Captchas->reset($ip);
 
@@ -103,7 +104,7 @@ class IpsController extends CaptchaAdminAppController {
 	 */
 	public function clearRateLimit(?string $ip = null) {
 		$this->request->allowMethod('post');
-		$ip = (string)$ip;
+		$ip = $this->assertValidIp($ip);
 
 		$rl = (array)Configure::read('Captcha.verifyRateLimit');
 		$cache = (string)($rl['cache'] ?? 'default');
@@ -170,6 +171,27 @@ class IpsController extends CaptchaAdminAppController {
 		}
 
 		return $out;
+	}
+
+	/**
+	 * Validate the IP path argument as a real IPv4/IPv6 address.
+	 *
+	 * Defense-in-depth against arbitrary path strings being reflected into
+	 * queries, cache keys and flash messages.
+	 *
+	 * @param string|null $ip
+	 *
+	 * @throws \Cake\Http\Exception\BadRequestException
+	 *
+	 * @return string Normalized IP string.
+	 */
+	protected function assertValidIp(?string $ip): string {
+		$ip = (string)$ip;
+		if ($ip === '' || filter_var($ip, FILTER_VALIDATE_IP) === false) {
+			throw new BadRequestException(__d('captcha', 'Invalid IP address.'));
+		}
+
+		return $ip;
 	}
 
 	/**

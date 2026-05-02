@@ -5,6 +5,7 @@ namespace Captcha\Test\TestCase\Controller\Admin;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\DateTime;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
@@ -133,6 +134,36 @@ class IpsControllerTest extends TestCase {
 
 		$this->assertResponseOk();
 		$this->assertResponseContains(__d('captcha', 'No captchas seen for this IP.'));
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testViewRejectsNonIpString() {
+		$this->disableErrorHandlerMiddleware();
+		$this->expectException(BadRequestException::class);
+
+		$this->get(['plugin' => 'Captcha', 'prefix' => 'Admin', 'controller' => 'Ips', 'action' => 'view', 'not-an-ip']);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testResetRejectsNonIpString() {
+		$this->disableErrorHandlerMiddleware();
+		$this->expectException(BadRequestException::class);
+
+		$this->post(['plugin' => 'Captcha', 'prefix' => 'Admin', 'controller' => 'Ips', 'action' => 'reset', 'bogus-value']);
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testClearRateLimitRejectsNonIpString() {
+		$this->disableErrorHandlerMiddleware();
+		$this->expectException(BadRequestException::class);
+
+		$this->post(['plugin' => 'Captcha', 'prefix' => 'Admin', 'controller' => 'Ips', 'action' => 'clearRateLimit', 'totally-not-ip']);
 	}
 
 	/**

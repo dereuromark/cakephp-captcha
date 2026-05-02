@@ -3,6 +3,7 @@
 namespace Captcha\Test\TestCase\Controller;
 
 use Cake\Core\Configure;
+use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
@@ -72,6 +73,17 @@ class CaptchaControllerTest extends TestCase {
 		$this->assertHeaderContains('Pragma', 'no-cache');
 		$this->assertHeaderContains('Expires', '0');
 		$this->assertResponseNotEmpty();
+	}
+
+	/**
+	 * @return void
+	 */
+	public function testDisplayRejectsPost() {
+		$this->disableErrorHandlerMiddleware();
+		$this->expectException(MethodNotAllowedException::class);
+
+		$id = '11111111-1111-4111-8111-111111111111';
+		$this->post(['plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'display', $id]);
 	}
 
 	/**
