@@ -20,6 +20,14 @@ return [
 		'adminRoutePath' => '/captcha', // Path segment under the prefix
 		'adminLayout' => null, // null = plugin layout, false = host layout, string = custom layout name
 
+		// Back-to-App link in the admin header (opt-in). When set, an outline
+		// button appears in the top navbar so admins can escape the
+		// plugin-isolated layout. Accepts anything Router::url() takes — Cake
+		// URL array, path string, or full URL. Use 'plugin' => false to
+		// anchor the builder to the host app rather than the Captcha plugin.
+		// 'adminBackUrl' => ['plugin' => false, 'prefix' => 'Admin', 'controller' => 'Overview', 'action' => 'index'],
+		// 'adminBackLabel' => 'Back to admin', // Optional. Defaults to "Back to App".
+
 		// REQUIRED for the admin backend. Default is deny — the closure must return true to allow access.
 		// 'adminAccess' => function (\Cake\Http\ServerRequest $request): bool {
 		//     $identity = $request->getAttribute('identity');
