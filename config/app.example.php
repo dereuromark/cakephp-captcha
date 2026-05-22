@@ -2,9 +2,11 @@
 
 // The following configs can be globally configured, copy the array content over to your ROOT/config
 
+use Captcha\Engine\MathEngine;
+
 return [
 	'Captcha' => [
-		'engine' => \Captcha\Engine\MathEngine::class, // Engine FQCN (must implement Captcha\Engine\EngineInterface); default is MathEngine
+		'engine' => MathEngine::class, // Engine FQCN (must implement Captcha\Engine\EngineInterface); default is MathEngine
 		'engineConfig' => [], // Only read by the admin preview (Admin/CaptchaController::preview) when rendering a test captcha; the live captcha flow does NOT read this — set production engine options at the Captcha.* top level
 		'maxTime' => DAY, // Seconds a generated captcha stays valid before it is considered stale/expired; default DAY (86400)
 
