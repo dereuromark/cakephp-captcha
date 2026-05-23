@@ -1,0 +1,28 @@
+// cakephp-captcha — database schema snapshot (DBML)
+//
+// A merged snapshot of all plugin migrations under config/Migrations/.
+// Hand-maintained: update it when you add a migration that changes these tables.
+// Paste into https://dbdiagram.io (or any DBML tool) to view/diagram.
+// DBML reference: https://dbml.dbdiagram.io/docs
+
+Project cakephp_captcha {
+  database_type: 'Generic'
+  Note: 'Captcha plugin tables only.'
+}
+
+Table captchas {
+  id integer [pk, increment]
+  uuid varchar(36) [not null]
+  session_id varchar(255) [not null]
+  ip varchar(255) [not null]
+  image blob [null, note: 'Binary image data; limited to 6000 bytes on MySQL']
+  result varchar(255) [null]
+  created datetime [null]
+  used datetime [null]
+  solved boolean [null]
+
+  indexes {
+    uuid [unique]
+    (solved, created) [name: 'idx_solved_created']
+  }
+}
