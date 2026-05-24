@@ -86,7 +86,7 @@ class MathEngine implements EngineInterface {
 		match ($this->_config['imageFormat']) {
 			static::FORMAT_JPEG => imagejpeg($formula->image),
 			static::FORMAT_PNG => imagepng($formula->image),
-			default => ob_get_clean() ?: '',
+			default => null,
 		};
 
 		return ob_get_clean() ?: '';
