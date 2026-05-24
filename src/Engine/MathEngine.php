@@ -84,10 +84,10 @@ class MathEngine implements EngineInterface {
 		$formula->dessine($this->_config['size']);
 		ob_start();
 		match ($this->_config['imageFormat']) {
-            static::FORMAT_JPEG => imagejpeg($formula->image),
-            static::FORMAT_PNG => imagepng($formula->image),
-            default => ob_get_clean() ?: '',
-        };
+			static::FORMAT_JPEG => imagejpeg($formula->image),
+			static::FORMAT_PNG => imagepng($formula->image),
+			default => ob_get_clean() ?: '',
+		};
 
 		return ob_get_clean() ?: '';
 	}

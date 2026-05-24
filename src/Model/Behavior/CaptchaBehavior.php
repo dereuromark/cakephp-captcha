@@ -197,7 +197,8 @@ class CaptchaBehavior extends Behavior {
 		if (!$captcha) {
 			return false;
 		}
-        return $captcha->created < new DateTime('- ' . $this->getConfig('minTime') . ' seconds');
+
+		return $captcha->created < new DateTime('- ' . $this->getConfig('minTime') . ' seconds');
 	}
 
 	/**
@@ -211,7 +212,8 @@ class CaptchaBehavior extends Behavior {
 		if (!$captcha) {
 			return false;
 		}
-        return $captcha->created > new DateTime('- ' . $this->getConfig('maxTime') . ' seconds');
+
+		return $captcha->created > new DateTime('- ' . $this->getConfig('maxTime') . ' seconds');
 	}
 
 	/**
