@@ -44,7 +44,7 @@ class CaptchaController extends CaptchaAdminAppController {
 		$heatmap = $this->buildHeatmap();
 		$snapshot = $this->buildSnapshot();
 
-		$this->set(compact('tiles24h', 'tiles7d', 'throttledIps', 'heatmap', 'snapshot'));
+		$this->set(['tiles24h' => $tiles24h, 'tiles7d' => $tiles7d, 'throttledIps' => $throttledIps, 'heatmap' => $heatmap, 'snapshot' => $snapshot]);
 	}
 
 	/**
@@ -53,7 +53,7 @@ class CaptchaController extends CaptchaAdminAppController {
 	public function config(): void {
 		$config = (array)Configure::read('Captcha');
 
-		$this->set(compact('config'));
+		$this->set(['config' => $config]);
 	}
 
 	/**
@@ -63,7 +63,7 @@ class CaptchaController extends CaptchaAdminAppController {
 		$engines = $this->knownEngines();
 		$activeClass = (string)Configure::read('Captcha.engine', MathEngine::class);
 
-		$this->set(compact('engines', 'activeClass'));
+		$this->set(['engines' => $engines, 'activeClass' => $activeClass]);
 	}
 
 	/**

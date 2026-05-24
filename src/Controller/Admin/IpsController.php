@@ -46,7 +46,7 @@ class IpsController extends CaptchaAdminAppController {
 		$failed = $this->topIps($since, false);
 		$throttled = $this->throttledIps();
 
-		$this->set(compact('issued', 'solved', 'failed', 'throttled', 'window'));
+		$this->set(['issued' => $issued, 'solved' => $solved, 'failed' => $failed, 'throttled' => $throttled, 'window' => $window]);
 	}
 
 	/**
@@ -78,7 +78,7 @@ class IpsController extends CaptchaAdminAppController {
 			}
 		}
 
-		$this->set(compact('ip', 'captchas', 'summary'));
+		$this->set(['ip' => $ip, 'captchas' => $captchas, 'summary' => $summary]);
 	}
 
 	/**

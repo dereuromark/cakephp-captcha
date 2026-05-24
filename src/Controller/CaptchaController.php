@@ -63,7 +63,7 @@ class CaptchaController extends AppController {
 		}
 		$captcha = $this->Preparer->prepare($captcha);
 
-		$this->set(compact('captcha'));
+		$this->set(['captcha' => $captcha]);
 
 		$this->viewBuilder()->setClassName('Captcha.Captcha');
 		$this->viewBuilder()->setTemplatePath('Captcha');
