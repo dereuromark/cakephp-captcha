@@ -83,16 +83,11 @@ class MathEngine implements EngineInterface {
 		$formula = new expression_math(tableau_expression($expression));
 		$formula->dessine($this->_config['size']);
 		ob_start();
-		switch ($this->_config['imageFormat']) {
-			case static::FORMAT_JPEG:
-				imagejpeg($formula->image);
-
-				break;
-			case static::FORMAT_PNG:
-				imagepng($formula->image);
-
-				break;
-		}
+		match ($this->_config['imageFormat']) {
+			static::FORMAT_JPEG => imagejpeg($formula->image),
+			static::FORMAT_PNG => imagepng($formula->image),
+			default => null,
+		};
 
 		return ob_get_clean() ?: '';
 	}

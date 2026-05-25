@@ -59,6 +59,7 @@ class CaptchaController extends AppController {
 		if ($id === null) {
 			$captcha = new Captcha();
 		} else {
+			/** @var \Captcha\Model\Entity\Captcha $captcha */
 			$captcha = $this->Captchas->find()->where(['uuid' => (string)$id])->firstOrFail();
 		}
 		$captcha = $this->Preparer->prepare($captcha);

@@ -57,11 +57,7 @@ class SimpleMath implements MathInterface {
 	public function getValue(): string {
 		$operator = $this->data[1];
 
-		if ($operator === '-') {
-			$value = $this->data[0] - $this->data[2];
-		} else {
-			$value = $this->data[0] + $this->data[2];
-		}
+		$value = $operator === '-' ? $this->data[0] - $this->data[2] : $this->data[0] + $this->data[2];
 
 		return (string)$value;
 	}

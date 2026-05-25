@@ -62,7 +62,7 @@ class PassiveCaptchaBehavior extends Behavior {
 					'rule' => function ($value) {
 						$ok = $value === '';
 						if (!$ok && $this->_config['log']) {
-							Log::write('info', 'PassiveCaptcha trigger, field value `' . (string)$value . '`');
+							Log::write('info', 'PassiveCaptcha trigger, field value `' . $value . '`');
 						}
 
 						return $ok;

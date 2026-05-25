@@ -197,11 +197,8 @@ class CaptchaBehavior extends Behavior {
 		if (!$captcha) {
 			return false;
 		}
-		if ($captcha->created >= new DateTime('- ' . $this->getConfig('minTime') . ' seconds')) {
-			return false;
-		}
 
-		return true;
+		return $captcha->created < new DateTime('- ' . $this->getConfig('minTime') . ' seconds');
 	}
 
 	/**
@@ -215,11 +212,8 @@ class CaptchaBehavior extends Behavior {
 		if (!$captcha) {
 			return false;
 		}
-		if ($captcha->created <= new DateTime('- ' . $this->getConfig('maxTime') . ' seconds')) {
-			return false;
-		}
 
-		return true;
+		return $captcha->created > new DateTime('- ' . $this->getConfig('maxTime') . ' seconds');
 	}
 
 	/**
@@ -259,7 +253,7 @@ class CaptchaBehavior extends Behavior {
 	 * @return \Captcha\Model\Entity\Captcha|null
 	 */
 	protected function _getCaptcha(array $data) {
-		$uuid = !empty($data['captcha_uuid']) ? (string)$data['captcha_uuid'] : null;
+		$uuid = empty($data['captcha_uuid']) ? null : (string)$data['captcha_uuid'];
 
 		if ($uuid && array_key_exists($uuid, $this->_captchas)) {
 			$captcha = $this->_captchas[$uuid];
