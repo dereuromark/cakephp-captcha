@@ -53,7 +53,7 @@ class CaptchaController extends CaptchaAdminAppController {
 	public function config(): void {
 		$config = (array)Configure::read('Captcha');
 
-		$this->set(['config' => $config]);
+		$this->set(compact('config'));
 	}
 
 	/**
