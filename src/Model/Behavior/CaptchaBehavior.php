@@ -270,8 +270,6 @@ class CaptchaBehavior extends Behavior {
 		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
 
 		if (!$uuid) {
-			$this->_captchas[$uuid] = null;
-
 			return null;
 		}
 

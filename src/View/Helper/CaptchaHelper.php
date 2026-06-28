@@ -17,7 +17,7 @@ use Captcha\Engine\NullEngine;
 class CaptchaHelper extends Helper {
 
 	/**
-	 * @var array
+	 * @var array<int|string, array<string, mixed>|string>
 	 */
 	protected array $helpers = ['Form', 'Html', 'Url'];
 
