@@ -127,4 +127,15 @@ class CaptchaHelperTest extends TestCase {
 		$this->assertSame($expected, $result);
 	}
 
+	/**
+	 * @return void
+	 */
+	public function testPassiveWithClass() {
+		$this->Captcha->setConfig(['passiveClass' => 'd-none']);
+
+		$result = $this->Captcha->passive();
+		$expected = '<div class="d-none"><input type="text" name="email_homepage" value=""></div>';
+		$this->assertSame($expected, $result);
+	}
+
 }

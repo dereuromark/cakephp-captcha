@@ -35,6 +35,7 @@ class CaptchaHelper extends Helper {
 	protected array $_defaultConfig = [
 		'ext' => null,
 		'engine' => MathEngine::class,
+		'passiveClass' => null, // CSS class for honeypot wrapper (e.g. 'd-none'); null uses inline style
 	];
 
 	/**
@@ -105,10 +106,18 @@ class CaptchaHelper extends Helper {
 			$field = $this->getConfig('dummyField') ?: 'email_homepage';
 		}
 		$dummyFields = (array)$field;
-
+		$passiveClass = $this->getConfig('passiveClass');
 		$html = [];
 		foreach ($dummyFields as $dummyField) {
-			$html[] = '<div style="display: none">' . $this->Form->text($dummyField, ['default' => '']) . '</div>';
+			if ($passiveClass !== null) {
+				$html[] = '<div class="' . h($passiveClass) . '">'
+				. $this->Form->text($dummyField, ['default' => ''])
+				. '</div>';
+			} else {
+				$html[] = '<div style="display: none">'
+				. $this->Form->text($dummyField, ['default' => ''])
+				. '</div>';
+			}
 		}
 
 		return implode(PHP_EOL, $html);
