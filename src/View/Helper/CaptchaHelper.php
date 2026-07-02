@@ -106,18 +106,18 @@ class CaptchaHelper extends Helper {
 			$field = $this->getConfig('dummyField') ?: 'email_homepage';
 		}
 		$dummyFields = (array)$field;
- 		$passiveClass = $this->getConfig('passiveClass');
+		$passiveClass = $this->getConfig('passiveClass');
 		$html = [];
 		foreach ($dummyFields as $dummyField) {
 			if ($passiveClass !== null) {
-              $html[] = '<div class="' . h($passiveClass) . '">'
-                  . $this->Form->text($dummyField, ['default' => ''])
-                  . '</div>';
-          } else {
-			  $html[] = '<div style="display: none">'
-                  . $this->Form->text($dummyField, ['default' => ''])
-                  . '</div>';
-          }
+				$html[] = '<div class="' . h($passiveClass) . '">'
+				. $this->Form->text($dummyField, ['default' => ''])
+				. '</div>';
+			} else {
+				$html[] = '<div style="display: none">'
+				. $this->Form->text($dummyField, ['default' => ''])
+				. '</div>';
+			}
 		}
 
 		return implode(PHP_EOL, $html);
