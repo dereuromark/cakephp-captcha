@@ -65,3 +65,22 @@ You can configure it globally using Configure class - and `app.php`:
 ```
 
 Use `'log' => true` if you want to log all honeypot events to type `info`.
+
+#### CSP-compatible rendering (`passiveClass`)
+
+By default, `passive()` renders the honeypot wrapper with an inline style:
+  <div style="display: none">…</div>
+
+This violates a strict `Content-Security-Policy` that disallows `style-src: unsafe-inline`.
+To render a CSS class instead, set the `passiveClass` config key:
+
+// config/app.php or app_local.php
+'Captcha' => [
+'passiveClass' => 'd-none', // Bootstrap utility class, or any custom class
+],
+The helper will then output:
+  <div class="d-none">…</div>
+  Add the corresponding CSS rule to your stylesheet if you are not using a framework that already provides it:
+
+.d-none { display: none; }
+When `passiveClass` is `null` (the default), the existing inline-style behaviour is preserved — no breaking change.
