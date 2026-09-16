@@ -59,10 +59,10 @@ class PassiveCaptchaBehavior extends Behavior {
 			$validator->allowEmptyString($field);
 			$validator->add($field, [
 				$field => [
-					'rule' => function ($value) {
+					'rule' => function ($value) use ($field) {
 						$ok = $value === '';
 						if (!$ok && $this->_config['log']) {
-							Log::write('info', 'PassiveCaptcha trigger, field value `' . $value . '`');
+							Log::write('info', 'PassiveCaptcha trigger on field `' . $field . '`, value ' . $this->sanitizeForLog($value));
 						}
 
 						return $ok;
@@ -71,6 +71,27 @@ class PassiveCaptchaBehavior extends Behavior {
 				],
 			]);
 		}
+	}
+
+	/**
+	 * The honeypot value is attacker controlled and can contain newlines or personal data
+	 * (bots do submit real email addresses). Never write it to the log verbatim.
+	 *
+	 * @param mixed $value
+	 *
+	 * @return string
+	 */
+	protected function sanitizeForLog(mixed $value): string {
+		if (!is_scalar($value)) {
+			return '(' . get_debug_type($value) . ')';
+		}
+
+		$value = (string)$value;
+		$length = strlen($value);
+		$value = preg_replace('/[^\P{C}]/u', ' ', $value) ?? '';
+		$value = mb_substr(trim($value), 0, 40);
+
+		return '`' . $value . '` (' . $length . ' bytes)';
 	}
 
 }
