@@ -69,18 +69,34 @@ Use `'log' => true` if you want to log all honeypot events to type `info`.
 #### CSP-compatible rendering (`passiveClass`)
 
 By default, `passive()` renders the honeypot wrapper with an inline style:
-  <div style="display: none">…</div>
+```html
+<div style="display: none">…</div>
+```
 
-This violates a strict `Content-Security-Policy` that disallows `style-src: unsafe-inline`.
+Inline `style` attributes are blocked by a strict `Content-Security-Policy` that does not
+allow `'unsafe-inline'` in `style-src` (respectively `style-src-attr`).
 To render a CSS class instead, set the `passiveClass` config key:
 
+```php
 // config/app.php or app_local.php
 'Captcha' => [
-'passiveClass' => 'd-none', // Bootstrap utility class, or any custom class
+    'passiveClass' => 'd-none', // Bootstrap utility class, or any custom class
 ],
-The helper will then output:
-  <div class="d-none">…</div>
-  Add the corresponding CSS rule to your stylesheet if you are not using a framework that already provides it:
+```
 
+The helper then outputs:
+```html
+<div class="d-none">…</div>
+```
+
+If you are not using a framework that already ships such a utility class, add the rule yourself:
+```css
 .d-none { display: none; }
+```
+
+The class must hide the field from assistive technology as well, not just visually.
+`display: none` or `visibility: hidden` do that; an off-screen-only class (such as a
+`.sr-only`/`.visually-hidden` helper) does not — screen reader users would fill in the
+honeypot and get their submission rejected.
+
 When `passiveClass` is `null` (the default), the existing inline-style behaviour is preserved — no breaking change.
