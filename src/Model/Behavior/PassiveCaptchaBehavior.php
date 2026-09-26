@@ -7,7 +7,6 @@ use Cake\Event\EventInterface;
 use Cake\Log\Log;
 use Cake\ORM\Behavior;
 use Cake\ORM\Table;
-use Cake\ORM\Table;
 use Cake\Routing\Router;
 use Cake\Validation\Validator;
 use Captcha\Cache\VerifyRateLimiter;
