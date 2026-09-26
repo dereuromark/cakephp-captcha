@@ -10,6 +10,7 @@ use Cake\ORM\Table;
 use Cake\Routing\Router;
 use Cake\Validation\Validator;
 use Captcha\Cache\VerifyRateLimiter;
+use Captcha\Validation\VerificationContext;
 use RuntimeException;
 
 /**
@@ -32,7 +33,7 @@ class PassiveCaptchaBehavior extends Behavior {
 		],
 	];
 
-	protected bool $_countedFailure = false;
+	protected ?VerificationContext $_verificationContext = null;
 
 	public function __construct(Table $table, array $config = []) {
 		$config += (array)Configure::read('Captcha');
@@ -74,8 +75,20 @@ class PassiveCaptchaBehavior extends Behavior {
 	 */
 	public function addPassiveCaptchaValidation(Validator $validator): void {
 		$fields = (array)$this->getConfig('dummyField');
+		$state = VerificationContext::forValidator($validator);
+		$state->addPassiveFields($fields);
+		$state->onStart(function (array $data) use ($state, $fields): void {
+			$this->_verificationContext = $state;
+			foreach ($fields as $field) {
+				if (!array_key_exists($field, $data) || $data[$field] !== '') {
+					$this->_incrementFailedAttemptCounter();
+
+					break;
+				}
+			}
+		});
 		foreach ($fields as $field) {
-			$validator->requirePresence($field);
+			$state->attach($validator, $field);
 			if ($this->_verifyRateLimiter()->enabled()) {
 				$validator->add($field, [
 					'verifyRateLimit' => [
@@ -85,15 +98,10 @@ class PassiveCaptchaBehavior extends Behavior {
 					],
 				]);
 			}
-			$validator->allowEmptyString($field);
 			$validator->add($field, [
 				$field => [
 					'rule' => function ($value) use ($field) {
 						$ok = $value === '';
-						if (!$ok && !$this->_countedFailure) {
-							$this->_incrementFailedAttemptCounter();
-							$this->_countedFailure = true;
-						}
 						if (!$ok && $this->_config['log']) {
 							Log::write('info', 'PassiveCaptcha trigger on field `' . $field . '`, value ' . $this->sanitizeForLog($value));
 						}
@@ -109,7 +117,8 @@ class PassiveCaptchaBehavior extends Behavior {
 	protected function _isRateLimited(): bool {
 		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
 
-		return $this->_verifyRateLimiter()->limited($ip, $sessionId);
+		return $this->_verificationContext?->limited($this->_verifyRateLimiter(), $ip, $sessionId)
+			?? $this->_verifyRateLimiter()->limited($ip, $sessionId);
 	}
 
 	protected function _incrementFailedAttemptCounter(): void {
@@ -118,7 +127,7 @@ class PassiveCaptchaBehavior extends Behavior {
 			return;
 		}
 		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
-		$limiter->increment($ip, $sessionId);
+		$this->_verificationContext?->increment($limiter, $ip, $sessionId);
 	}
 
 	protected function _verifyRateLimiter(): VerifyRateLimiter {
@@ -132,6 +141,9 @@ class PassiveCaptchaBehavior extends Behavior {
 		$request = Router::getRequest();
 		if ($request === null) {
 			throw new RuntimeException('No request found.');
+		}
+		if ($this->getConfig('verifyRateLimit.scope') === 'ip') {
+			return ['sessionId' => '', 'ip' => (string)$request->clientIp()];
 		}
 		if (!$request->getSession()->started()) {
 			$request->getSession()->start();

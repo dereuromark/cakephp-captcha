@@ -9,14 +9,22 @@ More likely one would use them side by side.
 Simple math captchas are also usually a bit more fun than trying to figure out some unreadable words behind colorful bars.
 But since this plugin ships with a highly extensible interface solution, you can write and use your own captcha image solution.
 
-## Active vs Passive
+## Choosing protection
 
-This plugin ships with two different types of captchas:
+The behavior controls stored state; the engine controls the visible challenge.
 
-- [Active](Active.md): User input required
-- [Passive](Passive.md): Honeypot trap and additional bot protection
+| Configuration | Visitor interaction | State |
+|---|---|---|
+| `PassiveCaptcha` | Hidden honeypot fields | No database, cache, or session by default |
+| `Captcha` with `MathEngine` | Math riddle | Database token, timing checks, single use, verification throttling |
+| `Captcha` with `NullEngine` | No riddle | Database token, timing checks, single use, verification throttling |
 
-They can also be combined for maximum captcha effectiveness.
+Both `Captcha` configurations can include `PassiveCaptcha`. The public behavior names remain unchanged.
+See [database-backed captchas](Active.md) and [honeypots](Passive.md) for setup.
+
+For an invisible form with a stored token, configure `Captcha.engine` as `\Captcha\Engine\NullEngine::class`
+and attach `Captcha.Captcha`. Render it with the same helper as other database-backed captchas.
+Add `Captcha.PassiveCaptcha` for honeypot checks, and explicitly enable its limiter to count those failures.
 
 ## Admin Backend
 

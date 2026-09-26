@@ -10,6 +10,7 @@ use Cake\I18n\DateTime;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Captcha\Cache\RateLimitKey;
+use Captcha\Cache\VerifyRateLimiter;
 
 /**
  * @uses \Captcha\Controller\Admin\IpsController
@@ -84,18 +85,10 @@ class IpsControllerTest extends TestCase {
 			'cache' => 'captcha_admin_test',
 		]);
 
-		$Captchas = $this->getTableLocator()->get('Captcha.Captchas');
-		for ($i = 0; $i < 3; $i++) {
-			$row = $Captchas->newEntity([
-				'uuid' => sprintf('11111111-1111-4111-8111-%012d', $i + 200),
-				'session_id' => 's',
-				'ip' => '9.9.9.9',
-				'result' => '1',
-				'solved' => false,
-				'used' => new DateTime('-1 minute'),
-			]);
-			$Captchas->saveOrFail($row);
-		}
+		$limiter = new VerifyRateLimiter(Configure::read('Captcha.verifyRateLimit'));
+		$limiter->increment('9.9.9.9', 'passive-only');
+		$limiter->increment('9.9.9.9', 'passive-only');
+		$this->assertSame(0, $this->getTableLocator()->get('Captcha.Captchas')->find()->where(['ip' => '9.9.9.9'])->count());
 
 		$this->get(['plugin' => 'Captcha', 'prefix' => 'Admin', 'controller' => 'Ips', 'action' => 'index']);
 
@@ -220,6 +213,20 @@ class IpsControllerTest extends TestCase {
 
 		$this->assertRedirect(['plugin' => 'Captcha', 'prefix' => 'Admin', 'controller' => 'Ips', 'action' => 'index']);
 		$this->assertNull(Cache::read($key, 'captcha_admin_test'));
+	}
+
+	public function testClearRateLimitForPassiveOnlySessions(): void {
+		$config = ['enabled' => true, 'maxFailures' => 1, 'window' => 600, 'scope' => 'ip_session', 'cache' => 'captcha_admin_test'];
+		Configure::write('Captcha.verifyRateLimit', $config);
+		$limiter = new VerifyRateLimiter($config);
+		$limiter->increment('9.9.9.9', 'one');
+		$limiter->increment('9.9.9.9', 'two');
+		$limiter->increment('8.8.8.8', 'one');
+		$this->post(['plugin' => 'Captcha', 'prefix' => 'Admin', 'controller' => 'Ips', 'action' => 'clearRateLimit', '9.9.9.9']);
+		$this->assertRedirect();
+		$this->assertFalse($limiter->limited('9.9.9.9', 'one'));
+		$this->assertFalse($limiter->limited('9.9.9.9', 'two'));
+		$this->assertTrue($limiter->limited('8.8.8.8', 'one'));
 	}
 
 }

@@ -9,6 +9,7 @@ use Cake\Log\Log;
 use Cake\Routing\Router;
 use Cake\TestSuite\LogTestTrait;
 use Cake\TestSuite\TestCase;
+use Captcha\Cache\RateLimitKey;
 use TestApp\Form\PassiveCaptchaTestForm;
 
 class PassiveCaptchaBehaviorTest extends TestCase {
@@ -100,21 +101,43 @@ class PassiveCaptchaBehaviorTest extends TestCase {
 		$this->assertSame('my_trap', $this->Form->behaviors()->PassiveCaptcha->getConfig('dummyField'));
 	}
 
-	public function testHoneypotFailureFeedsOptionalRateLimiterOnce(): void {
+	public function testHoneypotFailuresAreCountedPerValidation(): void {
 		Cache::drop('captcha_test');
 		Cache::setConfig('captcha_test', ['className' => 'Array']);
-		$request = (new ServerRequest())->withEnv('REMOTE_ADDR', '127.0.0.1');
-		Router::setRequest($request);
-		$config = [
+		Router::setRequest((new ServerRequest())->withEnv('REMOTE_ADDR', '127.0.0.1'));
+		$this->Form->addBehavior('Captcha.PassiveCaptcha', [
 			'dummyField' => ['dummy_one', 'dummy_two'],
-			'verifyRateLimit' => ['enabled' => true, 'maxFailures' => 1, 'cache' => 'captcha_test'],
-		];
-		$this->Form->addBehavior('Captcha.PassiveCaptcha', $config);
-		$this->Form->behaviors()->PassiveCaptcha->addPassiveCaptchaValidation($this->Form->getValidator());
+			'log' => false,
+			'verifyRateLimit' => ['enabled' => true, 'maxFailures' => 3, 'scope' => 'ip', 'cache' => 'captcha_test'],
+		]);
+		$validator = $this->Form->getValidator();
+		// Existing fields can have a different order and emptiness policy.
+		$validator->allowEmptyString('dummy_two');
+		$this->Form->behaviors()->PassiveCaptcha->addPassiveCaptchaValidation($validator);
+		$key = RateLimitKey::build('127.0.0.1', '', 'ip', 600);
+		$this->assertTrue($validator->isEmptyAllowed('dummy_two', true));
+		$this->assertTrue($validator->isPresenceRequired('dummy_two', true));
+		$this->assertNull(Cache::read($key, 'captcha_test'));
 
 		$this->assertFalse($this->Form->execute(['dummy_one' => 'bot', 'dummy_two' => 'bot']));
-		$result = $this->Form->execute(['dummy_one' => 'bot', 'dummy_two' => 'bot']);
-		$this->assertFalse($result);
+		$this->assertSame(1, Cache::read($key, 'captcha_test'));
+		$this->assertFalse($this->Form->execute(['dummy_one' => '', 'dummy_two' => null]));
+		$this->assertSame(2, Cache::read($key, 'captcha_test'));
+		$this->assertFalse($this->Form->execute([]));
+		$this->assertSame(3, Cache::read($key, 'captcha_test'));
+		$this->assertFalse($this->Form->execute(['dummy_one' => '', 'dummy_two' => '']));
+		foreach (['dummy_one', 'dummy_two'] as $field) {
+			$this->assertSame('Too many failed attempts. Please retry later', $this->Form->getErrors()[$field]['verifyRateLimit']);
+		}
+		$this->assertSame(3, Cache::read($key, 'captcha_test'));
+	}
+
+	public function testDefaultPassiveValidationNeedsNoRequest(): void {
+		Router::reload();
+		$this->Form->addBehavior('Captcha.PassiveCaptcha', ['log' => false]);
+		$this->Form->behaviors()->PassiveCaptcha->addPassiveCaptchaValidation($this->Form->getValidator());
+		$this->assertFalse($this->Form->execute(['email_homepage' => 'bot']));
+		$this->assertTrue($this->Form->execute(['email_homepage' => '']));
 	}
 
 	/**

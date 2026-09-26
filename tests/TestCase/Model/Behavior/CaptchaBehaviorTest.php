@@ -5,12 +5,13 @@ namespace Captcha\Test\TestCase\Model\Behavior;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Http\ServerRequest;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
+use Captcha\Cache\RateLimitKey;
 use Captcha\Engine\NullEngine;
-use DateTime;
 
 class CaptchaBehaviorTest extends TestCase {
 
@@ -62,6 +63,7 @@ class CaptchaBehaviorTest extends TestCase {
 		$this->request = new ServerRequest();
 		$this->request = $this->request->withEnv('REMOTE_ADDR', '127.0.0.1');
 		Router::setRequest($this->request);
+		$this->request->getSession()->start();
 		Cache::clear('captcha_test');
 
 		$this->Captchas = $this->getTableLocator()->get('Captcha.Captchas');
@@ -110,7 +112,7 @@ class CaptchaBehaviorTest extends TestCase {
 
 		$comment = $this->Comments->newEntity($data);
 		$res = $this->Comments->save($comment);
-		$this->assertTrue((bool)$res);
+		$this->assertTrue((bool)$res, json_encode($comment->getErrors()));
 
 		$captcha = $this->Captchas->get($captcha->id);
 		$this->assertNotEmpty($captcha->used);
@@ -494,6 +496,27 @@ class CaptchaBehaviorTest extends TestCase {
 
 		$captcha = $this->Captchas->get($captcha->id);
 		$this->assertTrue($captcha->solved, 'Successful solve must not be overwritten by a later replay attempt');
+	}
+
+	public function testNullEngineTimingFailuresLeaveTokenUnusedAndCounterUnchanged(): void {
+		$this->Comments->removeBehavior('Captcha');
+		$this->Comments->addBehavior('Captcha.Captcha', ['engine' => NullEngine::class, 'minTime' => 60, 'maxTime' => 600]);
+		$key = RateLimitKey::build('127.0.0.1', $this->request->getSession()->id() ?: 'test', 'ip_session', 600);
+		Cache::write($key, 1, 'captcha_test');
+		foreach (['now' => 'minTime', '-1 hour' => 'maxTime'] as $created => $rule) {
+			$captcha = $this->Captchas->newEntity([
+				'uuid' => Text::uuid(),
+				'result' => '',
+				'ip' => '127.0.0.1',
+				'session_id' => $this->request->getSession()->id() ?: 'test',
+				'created' => new DateTime($created),
+			]);
+			$this->Captchas->saveOrFail($captcha);
+			$entity = $this->Comments->newEntity(['captcha_uuid' => $captcha->uuid, 'captcha_result' => '']);
+			$this->assertArrayHasKey($rule, $entity->getError('captcha_result'));
+			$this->assertNull($this->Captchas->get($captcha->id)->used);
+			$this->assertSame(1, Cache::read($key, 'captcha_test'));
+		}
 	}
 
 }

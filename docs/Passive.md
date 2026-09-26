@@ -66,6 +66,41 @@ You can configure it globally using Configure class - and `app.php`:
 
 Use `'log' => true` if you want to log all honeypot events to type `info`.
 
+#### Optional verification throttling
+
+Passive throttling is disabled by default. To enable it globally:
+
+```php
+'Captcha' => [
+    'verifyRateLimit' => [
+        'enabled' => true,
+        'maxFailures' => 5,
+        'window' => 600,
+        'scope' => 'ip_session',
+        'cache' => 'default',
+    ],
+],
+```
+
+This needs a persistent Cake Cache backend and starts a session for `ip_session` scope.
+It still creates no captcha database rows. Use `ip` scope to share the failure budget across sessions
+at the same address. Missing, null, and filled honeypot fields each reject a submission; multiple
+failed fields consume only one attempt. Once the limit is reached, empty honeypots also reject
+until the current time bucket ends or an administrator clears the counter. Empty honeypots alone
+do not clear past failures, because bots can submit them too.
+
+When both behaviors use the same cache, scope, and window, they share a failure counter.
+A submission failing both checks increments it once. A valid database token clears the counter
+only if every configured honeypot is also present and empty, regardless of validation order.
+Use the same limiter settings on both behaviors. Global configuration applies to both; per-behavior
+options take precedence over the corresponding global option.
+
+Throttle errors belong to the hidden honeypot fields. Render a visible error summary or show
+`$this->Form->error('email_homepage')` outside the hidden wrapper so visitors know why the
+submission was rejected. Use your configured field name when it differs from the default.
+
+See [cache requirements](Active.md#verification-cache) and [admin monitoring](Admin.md#currently-rate-limited-clients).
+
 #### CSP-compatible rendering (`passiveClass`)
 
 By default, `passive()` renders the honeypot wrapper with an inline style:

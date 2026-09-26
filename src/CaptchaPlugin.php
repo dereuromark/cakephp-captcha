@@ -31,7 +31,12 @@ class CaptchaPlugin extends BasePlugin {
 
 		$adminPrefix = (string)Configure::read('Captcha.adminPrefix', 'Admin');
 		$adminPath = (string)Configure::read('Captcha.adminRoutePath', '/captcha');
-		$routes->prefix($adminPrefix, function (RouteBuilder $routes) use ($adminPath): void {
+		$prefixOptions = [];
+		$prefixPath = Configure::read('Captcha.adminPrefixPath');
+		if ($prefixPath !== null) {
+			$prefixOptions['path'] = (string)$prefixPath;
+		}
+		$routes->prefix($adminPrefix, $prefixOptions, function (RouteBuilder $routes) use ($adminPath): void {
 			$routes->plugin('Captcha', ['path' => $adminPath], function (RouteBuilder $routes): void {
 				$routes->connect('/', ['controller' => 'Captcha', 'action' => 'index']);
 				$routes->fallbacks(DashedRoute::class);

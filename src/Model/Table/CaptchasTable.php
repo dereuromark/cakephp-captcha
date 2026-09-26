@@ -176,9 +176,19 @@ class CaptchasTable extends Table {
 	 * @return bool
 	 */
 	public function markUsed($captcha): bool {
-		$captcha->used = new DateTime();
+		$used = new DateTime();
+		$updated = $this->updateAll(
+			['used' => $used, 'solved' => $captcha->solved],
+			['id' => $captcha->id, 'used IS' => null],
+		);
+		if ($updated !== 1) {
+			return false;
+		}
+		$captcha->used = $used;
+		$captcha->setDirty('used', false);
+		$captcha->setDirty('solved', false);
 
-		return (bool)$this->save($captcha);
+		return true;
 	}
 
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Captcha\Test\TestCase\Controller\Admin;
 
+use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\MethodNotAllowedException;
@@ -10,6 +11,7 @@ use Cake\Http\ServerRequest;
 use Cake\I18n\DateTime;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use Captcha\Cache\VerifyRateLimiter;
 
 /**
  * @uses \Captcha\Controller\Admin\CaptchaController
@@ -164,6 +166,25 @@ class CaptchaControllerTest extends TestCase {
 		$this->assertResponseOk();
 		$this->assertResponseContains('Solved');
 		$this->assertResponseContains('Failed');
+	}
+
+	public function testDashboardCountsPassiveOnlyThrottleAndReflectsClear(): void {
+		Cache::setConfig('dashboard_limiter', ['className' => 'Array']);
+		try {
+			$config = ['enabled' => true, 'maxFailures' => 1, 'window' => 600, 'scope' => 'ip_session', 'cache' => 'dashboard_limiter'];
+			Configure::write('Captcha', ['adminAccess' => fn (): bool => true, 'verifyRateLimit' => $config]);
+			$limiter = new VerifyRateLimiter($config);
+			$limiter->increment('9.9.9.9', 'passive-only');
+			$this->get(['plugin' => 'Captcha', 'prefix' => 'Admin', 'controller' => 'Captcha', 'action' => 'index']);
+			$this->assertResponseOk();
+			$this->assertSame(1, $this->viewVariable('throttledIps'));
+			$limiter->clear('9.9.9.9', 'passive-only');
+			$this->get(['plugin' => 'Captcha', 'prefix' => 'Admin', 'controller' => 'Captcha', 'action' => 'index']);
+			$this->assertResponseOk();
+			$this->assertSame(0, $this->viewVariable('throttledIps'));
+		} finally {
+			Cache::drop('dashboard_limiter');
+		}
 	}
 
 }

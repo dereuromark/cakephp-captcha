@@ -15,6 +15,7 @@ use Captcha\Engine\EngineInterface;
 use Captcha\Engine\MathEngine;
 use Captcha\Engine\NullEngine;
 use Captcha\Model\Table\CaptchasTable;
+use Captcha\Validation\VerificationContext;
 use RuntimeException;
 
 /**
@@ -63,6 +64,8 @@ class CaptchaBehavior extends Behavior {
 	 */
 	protected array $_countedFailures = [];
 
+	protected ?VerificationContext $_verificationContext = null;
+
 	/**
 	 * @param \Cake\ORM\Table $table
 	 * @param array<string, mixed> $config
@@ -107,8 +110,14 @@ class CaptchaBehavior extends Behavior {
 	 * @return void
 	 */
 	public function addCaptchaValidation(Validator $validator): void {
-		$validator->requirePresence('captcha_result');
-		if ($this->getConfig('engine') !== NullEngine::class) {
+		$state = VerificationContext::forValidator($validator);
+		$state->attach($validator, 'captcha_result');
+		$state->onStart(function () use ($state): void {
+			$this->_verificationContext = $state;
+			$this->_captchas = [];
+			$this->_countedFailures = [];
+		});
+		if (!$this->_engine instanceof NullEngine) {
 			$validator->add('captcha_result', [
 				'required' => [
 					'rule' => 'notBlank',
@@ -159,7 +168,7 @@ class CaptchaBehavior extends Behavior {
 			]);
 		}
 
-		if ($this->getConfig('engine') === NullEngine::class) {
+		if ($this->_engine instanceof NullEngine) {
 			$validator->add('captcha_result', [
 				'consume' => [
 					'rule' => 'validateCaptchaWithoutChallenge',
@@ -236,6 +245,8 @@ class CaptchaBehavior extends Behavior {
 		}
 
 		if (!$this->_captchasTable->markUsed($captcha)) {
+			$this->_incrementFailedAttemptCounter();
+
 			return false;
 		}
 
@@ -262,6 +273,8 @@ class CaptchaBehavior extends Behavior {
 		$isValid = hash_equals((string)$captcha->result, (string)$value);
 		$captcha->solved = $isValid;
 		if (!$this->_captchasTable->markUsed($captcha)) {
+			$this->_incrementFailedAttemptCounter();
+
 			return false;
 		}
 		if (!$isValid) {
@@ -352,7 +365,8 @@ class CaptchaBehavior extends Behavior {
 	protected function _isRateLimited(): bool {
 		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
 
-		return $this->_verifyRateLimiter()->limited($ip, $sessionId);
+		return $this->_verificationContext?->limited($this->_verifyRateLimiter(), $ip, $sessionId)
+			?? $this->_verifyRateLimiter()->limited($ip, $sessionId);
 	}
 
 	protected function _incrementFailedAttemptCounter(): void {
@@ -361,10 +375,18 @@ class CaptchaBehavior extends Behavior {
 			return;
 		}
 		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
-		$limiter->increment($ip, $sessionId);
+		if ($this->_verificationContext !== null) {
+			$this->_verificationContext->increment($limiter, $ip, $sessionId);
+		} else {
+			$limiter->increment($ip, $sessionId);
+		}
 	}
 
 	protected function _clearFailedAttemptCounter(): void {
+		if ($this->_verificationContext !== null && !$this->_verificationContext->passiveValid()) {
+			return;
+		}
+
 		$limiter = $this->_verifyRateLimiter();
 		if (!$limiter->enabled()) {
 			return;

@@ -69,6 +69,7 @@ class CaptchaHelper extends Helper {
 			'label' => ['escape' => false, 'text' => $this->image()],
 			'escapeLabel' => false,
 			'autocomplete' => 'off',
+			'required' => !is_a($this->getConfig('engine'), NullEngine::class, true),
 			'value' => '',
 		];
 
@@ -82,7 +83,7 @@ class CaptchaHelper extends Helper {
 	 */
 	public function render(array $options = []) {
 		$id = $this->_getId();
-		if ($this->getConfig('engine') === NullEngine::class) {
+		if (is_a($this->getConfig('engine'), NullEngine::class, true)) {
 			$html = $this->Form->hidden('captcha_result');
 		} else {
 			$html = $this->control($options);
