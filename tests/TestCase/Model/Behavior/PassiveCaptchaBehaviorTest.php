@@ -113,7 +113,7 @@ class PassiveCaptchaBehaviorTest extends TestCase {
 		$this->Form->behaviors()->PassiveCaptcha->addPassiveCaptchaValidation($this->Form->getValidator());
 
 		$this->assertFalse($this->Form->execute(['dummy_one' => 'bot', 'dummy_two' => 'bot']));
-		$result = $this->Form->execute(['dummy_one' => '', 'dummy_two' => '']);
+		$result = $this->Form->execute(['dummy_one' => 'bot', 'dummy_two' => 'bot']);
 		$this->assertFalse($result);
 	}
 

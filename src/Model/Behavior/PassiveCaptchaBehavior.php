@@ -121,6 +121,7 @@ class PassiveCaptchaBehavior extends Behavior {
 	}
 
 	protected function _verifyRateLimiter(): VerifyRateLimiter {
+		/** @var array{enabled: bool, maxFailures: int, window: int, scope: string, cache: string} $config */
 		$config = (array)$this->getConfig('verifyRateLimit') + $this->_defaultConfig['verifyRateLimit'];
 
 		return new VerifyRateLimiter($config);

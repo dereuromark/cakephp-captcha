@@ -10,7 +10,7 @@ use Cake\Cache\Engine\NullEngine as CacheNullEngine;
 class VerifyRateLimiter {
 
 	/**
-	 * @param array{enabled?: bool, maxFailures?: int, window?: int, scope?: string, cache?: string} $config
+	 * @param array{enabled: bool, maxFailures: int, window: int, scope: string, cache: string} $config
 	 */
 	public function __construct(protected array $config) {
 	}
