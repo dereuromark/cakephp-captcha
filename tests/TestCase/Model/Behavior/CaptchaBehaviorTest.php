@@ -116,16 +116,27 @@ class CaptchaBehaviorTest extends TestCase {
 		$this->assertNotEmpty($captcha->used);
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testNullEngineCaptchaIsConsumedWithoutBeingMarkedSolved() {
 		$this->Comments->removeBehavior('Captcha');
 		$this->Comments->addBehavior('Captcha.Captcha', ['engine' => NullEngine::class]);
 		$captcha = $this->Captchas->newEntity([
-			'uuid' => Text::uuid(), 'result' => '', 'ip' => '127.0.0.1',
+			'uuid' => Text::uuid(),
+			'result' => '',
+			'ip' => '127.0.0.1',
 			'session_id' => $this->request->getSession()->id() ?: 'test',
-			'created' => new DateTime('- 1 hour'), 'modified' => new DateTime('- 1 hour'),
+			'created' => new DateTime('- 1 hour'),
+			'modified' => new DateTime('- 1 hour'),
 		]);
 		$this->assertTrue((bool)$this->Captchas->save($captcha));
-		$data = ['comment' => 'Foo', 'captcha_uuid' => $captcha->uuid, 'captcha_result' => '', 'email_homepage' => ''];
+		$data = [
+			'comment' => 'Foo',
+			'captcha_uuid' => $captcha->uuid,
+			'captcha_result' => '',
+			'email_homepage' => '',
+		];
 
 		$this->assertTrue((bool)$this->Comments->save($this->Comments->newEntity($data)));
 		$captcha = $this->Captchas->get($captcha->id);

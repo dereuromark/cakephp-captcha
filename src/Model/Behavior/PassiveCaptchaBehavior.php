@@ -6,6 +6,8 @@ use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\Log\Log;
 use Cake\ORM\Behavior;
+use Cake\ORM\Table;
+use Cake\ORM\Table;
 use Cake\Routing\Router;
 use Cake\Validation\Validator;
 use Captcha\Cache\VerifyRateLimiter;
@@ -33,7 +35,7 @@ class PassiveCaptchaBehavior extends Behavior {
 
 	protected bool $_countedFailure = false;
 
-	public function __construct(\Cake\ORM\Table $table, array $config = []) {
+	public function __construct(Table $table, array $config = []) {
 		$config += (array)Configure::read('Captcha');
 		if (isset($config['verifyRateLimit']) && is_array($config['verifyRateLimit'])) {
 			$config['verifyRateLimit'] += $this->_defaultConfig['verifyRateLimit'];
