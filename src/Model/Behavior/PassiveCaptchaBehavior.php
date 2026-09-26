@@ -6,7 +6,10 @@ use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\Log\Log;
 use Cake\ORM\Behavior;
+use Cake\Routing\Router;
 use Cake\Validation\Validator;
+use Captcha\Cache\VerifyRateLimiter;
+use RuntimeException;
 
 /**
  * Validates the added honey pot trap field.
@@ -19,7 +22,25 @@ class PassiveCaptchaBehavior extends Behavior {
 	protected array $_defaultConfig = [
 		'dummyField' => 'email_homepage', // Honeypot trap
 		'log' => null, // Auto detect based on debug mode
+		'verifyRateLimit' => [
+			'enabled' => false,
+			'maxFailures' => 5,
+			'window' => 600,
+			'scope' => 'ip_session',
+			'cache' => 'default',
+		],
 	];
+
+	protected bool $_countedFailure = false;
+
+	public function __construct(\Cake\ORM\Table $table, array $config = []) {
+		$config += (array)Configure::read('Captcha');
+		if (isset($config['verifyRateLimit']) && is_array($config['verifyRateLimit'])) {
+			$config['verifyRateLimit'] += $this->_defaultConfig['verifyRateLimit'];
+		}
+
+		parent::__construct($table, $config);
+	}
 
 	/**
 	 * Behavior configuration
@@ -28,8 +49,6 @@ class PassiveCaptchaBehavior extends Behavior {
 	 * @return void
 	 */
 	public function initialize(array $config): void {
-		$config += (array)Configure::read('Captcha');
-
 		parent::initialize($config);
 
 		if ($this->_config['log'] === null) {
@@ -56,11 +75,24 @@ class PassiveCaptchaBehavior extends Behavior {
 		$fields = (array)$this->getConfig('dummyField');
 		foreach ($fields as $field) {
 			$validator->requirePresence($field);
+			if ($this->_verifyRateLimiter()->enabled()) {
+				$validator->add($field, [
+					'verifyRateLimit' => [
+						'rule' => fn (): bool => !$this->_isRateLimited(),
+						'message' => __d('captcha', 'Too many failed attempts. Please retry later'),
+						'last' => true,
+					],
+				]);
+			}
 			$validator->allowEmptyString($field);
 			$validator->add($field, [
 				$field => [
 					'rule' => function ($value) use ($field) {
 						$ok = $value === '';
+						if (!$ok && !$this->_countedFailure) {
+							$this->_incrementFailedAttemptCounter();
+							$this->_countedFailure = true;
+						}
 						if (!$ok && $this->_config['log']) {
 							Log::write('info', 'PassiveCaptcha trigger on field `' . $field . '`, value ' . $this->sanitizeForLog($value));
 						}
@@ -71,6 +103,43 @@ class PassiveCaptchaBehavior extends Behavior {
 				],
 			]);
 		}
+	}
+
+	protected function _isRateLimited(): bool {
+		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
+
+		return $this->_verifyRateLimiter()->limited($ip, $sessionId);
+	}
+
+	protected function _incrementFailedAttemptCounter(): void {
+		$limiter = $this->_verifyRateLimiter();
+		if (!$limiter->enabled()) {
+			return;
+		}
+		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
+		$limiter->increment($ip, $sessionId);
+	}
+
+	protected function _verifyRateLimiter(): VerifyRateLimiter {
+		$config = (array)$this->getConfig('verifyRateLimit') + $this->_defaultConfig['verifyRateLimit'];
+
+		return new VerifyRateLimiter($config);
+	}
+
+	protected function _getRequestIdentity(): array {
+		$request = Router::getRequest();
+		if ($request === null) {
+			throw new RuntimeException('No request found.');
+		}
+		if (!$request->getSession()->started()) {
+			$request->getSession()->start();
+		}
+		$sessionId = $request->getSession()->id();
+		if (!$sessionId && PHP_SAPI === 'cli') {
+			$sessionId = 'test';
+		}
+
+		return ['sessionId' => $sessionId, 'ip' => (string)$request->clientIp()];
 	}
 
 	/**

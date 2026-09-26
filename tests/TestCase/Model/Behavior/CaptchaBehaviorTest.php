@@ -9,6 +9,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
+use Captcha\Engine\NullEngine;
 use DateTime;
 
 class CaptchaBehaviorTest extends TestCase {
@@ -113,6 +114,24 @@ class CaptchaBehaviorTest extends TestCase {
 
 		$captcha = $this->Captchas->get($captcha->id);
 		$this->assertNotEmpty($captcha->used);
+	}
+
+	public function testNullEngineCaptchaIsConsumedWithoutBeingMarkedSolved() {
+		$this->Comments->removeBehavior('Captcha');
+		$this->Comments->addBehavior('Captcha.Captcha', ['engine' => NullEngine::class]);
+		$captcha = $this->Captchas->newEntity([
+			'uuid' => Text::uuid(), 'result' => '', 'ip' => '127.0.0.1',
+			'session_id' => $this->request->getSession()->id() ?: 'test',
+			'created' => new DateTime('- 1 hour'), 'modified' => new DateTime('- 1 hour'),
+		]);
+		$this->assertTrue((bool)$this->Captchas->save($captcha));
+		$data = ['comment' => 'Foo', 'captcha_uuid' => $captcha->uuid, 'captcha_result' => '', 'email_homepage' => ''];
+
+		$this->assertTrue((bool)$this->Comments->save($this->Comments->newEntity($data)));
+		$captcha = $this->Captchas->get($captcha->id);
+		$this->assertNotEmpty($captcha->used);
+		$this->assertNull($captcha->solved);
+		$this->assertFalse((bool)$this->Comments->save($this->Comments->newEntity($data)));
 	}
 
 	/**

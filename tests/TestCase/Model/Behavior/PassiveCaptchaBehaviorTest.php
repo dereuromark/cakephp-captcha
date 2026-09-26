@@ -2,7 +2,11 @@
 
 namespace Captcha\Test\TestCase\Model\Behavior;
 
+use Cake\Cache\Cache;
+use Cake\Core\Configure;
+use Cake\Http\ServerRequest;
 use Cake\Log\Log;
+use Cake\Routing\Router;
 use Cake\TestSuite\LogTestTrait;
 use Cake\TestSuite\TestCase;
 use TestApp\Form\PassiveCaptchaTestForm;
@@ -31,6 +35,8 @@ class PassiveCaptchaBehaviorTest extends TestCase {
 	public function tearDown(): void {
 		parent::tearDown();
 
+		Configure::delete('Captcha');
+		Cache::drop('captcha_test');
 		unset($this->Form);
 	}
 
@@ -85,6 +91,30 @@ class PassiveCaptchaBehaviorTest extends TestCase {
 		];
 		$result = $this->Form->execute($data);
 		$this->assertTrue($result);
+	}
+
+	public function testGlobalDummyFieldConfigIsApplied(): void {
+		Configure::write('Captcha.dummyField', 'my_trap');
+		$this->Form->addBehavior('Captcha.PassiveCaptcha');
+
+		$this->assertSame('my_trap', $this->Form->behaviors()->PassiveCaptcha->getConfig('dummyField'));
+	}
+
+	public function testHoneypotFailureFeedsOptionalRateLimiterOnce(): void {
+		Cache::drop('captcha_test');
+		Cache::setConfig('captcha_test', ['className' => 'Array']);
+		$request = (new ServerRequest())->withEnv('REMOTE_ADDR', '127.0.0.1');
+		Router::setRequest($request);
+		$config = [
+			'dummyField' => ['dummy_one', 'dummy_two'],
+			'verifyRateLimit' => ['enabled' => true, 'maxFailures' => 1, 'cache' => 'captcha_test'],
+		];
+		$this->Form->addBehavior('Captcha.PassiveCaptcha', $config);
+		$this->Form->behaviors()->PassiveCaptcha->addPassiveCaptchaValidation($this->Form->getValidator());
+
+		$this->assertFalse($this->Form->execute(['dummy_one' => 'bot', 'dummy_two' => 'bot']));
+		$result = $this->Form->execute(['dummy_one' => '', 'dummy_two' => '']);
+		$this->assertFalse($result);
 	}
 
 	/**

@@ -2,9 +2,6 @@
 
 namespace Captcha\Model\Behavior;
 
-use Cake\Cache\Cache;
-use Cake\Cache\Engine\FileEngine;
-use Cake\Cache\Engine\NullEngine as CacheNullEngine;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\I18n\DateTime;
@@ -13,7 +10,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Validation\Validator;
-use Captcha\Cache\RateLimitKey;
+use Captcha\Cache\VerifyRateLimiter;
 use Captcha\Engine\EngineInterface;
 use Captcha\Engine\MathEngine;
 use Captcha\Engine\NullEngine;
@@ -128,17 +125,17 @@ class CaptchaBehavior extends Behavior {
 					'last' => true,
 				],
 			]);
+		}
 
-			if ($this->_isVerifyRateLimitEnabled()) {
-				$validator->add('captcha_result', [
-					'verifyRateLimit' => [
-						'rule' => 'validateCaptchaRateLimit',
-						'provider' => 'table',
-						'message' => __d('captcha', 'Too many failed attempts. Please retry later'),
-						'last' => true,
-					],
-				]);
-			}
+		if ($this->_isVerifyRateLimitEnabled()) {
+			$validator->add('captcha_result', [
+				'verifyRateLimit' => [
+					'rule' => 'validateCaptchaRateLimit',
+					'provider' => 'table',
+					'message' => __d('captcha', 'Too many failed attempts. Please retry later'),
+					'last' => true,
+				],
+			]);
 		}
 
 		if ($this->getConfig('minTime')) {
@@ -157,6 +154,16 @@ class CaptchaBehavior extends Behavior {
 					'rule' => 'validateCaptchaMaxTime',
 					'provider' => 'table',
 					'message' => __d('captcha', 'You were too slow'),
+					'last' => true,
+				],
+			]);
+		}
+
+		if ($this->getConfig('engine') === NullEngine::class) {
+			$validator->add('captcha_result', [
+				'consume' => [
+					'rule' => 'validateCaptchaWithoutChallenge',
+					'provider' => 'table',
 					'last' => true,
 				],
 			]);
@@ -214,6 +221,27 @@ class CaptchaBehavior extends Behavior {
 		}
 
 		return $captcha->created > new DateTime('- ' . $this->getConfig('maxTime') . ' seconds');
+	}
+
+	/**
+	 * @param string $value
+	 * @param array $context
+	 *
+	 * @return bool
+	 */
+	public function validateCaptchaWithoutChallenge($value, $context) {
+		$captcha = $this->_getCaptcha($context['data']);
+		if (!$captcha || $captcha->used !== null) {
+			return false;
+		}
+
+		if (!$this->_captchasTable->markUsed($captcha)) {
+			return false;
+		}
+
+		$this->_clearFailedAttemptCounter();
+
+		return true;
 	}
 
 	/**
@@ -318,72 +346,33 @@ class CaptchaBehavior extends Behavior {
 	 * @return bool
 	 */
 	protected function _isVerifyRateLimitEnabled(): bool {
-		$config = $this->_getVerifyRateLimitConfig();
-
-		return !empty($config['enabled']);
+		return $this->_verifyRateLimiter()->enabled();
 	}
 
-	/**
-	 * @return bool
-	 */
 	protected function _isRateLimited(): bool {
-		if (!$this->_isVerifyRateLimitEnabled()) {
-			return false;
-		}
+		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
 
-		$config = $this->_getVerifyRateLimitConfig();
-		$key = $this->_buildRateLimitKey();
-		$count = Cache::read($key, $config['cache']);
-		if (!is_int($count)) {
-			return false;
-		}
-
-		return $count >= (int)$config['maxFailures'];
+		return $this->_verifyRateLimiter()->limited($ip, $sessionId);
 	}
 
-	/**
-	 * @return void
-	 */
 	protected function _incrementFailedAttemptCounter(): void {
-		if (!$this->_isVerifyRateLimitEnabled()) {
+		$limiter = $this->_verifyRateLimiter();
+		if (!$limiter->enabled()) {
 			return;
 		}
-
-		$config = $this->_getVerifyRateLimitConfig();
-		$key = $this->_buildRateLimitKey();
-
-		if (!Cache::add($key, 0, $config['cache'])) {
-			$cache = Cache::pool($config['cache']);
-			if (!$cache instanceof FileEngine && !$cache instanceof CacheNullEngine) {
-				$count = Cache::increment($key, 1, $config['cache']);
-				if ($count !== false) {
-					return;
-				}
-			}
-		}
-
-		$count = Cache::read($key, $config['cache']);
-		$count = is_int($count) ? $count + 1 : 1;
-
-		Cache::write($key, $count, $config['cache']);
+		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
+		$limiter->increment($ip, $sessionId);
 	}
 
-	/**
-	 * @return void
-	 */
 	protected function _clearFailedAttemptCounter(): void {
-		if (!$this->_isVerifyRateLimitEnabled()) {
+		$limiter = $this->_verifyRateLimiter();
+		if (!$limiter->enabled()) {
 			return;
 		}
-
-		$config = $this->_getVerifyRateLimitConfig();
-		Cache::delete($this->_buildRateLimitKey(), $config['cache']);
+		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
+		$limiter->clear($ip, $sessionId);
 	}
 
-	/**
-	 * @param string $uuid
-	 * @return void
-	 */
 	protected function _registerLookupFailure(string $uuid): void {
 		if (isset($this->_countedFailures[$uuid])) {
 			return;
@@ -404,13 +393,10 @@ class CaptchaBehavior extends Behavior {
 	}
 
 	/**
-	 * @return string
+	 * @return \Captcha\Cache\VerifyRateLimiter
 	 */
-	protected function _buildRateLimitKey(): string {
-		$config = $this->_getVerifyRateLimitConfig();
-		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
-
-		return RateLimitKey::build($ip, $sessionId, (string)$config['scope'], (int)$config['window']);
+	protected function _verifyRateLimiter(): VerifyRateLimiter {
+		return new VerifyRateLimiter($this->_getVerifyRateLimitConfig());
 	}
 
 	/**
