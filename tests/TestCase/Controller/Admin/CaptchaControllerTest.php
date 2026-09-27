@@ -173,6 +173,7 @@ class CaptchaControllerTest extends TestCase {
 		try {
 			$config = ['enabled' => true, 'maxFailures' => 1, 'window' => 600, 'scope' => 'ip_session', 'cache' => 'dashboard_limiter'];
 			Configure::write('Captcha', ['adminAccess' => fn (): bool => true, 'verifyRateLimit' => $config]);
+			Configure::write('Captcha.verifyRateLimit.enabled', false);
 			$limiter = new VerifyRateLimiter($config);
 			$limiter->increment('9.9.9.9', 'passive-only');
 			$this->get(['plugin' => 'Captcha', 'prefix' => 'Admin', 'controller' => 'Captcha', 'action' => 'index']);

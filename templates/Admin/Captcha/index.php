@@ -19,7 +19,7 @@ $solveRate = $attempted > 0 ? round(($tiles24h['solved'] / $attempted) * 100) : 
 	<span class="badge text-bg-secondary"><?= __d('captcha', 'maxPerUser') ?>: <?= $snapshot['maxPerUser'] ?></span>
 	<span class="badge text-bg-secondary"><?= __d('captcha', 'deadlockMinutes') ?>: <?= $snapshot['deadlockMinutes'] ?></span>
 	<span class="badge text-bg-secondary"><?= __d('captcha', 'cleanupProbability') ?>: <?= $snapshot['cleanupProbability'] ?>%</span>
-	<span class="badge text-bg-secondary"><?= __d('captcha', 'rate-limit') ?>: <?= h($snapshot['rateLimit']) ?></span>
+	<span class="badge text-bg-secondary"><?= __d('captcha', 'Default token rate limit') ?>: <?= h($snapshot['rateLimit']) ?></span>
 </div>
 
 <div class="row g-3 mb-4">

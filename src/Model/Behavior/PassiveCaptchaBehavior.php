@@ -36,9 +36,10 @@ class PassiveCaptchaBehavior extends Behavior {
 	protected ?VerificationContext $_verificationContext = null;
 
 	public function __construct(Table $table, array $config = []) {
-		$config += (array)Configure::read('Captcha');
+		$globalConfig = (array)Configure::read('Captcha');
+		$config += $globalConfig;
 		if (isset($config['verifyRateLimit']) && is_array($config['verifyRateLimit'])) {
-			$config['verifyRateLimit'] += $this->_defaultConfig['verifyRateLimit'];
+			$config['verifyRateLimit'] += (array)($globalConfig['verifyRateLimit'] ?? []) + $this->_defaultConfig['verifyRateLimit'];
 		}
 
 		parent::__construct($table, $config);

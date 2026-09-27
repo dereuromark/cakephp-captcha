@@ -200,9 +200,6 @@ class IpsController extends CaptchaAdminAppController {
 	 */
 	protected function throttledIps(): array {
 		$rl = (array)Configure::read('Captcha.verifyRateLimit');
-		if (!($rl['enabled'] ?? true)) {
-			return [];
-		}
 
 		return array_slice((new RateLimitRegistry((string)($rl['cache'] ?? 'default')))->throttledIps(), 0, 10);
 	}

@@ -93,7 +93,8 @@ When both behaviors use the same cache, scope, and window, they share a failure 
 A submission failing both checks increments it once. A valid database token clears the counter
 only if every configured honeypot is also present and empty, regardless of validation order.
 Use the same limiter settings on both behaviors. Global configuration applies to both; per-behavior
-options take precedence over the corresponding global option.
+options take precedence over the corresponding global option. Partial `verifyRateLimit` overrides
+inherit the remaining global settings, including the cache.
 
 Throttle errors belong to the hidden honeypot fields. Render a visible error summary or show
 `$this->Form->error('email_homepage')` outside the hidden wrapper so visitors know why the

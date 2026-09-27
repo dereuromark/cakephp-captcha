@@ -173,9 +173,6 @@ class CaptchaController extends CaptchaAdminAppController {
 	 */
 	protected function countThrottledIps(): int {
 		$rl = (array)Configure::read('Captcha.verifyRateLimit');
-		if (!($rl['enabled'] ?? true)) {
-			return 0;
-		}
 
 		return count((new RateLimitRegistry((string)($rl['cache'] ?? 'default')))->throttledIps());
 	}

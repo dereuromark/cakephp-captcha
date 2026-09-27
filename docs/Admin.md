@@ -100,7 +100,9 @@ Existing rows backfill to `null` (they predate the tracking). Solve-rate computa
 
 ## Currently rate-limited clients
 
-The dashboard and IP list read live counters from `Captcha.verifyRateLimit.cache`.
+The dashboard and IP list read live counters from `Captcha.verifyRateLimit.cache`, including
+counters in that cache from behaviors that opt in while the global limiter is disabled. The snapshot shows
+the default token verification policy; individual behaviors can override it.
 A small cache registry records the IP, counter key, threshold, and bucket expiry when a failure
 is counted. It stores no raw session IDs. This includes passive-only clients and failed token
 lookups that have no corresponding database row. Separate sessions below the threshold are

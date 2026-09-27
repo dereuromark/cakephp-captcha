@@ -86,6 +86,7 @@ class IpsControllerTest extends TestCase {
 		]);
 
 		$limiter = new VerifyRateLimiter(Configure::read('Captcha.verifyRateLimit'));
+		Configure::write('Captcha.verifyRateLimit.enabled', false);
 		$limiter->increment('9.9.9.9', 'passive-only');
 		$limiter->increment('9.9.9.9', 'passive-only');
 		$this->assertSame(0, $this->getTableLocator()->get('Captcha.Captchas')->find()->where(['ip' => '9.9.9.9'])->count());
@@ -95,6 +96,7 @@ class IpsControllerTest extends TestCase {
 		$this->assertResponseOk();
 		$this->assertResponseContains('9.9.9.9');
 		$this->assertResponseContains('rate-limited');
+		$this->assertSame([['ip' => '9.9.9.9', 'n' => 2]], $this->viewVariable('throttled'));
 	}
 
 	/**

@@ -136,4 +136,17 @@ class CombinedCaptchaBehaviorTest extends TestCase {
 		$this->assertSame(1, Cache::read($key, 'combined'));
 	}
 
+	public function testPartialOptInPreservesGlobalLimiterSettings(): void {
+		Configure::write('Captcha.verifyRateLimit', ['enabled' => false] + $this->limit);
+		foreach (['Captcha.Captcha', 'Captcha.PassiveCaptcha'] as $behavior) {
+			$table = new Table(['table' => 'comments', 'connection' => $this->captchas->getConnection()]);
+			$table->addBehavior($behavior, ['verifyRateLimit' => ['enabled' => true, 'maxFailures' => 2]]);
+			$name = substr($behavior, strlen('Captcha.'));
+			$this->assertEquals(
+				['enabled' => true, 'maxFailures' => 2] + $this->limit,
+				$table->getBehavior($name)->getConfig('verifyRateLimit'),
+			);
+		}
+	}
+
 }
