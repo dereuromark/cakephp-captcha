@@ -8,6 +8,7 @@ use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\DateTime;
 use Captcha\Cache\RateLimitKey;
+use Captcha\Cache\RateLimitRegistry;
 
 /**
  * Per-IP signals and maintenance for the captcha admin backend.
@@ -127,7 +128,7 @@ class IpsController extends CaptchaAdminAppController {
 			}
 		}
 
-		$cleared = 0;
+		$cleared = (new RateLimitRegistry($cache))->clearIp($ip);
 		$now = time();
 		foreach ($sessionIds as $sessionId) {
 			$keyCurrent = RateLimitKey::build($ip, (string)$sessionId, $scope, $window, $now);
@@ -199,30 +200,8 @@ class IpsController extends CaptchaAdminAppController {
 	 */
 	protected function throttledIps(): array {
 		$rl = (array)Configure::read('Captcha.verifyRateLimit');
-		if (!($rl['enabled'] ?? true)) {
-			return [];
-		}
-		$window = (int)($rl['window'] ?? 600);
-		$max = (int)($rl['maxFailures'] ?? 5);
 
-		$since = DateTime::now()->subSeconds($window);
-		$query = $this->Captchas->find();
-		$query->select([
-			'ip' => 'ip',
-			'n' => $query->func()->count('*'),
-		])
-			->where(['solved' => false, 'created >' => $since])
-			->groupBy(['ip'])
-			->having(['n >=' => $max])
-			->orderBy(['n' => 'DESC'])
-			->limit(10);
-
-		$out = [];
-		foreach ($query->disableHydration()->all() as $row) {
-			$out[] = ['ip' => (string)$row['ip'], 'n' => (int)$row['n']];
-		}
-
-		return $out;
+		return array_slice((new RateLimitRegistry((string)($rl['cache'] ?? 'default')))->throttledIps(), 0, 10);
 	}
 
 }

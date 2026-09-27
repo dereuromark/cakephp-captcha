@@ -4,18 +4,21 @@ The plugin ships with a self-contained admin backend that gives you health, abus
 
 ## Routing
 
-By default the admin mounts at `/admin/captcha/` (controlled by two `Configure` keys):
+By default the admin mounts at `/admin/captcha/` (controlled by optional `Configure` keys):
 
 ```php
 // config/app.php (or wherever you keep Captcha config)
 'Captcha' => [
-    'adminPrefix' => 'Admin',     // Route prefix
+    'adminPrefix' => 'Admin',     // Controller prefix
+    'adminPrefixPath' => null,   // Derive the URL from the prefix name
     'adminRoutePath' => '/captcha', // Path under the prefix
     // ...
 ],
 ```
 
-Both keys are optional — leave them at the defaults and you get `/admin/captcha/`.
+The defaults give `/admin/captcha/`. Set `adminPrefixPath` to `/backend` to mount at
+`/backend/captcha/` while keeping the `Admin` controller prefix. `adminRoutePath` controls
+the path below that prefix.
 
 ## Authorization (deny by default)
 
@@ -85,7 +88,7 @@ The admin reads from the existing `captchas` table plus one new column:
 
 | Column | Type | Why |
 |---|---|---|
-| `solved` | nullable boolean | `null` = issued/no attempt yet, `true` = correct answer, `false` = wrong answer. Set during verification. |
+| `solved` | nullable boolean | `null` = no riddle result (including consumed `NullEngine` tokens), `true` = correct answer, `false` = wrong answer. Set during verification. |
 
 A migration is shipped:
 
@@ -95,19 +98,24 @@ bin/cake migrations migrate -p Captcha
 
 Existing rows backfill to `null` (they predate the tracking). Solve-rate computations exclude `null` rows so historical data does not skew the ratio.
 
-## Currently-rate-limited derivation
+## Currently rate-limited clients
 
-The verify rate-limit lives in `Cache`, keyed on `sha1(ip|session)` plus a time bucket. Cache keys are not reversible to recover the original IP, and not all cache backends support iteration — so the dashboard derives the throttled-IPs list from the captchas table directly:
+The dashboard and IP list read live counters from `Captcha.verifyRateLimit.cache`, including
+counters in that cache from behaviors that opt in while the global limiter is disabled. The snapshot shows
+the default token verification policy; individual behaviors can override it.
+A small cache registry records the IP, counter key, threshold, and bucket expiry when a failure
+is counted. It stores no raw session IDs. This includes passive-only clients and failed token
+lookups that have no corresponding database row. Separate sessions below the threshold are
+not combined into a false throttle report. Clearing a counter removes it from the displayed
+throttles immediately.
 
-```sql
-SELECT ip, COUNT(*) AS failed_in_window
-FROM captchas
-WHERE solved = false
-  AND created > NOW() - INTERVAL :window SECOND
-GROUP BY ip
-HAVING failed_in_window >= :max_failures
-```
+`Unblock` deletes registered counters for the IP, including passive-only sessions. It also clears
+keys derived from recent database rows for compatibility with counters created before this update.
+The issued, solved, and failed leaderboards still describe database rows; honeypot attempts do
+not become solved or failed riddles. The admin pages still require the plugin's database schema.
 
-`:window` and `:max_failures` come from `Captcha.verifyRateLimit`. This is a *good-enough proxy* for the cache state — admins use it to spot patterns and unblock, not as a source of truth.
-
-`Unblock` (the per-IP postLink) re-derives the `(ip, session_id)` tuples from the captchas table and deletes the corresponding cache keys.
+The registry retains at most 1,000 recently updated counters per cache configuration and prunes
+expired buckets. It is a best-effort admin view: cache eviction, registry lock contention, or the
+capacity limit can omit clients, and omitted passive-only keys cannot be discovered by `Unblock`.
+Enforcement reads each counter directly and does not depend on this registry. Keep the behavior
+and admin cache settings aligned. Use external monitoring if you need a complete abuse history.

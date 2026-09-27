@@ -186,6 +186,21 @@ Separately, active captchas also include a verification-side rate limiter by def
 
 This limiter applies to failed verification attempts, not challenge creation. It is enabled by default and is tracked via Cake Cache. The default policy counts wrong answers as well as invalid or already-used `captcha_uuid` submissions. Timing failures (`minTime`/`maxTime`) do not consume that budget.
 
+The same verification policy applies to `NullEngine`. After the timing checks pass, its token
+is consumed atomically and cannot be reused. `solved` remains `null`, since there was no riddle.
+A successful verification clears previous failures, provided any attached honeypot checks pass too.
+
+### Verification cache
+
+Use a shared cache with atomic `add` and `increment` operations, such as Redis or Memcached,
+for enforcement across concurrent requests and application workers. Set its duration to at least
+`verifyRateLimit.window`. The default file-cache fallback uses a read/write counter and can lose
+increments under concurrent load. Array cache is for tests; Null cache cannot enforce a limit.
+
+The limiter uses fixed time buckets, so the budget resets at the next bucket boundary rather
+than a full window after the latest failure. `ip_session` separates sessions at the same IP;
+`ip` shares their budget and may also group unrelated users behind a shared address.
+
 ### Larger captcha images
 
 When dealing with larger images, the default DB type `binary` will not work for sure.

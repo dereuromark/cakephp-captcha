@@ -7,6 +7,7 @@ use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\DateTime;
+use Captcha\Cache\RateLimitRegistry;
 use Captcha\Engine\EngineInterface;
 use Captcha\Engine\MathEngine;
 use Captcha\Engine\NullEngine;
@@ -172,23 +173,8 @@ class CaptchaController extends CaptchaAdminAppController {
 	 */
 	protected function countThrottledIps(): int {
 		$rl = (array)Configure::read('Captcha.verifyRateLimit');
-		if (!($rl['enabled'] ?? true)) {
-			return 0;
-		}
-		$window = (int)($rl['window'] ?? 600);
-		$max = (int)($rl['maxFailures'] ?? 5);
 
-		$since = DateTime::now()->subSeconds($window);
-		$query = $this->Captchas->find();
-		$query->select([
-			'ip' => 'ip',
-			'failed_in_window' => $query->func()->count('*'),
-		])
-			->where(['solved' => false, 'created >' => $since])
-			->groupBy(['ip'])
-			->having(['failed_in_window >=' => $max]);
-
-		return $query->all()->count();
+		return count((new RateLimitRegistry((string)($rl['cache'] ?? 'default')))->throttledIps());
 	}
 
 	/**
