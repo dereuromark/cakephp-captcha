@@ -6,6 +6,7 @@ namespace Captcha\Cache;
 use Cake\Cache\Cache;
 use Cake\Cache\Engine\FileEngine;
 use Cake\Cache\Engine\NullEngine as CacheNullEngine;
+use LogicException;
 
 class VerifyRateLimiter {
 
@@ -49,7 +50,12 @@ class VerifyRateLimiter {
 			$cache = Cache::pool($cacheName);
 			$count = false;
 			if (!$cache instanceof FileEngine && !$cache instanceof CacheNullEngine) {
-				$count = Cache::increment($key, 1, $cacheName);
+				try {
+					$count = $cache->increment($key);
+				} catch (LogicException) {
+					// Decorated engines (e.g. DebugKit's DebugEngine) hide an engine without atomic increment.
+					$count = false;
+				}
 			}
 			if ($count === false) {
 				$count = Cache::read($key, $cacheName);
