@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace Captcha\Test\TestCase\Cache;
 
 use Cake\Cache\Cache;
+use Cake\Cache\Engine\FileEngine;
 use Cake\TestSuite\TestCase;
 use Captcha\Cache\RateLimitKey;
 use Captcha\Cache\RateLimitRegistry;
 use Captcha\Cache\VerifyRateLimiter;
+use TestApp\Cache\Engine\DecoratedFileEngine;
 
 class VerifyRateLimiterTest extends TestCase {
 
@@ -48,6 +50,34 @@ class VerifyRateLimiterTest extends TestCase {
 		} finally {
 			Cache::clear('limiter_file');
 			Cache::drop('limiter_file');
+			rmdir($path);
+		}
+	}
+
+	/**
+	 * A decorated FileEngine (e.g. DebugKit's DebugEngine) hides the engine class,
+	 * so the limiter must fall back when the atomic increment is not supported.
+	 *
+	 * @return void
+	 */
+	public function testDecoratedFileCacheFallback(): void {
+		$path = TMP . 'captcha_limiter_' . bin2hex(random_bytes(8)) . DIRECTORY_SEPARATOR;
+		mkdir($path);
+		$fileEngine = new FileEngine();
+		$fileEngine->init(['path' => $path]);
+		Cache::setConfig('limiter_decorated', ['className' => new DecoratedFileEngine($fileEngine)]);
+		try {
+			Cache::clear('limiter_decorated');
+			$limiter = new VerifyRateLimiter(['enabled' => true, 'maxFailures' => 3, 'window' => 600, 'scope' => 'ip', 'cache' => 'limiter_decorated']);
+			$limiter->increment('127.0.0.1', 'one');
+			$limiter->increment('127.0.0.1', 'one');
+			$this->assertFalse($limiter->limited('127.0.0.1', 'one'));
+			$limiter->increment('127.0.0.1', 'one');
+			$this->assertTrue($limiter->limited('127.0.0.1', 'one'));
+		} finally {
+			Cache::clear('limiter_decorated');
+			Cache::drop('limiter_decorated');
+			array_map('unlink', glob($path . '*') ?: []);
 			rmdir($path);
 		}
 	}
