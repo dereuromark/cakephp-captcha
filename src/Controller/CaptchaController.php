@@ -42,10 +42,10 @@ class CaptchaController extends AppController {
 		} elseif ($this->components()->has('Authentication') && method_exists($this->components()->get('Authentication'), 'addUnauthenticatedActions')) {
 			$this->components()->get('Authentication')->addUnauthenticatedActions(['display']);
 		}
-		if ($this->components()->has('Authorization') && method_exists($this->components()->get('Authorization'), 'skipAuthorization')) {
+		$authorization = $this->request->getAttribute('authorization');
+		if (is_object($authorization) && $this->components()->has('Authorization') && method_exists($this->components()->get('Authorization'), 'skipAuthorization')) {
 			$this->components()->get('Authorization')->skipAuthorization();
 		} else {
-			$authorization = $this->request->getAttribute('authorization');
 			if (is_object($authorization) && is_callable([$authorization, 'skipAuthorization'])) {
 				$authorization->skipAuthorization();
 			}
