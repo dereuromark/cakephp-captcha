@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2020-11-05 17:22+0000\n"
+"POT-Creation-Date: 2026-10-11 17:10+0000\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -14,14 +14,258 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: Engine/MathEngine.php:65
+msgid "Captcha admin backend is not configured. Set Captcha.adminAccess to a Closure."
+msgstr ""
+
+msgid "Captcha admin access denied."
+msgstr ""
+
+msgid "Configured engine is not a valid EngineInterface."
+msgstr ""
+
+msgid "{0} captcha row(s) deleted."
+msgstr ""
+
+msgid "disabled"
+msgstr ""
+
+msgid "{0} captcha row(s) deleted for IP {1}."
+msgstr ""
+
+msgid "Cleared {0} rate-limit cache key(s) for IP {1}."
+msgstr ""
+
+msgid "Invalid IP address."
+msgstr ""
+
 msgid "The solution is not correct"
 msgstr ""
 
-#: Model/Behavior/CaptchaBehavior.php:91
+msgid "Please solve the riddle"
+msgstr ""
+
+msgid "Limit reached. Please retry later"
+msgstr ""
+
+msgid "Too many failed attempts. Please retry later"
+msgstr ""
+
 msgid "You were too fast"
 msgstr ""
 
-#: Model/Behavior/CaptchaBehavior.php:101
 msgid "You were too slow"
 msgstr ""
+
+msgid "Captcha · Config"
+msgstr ""
+
+msgid "Resolved Captcha.* configuration"
+msgstr ""
+
+msgid "No configuration loaded."
+msgstr ""
+
+msgid "Key"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "Closure"
+msgstr ""
+
+msgid "Captcha · Engine"
+msgstr ""
+
+msgid "Available engines"
+msgstr ""
+
+msgid "Engine"
+msgstr ""
+
+msgid "Class"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "active"
+msgstr ""
+
+msgid "Captcha · Dashboard"
+msgstr ""
+
+msgid "maxPerUser"
+msgstr ""
+
+msgid "deadlockMinutes"
+msgstr ""
+
+msgid "cleanupProbability"
+msgstr ""
+
+msgid "Default token rate limit"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "last 24h"
+msgstr ""
+
+msgid "Solved (24h)"
+msgstr ""
+
+msgid "7d: {0}"
+msgstr ""
+
+msgid "Failed (24h)"
+msgstr ""
+
+msgid "Solve rate"
+msgstr ""
+
+msgid "Expired (no attempt)"
+msgstr ""
+
+msgid "Throttled now"
+msgstr ""
+
+msgid "IPs over the threshold"
+msgstr ""
+
+msgid "Issued per hour, last 7 days"
+msgstr ""
+
+msgid "Maintenance"
+msgstr ""
+
+msgid "Run cleanup now"
+msgstr ""
+
+msgid "Delete all captchas older than maxTime?"
+msgstr ""
+
+msgid "Hard reset (truncate)"
+msgstr ""
+
+msgid "Delete ALL captcha rows? This cannot be undone."
+msgstr ""
+
+msgid "Captcha · Preview"
+msgstr ""
+
+msgid "Engine: {0}"
+msgstr ""
+
+msgid "Regenerate"
+msgstr ""
+
+msgid "Sample captcha"
+msgstr ""
+
+msgid "(non-scalar)"
+msgstr ""
+
+msgid "Captcha · IPs"
+msgstr ""
+
+msgid "7 days"
+msgstr ""
+
+msgid "24 hours"
+msgstr ""
+
+msgid "Issued"
+msgstr ""
+
+msgid "Solved"
+msgstr ""
+
+msgid "Failed"
+msgstr ""
+
+msgid "Currently rate-limited"
+msgstr ""
+
+msgid "Derived from captcha rows; matches behavior config in the common path."
+msgstr ""
+
+msgid "Top IPs"
+msgstr ""
+
+msgid "24h"
+msgstr ""
+
+msgid "7d"
+msgstr ""
+
+msgid "No IPs in this category."
+msgstr ""
+
+msgid "Captcha · IP {0}"
+msgstr ""
+
+msgid "IPs"
+msgstr ""
+
+msgid "Issued (24h)"
+msgstr ""
+
+msgid "Recent captchas for {0}"
+msgstr ""
+
+msgid "Unblock"
+msgstr ""
+
+msgid "Clear rate-limit cache for {0}?"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Delete all captcha rows for {0}?"
+msgstr ""
+
+msgid "No captchas seen for this IP."
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+msgid "Used"
+msgstr ""
+
+msgid "Session"
+msgstr ""
+
+msgid "UUID"
+msgstr ""
+
+msgid "today"
+msgstr ""
+
+msgid "-{0}d"
+msgstr ""
+
+msgid "Delete all rows for this IP"
+msgstr ""
+
+msgid "Dashboard"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "Config"
+msgstr ""
+
+msgid "Back to App"
+msgstr ""
+
+msgid "Captcha Admin"
+msgstr ""
+
+msgid "Captcha"
+msgstr ""
+
