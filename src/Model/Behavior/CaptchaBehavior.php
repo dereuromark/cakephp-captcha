@@ -435,7 +435,7 @@ class CaptchaBehavior extends Behavior {
 	 * @return \Captcha\Cache\VerifyRateLimiter
 	 */
 	protected function _verifyRateLimiter(): VerifyRateLimiter {
-		return new VerifyRateLimiter($this->_getVerifyRateLimitConfig(), $this->_buildRateLimitKey());
+		return new VerifyRateLimiter(['enabled' => true] + $this->_getVerifyRateLimitConfig(), $this->_buildRateLimitKey());
 	}
 
 	/**

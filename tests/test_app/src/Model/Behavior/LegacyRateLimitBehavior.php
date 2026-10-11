@@ -8,12 +8,14 @@ class LegacyRateLimitBehavior extends CaptchaBehavior {
 
 	public bool $enabled = true;
 
+	public bool $forceEnabled = false;
+
 	protected function _buildRateLimitKey(): string {
 		return 'tenant_' . parent::_buildRateLimitKey();
 	}
 
 	protected function _isVerifyRateLimitEnabled(): bool {
-		return $this->enabled && parent::_isVerifyRateLimitEnabled();
+		return $this->forceEnabled || ($this->enabled && parent::_isVerifyRateLimitEnabled());
 	}
 
 	public function limited(): bool {
