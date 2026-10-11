@@ -72,7 +72,7 @@ class CaptchaAdminAppController extends AppController {
 		} catch (HttpException $e) {
 			throw $e;
 		} catch (Throwable $e) {
-			Log::warning(sprintf('Captcha.adminAccess threw %s: %s', $e::class, $e->getMessage()));
+			Log::warning(sprintf('Captcha.adminAccess callback failed (%s).', $e::class));
 
 			throw new ForbiddenException(__d('captcha', 'Captcha admin access denied.'));
 		}

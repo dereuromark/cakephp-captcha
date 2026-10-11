@@ -35,7 +35,7 @@ Configure::write('Captcha.adminAccess', function (ServerRequest $request): bool 
 });
 ```
 
-If `Captcha.adminAccess` is not set, every admin URL responds with `403 Forbidden`.
+If a request reaches the plugin’s access check without `Captcha.adminAccess`, it receives `403 Forbidden`.
 
 The host `AppController` initialization and `beforeFilter()` still run. Its redirects are preserved. After those callbacks, the plugin uses `Captcha.adminAccess` as its admin authorization check. Returning anything other than `true` denies access. HTTP exceptions retain their status or redirect; other callback failures are logged and return 403.
 
