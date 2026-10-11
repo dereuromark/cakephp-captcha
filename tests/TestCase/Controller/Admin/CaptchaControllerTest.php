@@ -70,6 +70,25 @@ class CaptchaControllerTest extends TestCase {
 	/**
 	 * @return void
 	 */
+	public function testAdminBackLinkEscapesConfiguredUrlAndLabel() {
+		Configure::write('Captcha.adminAccess', fn (ServerRequest $request): bool => true);
+		Configure::write('Captcha.adminBackUrl', 'https://example.test/?q="&x=1');
+		Configure::write('Captcha.adminBackLabel', '<script>bad</script>');
+		try {
+			$this->get(['plugin' => 'Captcha', 'prefix' => 'Admin', 'controller' => 'Captcha', 'action' => 'index']);
+			$this->assertResponseOk();
+			$this->assertResponseContains('href="https://example.test/?q=&quot;&amp;x=1"');
+			$this->assertResponseContains('&lt;script&gt;bad&lt;/script&gt;');
+			$this->assertResponseContains('<i class="fas fa-arrow-left me-1"></i>');
+		} finally {
+			Configure::delete('Captcha.adminBackUrl');
+			Configure::delete('Captcha.adminBackLabel');
+		}
+	}
+
+	/**
+	 * @return void
+	 */
 	public function testIndexClosureMayDeny() {
 		Configure::write('Captcha.adminAccess', fn (ServerRequest $request): bool => false);
 
