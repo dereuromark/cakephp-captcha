@@ -12,8 +12,9 @@ class VerifyRateLimiter {
 
 	/**
 	 * @param array{enabled: bool, maxFailures: int, window: int, scope: string, cache: string} $config
+	 * @param string|null $counterKey
 	 */
-	public function __construct(protected array $config) {
+	public function __construct(protected array $config, protected ?string $counterKey = null) {
 	}
 
 	public function enabled(): bool {
@@ -79,7 +80,7 @@ class VerifyRateLimiter {
 	}
 
 	protected function key(string $ip, string $sessionId, ?int $now = null): string {
-		return RateLimitKey::build(
+		return $this->counterKey ?? RateLimitKey::build(
 			$ip,
 			$sessionId,
 			(string)$this->config['scope'],

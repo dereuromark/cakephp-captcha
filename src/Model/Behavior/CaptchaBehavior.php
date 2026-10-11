@@ -10,6 +10,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Validation\Validator;
+use Captcha\Cache\RateLimitKey;
 use Captcha\Cache\VerifyRateLimiter;
 use Captcha\Engine\EngineInterface;
 use Captcha\Engine\MathEngine;
@@ -360,10 +361,15 @@ class CaptchaBehavior extends Behavior {
 	 * @return bool
 	 */
 	protected function _isVerifyRateLimitEnabled(): bool {
-		return $this->_verifyRateLimiter()->enabled();
+		$config = $this->_getVerifyRateLimitConfig();
+
+		return !empty($config['enabled']);
 	}
 
 	protected function _isRateLimited(): bool {
+		if (!$this->_isVerifyRateLimitEnabled()) {
+			return false;
+		}
 		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
 
 		return $this->_verificationContext?->limited($this->_verifyRateLimiter(), $ip, $sessionId)
@@ -371,10 +377,10 @@ class CaptchaBehavior extends Behavior {
 	}
 
 	protected function _incrementFailedAttemptCounter(): void {
-		$limiter = $this->_verifyRateLimiter();
-		if (!$limiter->enabled()) {
+		if (!$this->_isVerifyRateLimitEnabled()) {
 			return;
 		}
+		$limiter = $this->_verifyRateLimiter();
 		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
 		if ($this->_verificationContext !== null) {
 			$this->_verificationContext->increment($limiter, $ip, $sessionId);
@@ -388,10 +394,10 @@ class CaptchaBehavior extends Behavior {
 			return;
 		}
 
-		$limiter = $this->_verifyRateLimiter();
-		if (!$limiter->enabled()) {
+		if (!$this->_isVerifyRateLimitEnabled()) {
 			return;
 		}
+		$limiter = $this->_verifyRateLimiter();
 		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
 		$limiter->clear($ip, $sessionId);
 	}
@@ -416,10 +422,20 @@ class CaptchaBehavior extends Behavior {
 	}
 
 	/**
+	 * @return string
+	 */
+	protected function _buildRateLimitKey(): string {
+		$config = $this->_getVerifyRateLimitConfig();
+		['sessionId' => $sessionId, 'ip' => $ip] = $this->_getRequestIdentity();
+
+		return RateLimitKey::build($ip, $sessionId, (string)$config['scope'], (int)$config['window']);
+	}
+
+	/**
 	 * @return \Captcha\Cache\VerifyRateLimiter
 	 */
 	protected function _verifyRateLimiter(): VerifyRateLimiter {
-		return new VerifyRateLimiter($this->_getVerifyRateLimitConfig());
+		return new VerifyRateLimiter($this->_getVerifyRateLimitConfig(), $this->_buildRateLimitKey());
 	}
 
 	/**
