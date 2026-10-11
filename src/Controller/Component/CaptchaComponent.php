@@ -86,7 +86,7 @@ class CaptchaComponent extends Component {
 	 */
 	public function addValidation(Validator $validator, ?string $type = null): void {
 		if ($type === 'Passive') {
-			$behavior = new PassiveCaptchaBehavior(new Table());
+			$behavior = new PassiveCaptchaBehavior(new Table(['alias' => 'PassiveCaptcha']));
 			$behavior->addPassiveCaptchaValidation($validator);
 
 			return;

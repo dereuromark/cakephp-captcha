@@ -6,6 +6,8 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\Event\EventInterface;
+use Cake\Event\EventManager;
 use Cake\Form\Form;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
@@ -83,6 +85,34 @@ class CaptchaComponentTest extends TestCase {
 		$this->assertNotEmpty($validator->validate(['email_homepage' => 'bot']));
 		$this->assertNotEmpty($validator->validate([]));
 		$this->assertFalse($this->getTableLocator()->exists('Captcha.Captchas'));
+	}
+
+	public function testPassiveFormTableHasAnAliasForGlobalListeners(): void {
+		$aliases = [];
+		$listener = function (EventInterface $event) use (&$aliases): void {
+			$aliases[] = $event->getSubject()->getAlias();
+		};
+		$component = new CaptchaComponent(new ComponentRegistry(new Controller(new ServerRequest())));
+		EventManager::instance()->on('Model.initialize', $listener);
+		try {
+			$component->addValidation((new Form())->getValidator(), 'Passive');
+		} finally {
+			EventManager::instance()->off('Model.initialize', $listener);
+		}
+
+		$this->assertSame(['PassiveCaptcha'], $aliases);
+	}
+
+	public function testAutomaticSetupAllowsNoDefaultTable(): void {
+		$controller = new class (new ServerRequest()) extends Controller {
+			public function initialize(): void {
+				$this->defaultTable = null;
+			}
+		};
+		$component = new CaptchaComponent(new ComponentRegistry($controller));
+		$this->expectNotToPerformAssertions();
+
+		$component->beforeFilter(new Event('Controller.initialize', $controller));
 	}
 
 }

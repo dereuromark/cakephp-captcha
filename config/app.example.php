@@ -25,7 +25,7 @@ return [
 			'cache' => 'default',
 		],
 
-		// Admin backend (mounted at /<adminPrefix><adminRoutePath> — default /admin/captcha)
+		// Admin backend (mounted at /<adminPrefix><adminRoutePath>; default /admin/captcha)
 		'adminPrefixPath' => null, // Derive the URL path from adminPrefix
 		'adminPrefix' => 'Admin', // Route prefix to mount the admin under
 		'adminRoutePath' => '/captcha', // Path segment under the prefix
@@ -33,7 +33,7 @@ return [
 
 		// Back-to-App link in the admin header (opt-in). When set, an outline
 		// button appears in the top navbar so admins can escape the
-		// plugin-isolated layout. Accepts anything Router::url() takes — Cake
+		// plugin-isolated layout. Accepts anything Router::url() takes; Cake
 		// URL array, path string, or full URL. Use 'plugin' => false to
 		// anchor the builder to the host app rather than the Captcha plugin.
 		// 'adminBackUrl' => ['plugin' => false, 'prefix' => 'Admin', 'controller' => 'Overview', 'action' => 'index'],

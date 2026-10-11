@@ -112,7 +112,7 @@ For a different challenge, set `Captcha.engine` to a class implementing `Captcha
 With such a DB driven tool you must clean out your table daily or even hourly based on the traffic.
 Use the `maxTime` config to define the time span a captcha is valid, and when it can be removed as outdated.
 The built in solution here is to auto-clean when creating images on a probability level (0...100). Default for `cleanupProbability` is `10` (percent).
-On the current branch, `cleanupProbability => 0` disables automatic cleanup. For scheduled cleanup, call `fetchTable('Captcha.Captchas')->cleanup()` from your own command, or use the admin cleanup action. The plugin has no cleanup CLI command.
+`cleanupProbability => 0` disables automatic cleanup. See [upgrade notes](../guide/upgrading#unreleased-fixes) if using a release before this fix. For scheduled cleanup, call `fetchTable('Captcha.Captchas')->cleanup()` from your own command, or use the admin cleanup action. The plugin has no cleanup CLI command.
 
 The `minTime` is by default 2 seconds and make sure you cannot auto-post a form too fast.
 

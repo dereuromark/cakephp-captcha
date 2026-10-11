@@ -135,4 +135,4 @@ The class must hide the field from assistive technology as well, not just visual
 `.sr-only`/`.visually-hidden` helper) does not; screen reader users would fill in the
 honeypot and get their submission rejected.
 
-When `passiveClass` is `null` (the default), the existing inline-style behaviour is preserved; no breaking change.
+When `passiveClass` is `null` (the default), the existing inline-style behavior is preserved; no breaking change.

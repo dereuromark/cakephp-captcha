@@ -18,7 +18,7 @@ Put shared engine and helper settings under the `Captcha` key in `config/app.php
 | `maxPerUser` | `100` | Unused tokens allowed for either the IP or session within the issuance window |
 | `deadlockMinutes` | `60` | Issuance window in minutes |
 
-A `maxPerUser` value of zero falls back to 100. It does not disable the issuance limit. `cleanupProbability => 0` disables automatic cleanup on the current branch.
+A `maxPerUser` value of zero falls back to 100. It does not disable the issuance limit. `cleanupProbability => 0` disables automatic cleanup. See [upgrade notes](../guide/upgrading#unreleased-fixes) for releases before this fix.
 
 ## Scope of settings
 
