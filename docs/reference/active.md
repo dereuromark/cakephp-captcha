@@ -106,7 +106,7 @@ Attach `Captcha.Captcha` and use `render()` in the template. Attach `Captcha.Pas
 
 Set `Captcha.mathType` to a class implementing `Captcha\Engine\Math\MathInterface` to change the math expression. The constructor receives the engine configuration; `getExpression(): string` returns the expression and `getValue(): string` its answer. MathEngine renders the expression with the bundled math publisher.
 
-For a different challenge, set `Captcha.engine` to a class implementing `Captcha\Engine\EngineInterface`. Its constructor receives the configuration. `generate(): array` supplies the stored `result` and binary `image`; `buildValidator(Validator $validator): void` adds validation rules. Keep the generated values and template controls consistent with those rules.
+For a different challenge, set `Captcha.engine` to a class implementing `Captcha\Engine\EngineInterface`. Its constructor receives the configuration. `generate(): array` supplies the stored `result` and binary `image`; `buildValidator(Validator $validator): void` adds validation rules. The behavior registers itself as the `captcha` validation provider before calling the engine. Rules using `validateCaptchaResult` must specify `'provider' => 'captcha'`; table behavior method forwarding is removed in CakePHP 6. Keep the generated values and template controls consistent with those rules.
 
 ## Throttle and Garbage Collect
 With such a DB driven tool you must clean out your table daily or even hourly based on the traffic.

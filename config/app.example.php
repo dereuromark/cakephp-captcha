@@ -45,7 +45,7 @@ return [
 		//     return $identity !== null && in_array('admin', (array)($identity->roles ?? []), true);
 		// },
 
-		// The following are behavior/helper _defaultConfig values (CaptchaBehavior,
+		// The following are behavior/helper defaultConfig values (CaptchaBehavior,
 		// PassiveCaptchaBehavior, CaptchaHelper). They can be set per-attachment, but
 		// can also be overridden globally here via the Captcha namespace, which is
 		// merged onto each component's defaults at runtime.
