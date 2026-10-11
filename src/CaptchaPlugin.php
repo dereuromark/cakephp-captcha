@@ -24,7 +24,7 @@ class CaptchaPlugin extends BasePlugin {
 	 * @return void
 	 */
 	public function routes(RouteBuilder $routes): void {
-		$routes->plugin('Captcha', ['path' => '/captcha'], function (RouteBuilder $routes): void {
+		$routes->plugin('Captcha', function (RouteBuilder $routes): void {
 			$routes->setExtensions(['png', 'jpg']);
 			$routes->fallbacks(DashedRoute::class);
 		});
@@ -36,12 +36,12 @@ class CaptchaPlugin extends BasePlugin {
 		if ($prefixPath !== null) {
 			$prefixOptions['path'] = (string)$prefixPath;
 		}
-		$routes->prefix($adminPrefix, $prefixOptions, function (RouteBuilder $routes) use ($adminPath): void {
-			$routes->plugin('Captcha', ['path' => $adminPath], function (RouteBuilder $routes): void {
+		$routes->prefix($adminPrefix, function (RouteBuilder $routes) use ($adminPath): void {
+			$routes->plugin('Captcha', function (RouteBuilder $routes): void {
 				$routes->connect('/', ['controller' => 'Captcha', 'action' => 'index']);
 				$routes->fallbacks(DashedRoute::class);
-			});
-		});
+			}, ['path' => $adminPath]);
+		}, $prefixOptions);
 	}
 
 }

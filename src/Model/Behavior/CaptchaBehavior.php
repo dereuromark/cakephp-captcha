@@ -30,7 +30,7 @@ class CaptchaBehavior extends Behavior {
 	/**
 	 * @var array<string, mixed>
 	 */
-	protected array $_defaultConfig = [
+	protected array $defaultConfig = [
 		'minTime' => 2, // Seconds the form will need to be filled in by a human
 		'maxTime' => DAY, // Seconds the form will need to be submitted in
 		'engine' => MathEngine::class,
@@ -75,7 +75,7 @@ class CaptchaBehavior extends Behavior {
 		$globalConfig = (array)Configure::read('Captcha');
 		$config += $globalConfig;
 		if (isset($config['verifyRateLimit']) && is_array($config['verifyRateLimit'])) {
-			$config['verifyRateLimit'] += (array)($globalConfig['verifyRateLimit'] ?? []) + $this->_defaultConfig['verifyRateLimit'];
+			$config['verifyRateLimit'] += (array)($globalConfig['verifyRateLimit'] ?? []) + $this->defaultConfig['verifyRateLimit'];
 		}
 
 		parent::__construct($table, $config);
@@ -112,6 +112,7 @@ class CaptchaBehavior extends Behavior {
 	 * @return void
 	 */
 	public function addCaptchaValidation(Validator $validator): void {
+		$validator->setProvider('captcha', $this);
 		$state = VerificationContext::forValidator($validator);
 		$state->attach($validator, 'captcha_result');
 		$state->onStart(function () use ($state): void {
@@ -131,7 +132,7 @@ class CaptchaBehavior extends Behavior {
 			$validator->add('captcha_result', [
 				'maxPerUser' => [
 					'rule' => 'validateCaptchaMaxPerUser',
-					'provider' => 'table',
+					'provider' => 'captcha',
 					'message' => __d('captcha', 'Limit reached. Please retry later'),
 					'last' => true,
 				],
@@ -142,7 +143,7 @@ class CaptchaBehavior extends Behavior {
 			$validator->add('captcha_result', [
 				'verifyRateLimit' => [
 					'rule' => 'validateCaptchaRateLimit',
-					'provider' => 'table',
+					'provider' => 'captcha',
 					'message' => __d('captcha', 'Too many failed attempts. Please retry later'),
 					'last' => true,
 				],
@@ -153,7 +154,7 @@ class CaptchaBehavior extends Behavior {
 			$validator->add('captcha_result', [
 				'minTime' => [
 					'rule' => 'validateCaptchaMinTime',
-					'provider' => 'table',
+					'provider' => 'captcha',
 					'message' => __d('captcha', 'You were too fast'),
 					'last' => true,
 				],
@@ -163,7 +164,7 @@ class CaptchaBehavior extends Behavior {
 			$validator->add('captcha_result', [
 				'maxTime' => [
 					'rule' => 'validateCaptchaMaxTime',
-					'provider' => 'table',
+					'provider' => 'captcha',
 					'message' => __d('captcha', 'You were too slow'),
 					'last' => true,
 				],
@@ -174,7 +175,7 @@ class CaptchaBehavior extends Behavior {
 			$validator->add('captcha_result', [
 				'consume' => [
 					'rule' => 'validateCaptchaWithoutChallenge',
-					'provider' => 'table',
+					'provider' => 'captcha',
 					'last' => true,
 				],
 			]);
@@ -416,7 +417,7 @@ class CaptchaBehavior extends Behavior {
 	 */
 	protected function _getVerifyRateLimitConfig(): array {
 		/** @var array{enabled: bool, maxFailures: int, window: int, scope: string, cache: string} $config */
-		$config = (array)$this->getConfig('verifyRateLimit') + $this->_defaultConfig['verifyRateLimit'];
+		$config = (array)$this->getConfig('verifyRateLimit') + $this->defaultConfig['verifyRateLimit'];
 
 		return $config;
 	}

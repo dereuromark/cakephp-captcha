@@ -202,7 +202,7 @@ class CaptchaControllerTest extends TestCase {
 		$listener = function (EventInterface $event): void {
 			$this->fail('Later listeners must not replace the host redirect.');
 		};
-		EventManager::instance()->on('Controller.initialize', ['priority' => 100], $listener);
+		EventManager::instance()->on('Controller.initialize', $listener, options: ['priority' => 100]);
 
 		try {
 			$this->get(['prefix' => 'Admin', 'plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'index']);

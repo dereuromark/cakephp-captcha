@@ -21,7 +21,7 @@ class PassiveCaptchaBehavior extends Behavior {
 	/**
 	 * @var array<string, mixed>
 	 */
-	protected array $_defaultConfig = [
+	protected array $defaultConfig = [
 		'dummyField' => 'email_homepage', // Honeypot trap
 		'log' => null, // Auto detect based on debug mode
 		'verifyRateLimit' => [
@@ -39,7 +39,7 @@ class PassiveCaptchaBehavior extends Behavior {
 		$globalConfig = (array)Configure::read('Captcha');
 		$config += $globalConfig;
 		if (isset($config['verifyRateLimit']) && is_array($config['verifyRateLimit'])) {
-			$config['verifyRateLimit'] += (array)($globalConfig['verifyRateLimit'] ?? []) + $this->_defaultConfig['verifyRateLimit'];
+			$config['verifyRateLimit'] += (array)($globalConfig['verifyRateLimit'] ?? []) + $this->defaultConfig['verifyRateLimit'];
 		}
 
 		parent::__construct($table, $config);
@@ -54,8 +54,8 @@ class PassiveCaptchaBehavior extends Behavior {
 	public function initialize(array $config): void {
 		parent::initialize($config);
 
-		if ($this->_config['log'] === null) {
-			$this->_config['log'] = (bool)Configure::read('debug');
+		if ($this->config['log'] === null) {
+			$this->config['log'] = (bool)Configure::read('debug');
 		}
 	}
 
@@ -103,7 +103,7 @@ class PassiveCaptchaBehavior extends Behavior {
 				$field => [
 					'rule' => function ($value) use ($field) {
 						$ok = $value === '';
-						if (!$ok && $this->_config['log']) {
+						if (!$ok && $this->config['log']) {
 							Log::write('info', 'PassiveCaptcha trigger on field `' . $field . '`, value ' . $this->sanitizeForLog($value));
 						}
 
@@ -133,7 +133,7 @@ class PassiveCaptchaBehavior extends Behavior {
 
 	protected function _verifyRateLimiter(): VerifyRateLimiter {
 		/** @var array{enabled: bool, maxFailures: int, window: int, scope: string, cache: string} $config */
-		$config = (array)$this->getConfig('verifyRateLimit') + $this->_defaultConfig['verifyRateLimit'];
+		$config = (array)$this->getConfig('verifyRateLimit') + $this->defaultConfig['verifyRateLimit'];
 
 		return new VerifyRateLimiter($config);
 	}
