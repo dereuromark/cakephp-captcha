@@ -73,7 +73,8 @@ class CaptchaHelper extends Helper {
 			'value' => '',
 		];
 
-		return $this->Form->control('captcha_result', $options);
+		return $this->Form->control('captcha_result', $options)
+			. $this->Form->control('captcha_uuid', ['type' => 'hidden', 'value' => $this->_getId() ?? '']);
 	}
 
 	/**
@@ -84,11 +85,11 @@ class CaptchaHelper extends Helper {
 	public function render(array $options = []) {
 		$id = $this->_getId();
 		if (is_a($this->getConfig('engine'), NullEngine::class, true)) {
-			$html = $this->Form->hidden('captcha_result');
+			$html = $this->Form->hidden('captcha_result')
+				. $this->Form->control('captcha_uuid', ['type' => 'hidden', 'value' => $id ?? '']);
 		} else {
 			$html = $this->control($options);
 		}
-		$html .= $this->Form->control('captcha_uuid', ['type' => 'hidden', 'value' => $id ?? '']);
 
 		return $html . $this->passive();
 	}

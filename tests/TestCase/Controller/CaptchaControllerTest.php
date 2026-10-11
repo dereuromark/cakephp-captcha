@@ -2,14 +2,18 @@
 
 namespace Captcha\Test\TestCase\Controller;
 
+use Cake\Controller\Component;
 use Cake\Core\Configure;
+use Cake\Event\EventInterface;
+use Cake\Event\EventManager;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use Captcha\Controller\CaptchaController;
+use LogicException;
+use PHPUnit\Framework\Attributes\UsesClass;
 
-/**
- * @uses \Captcha\Controller\CaptchaController
- */
+#[UsesClass(CaptchaController::class)]
 class CaptchaControllerTest extends TestCase {
 
 	use IntegrationTestTrait;
@@ -103,6 +107,25 @@ class CaptchaControllerTest extends TestCase {
 		$this->assertHeaderContains('Pragma', 'no-cache');
 		$this->assertHeaderContains('Expires', '0');
 		$this->assertResponseNotEmpty();
+	}
+
+	public function testDisplayWithComponentWithoutAuthorizationMiddleware(): void {
+		$listener = function (EventInterface $event): void {
+			$controller = $event->getSubject();
+			$controller->components()->set('Authorization', new class ($controller->components()) extends Component {
+				public function skipAuthorization(): void {
+					throw new LogicException('No Authorization middleware service');
+				}
+			});
+		};
+		EventManager::instance()->on('Controller.initialize', $listener);
+		try {
+			$this->get(['plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'display', '11111111-1111-4111-8111-111111111111']);
+		} finally {
+			EventManager::instance()->off('Controller.initialize', $listener);
+		}
+
+		$this->assertResponseOk();
 	}
 
 }

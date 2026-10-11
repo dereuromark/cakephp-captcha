@@ -4,6 +4,7 @@ namespace Captcha\Test\TestCase\Model\Table;
 
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
+use Captcha\Model\Table\CaptchasTable;
 
 class CaptchasTableTest extends TestCase {
 
@@ -79,6 +80,17 @@ class CaptchasTableTest extends TestCase {
 		$result = $this->Captchas->cleanup();
 
 		$this->assertNotEmpty($result);
+	}
+
+	public function testTouchDisablesAutomaticCleanup(): void {
+		Configure::write('Captcha.cleanupProbability', 0);
+		$table = $this->getMockBuilder(CaptchasTable::class)
+			->setConstructorArgs([['table' => 'captchas', 'connection' => $this->Captchas->getConnection()]])
+			->onlyMethods(['cleanup'])
+			->getMock();
+		$table->expects($this->once())->method('cleanup')->with(0)->willReturn(0);
+
+		$this->assertNotEmpty($table->touch('cleanup-test', '127.0.0.1'));
 	}
 
 }

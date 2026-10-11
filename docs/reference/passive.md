@@ -1,0 +1,138 @@
+# Passive captchas
+
+By default, the plugin provides an unobtrusive passive captcha as "bot trap" aka "honeypot".
+It does not need a DB table.
+This is low-assurance protection only and should be treated as nuisance filtering for unsophisticated bots, not as a primary anti-automation control.
+
+## Honeypot field
+The `dummyField` config sets an input field (by default `email_homepage` control) as hidden field, and will fail if filled out.
+This only catches simplistic bots that blindly fill every field they see. More capable bots can detect or ignore honeypots.
+
+If you want to only use this "passive captcha", then use the `Captcha.PassiveCaptcha` behavior instead.
+
+```php
+$this->MyTable->addBehavior('Captcha.PassiveCaptcha');
+```
+
+They can also be combined, though.
+
+
+Now load the helper, e.g in your AppView:
+```php
+$this->loadHelper('Captcha.Captcha');
+```
+
+Add a passive captcha control in your form:
+```php
+echo $this->Captcha->passive();
+```
+
+That's it, now it should not validate the form if the honeypot was triggered.
+For higher-risk forms, combine it with the active captcha or your own external bot-defense layer.
+
+## Working with model-less forms
+E.g. for a contact form, first add this in your controller's `initialize()`:
+```php
+$this->loadComponent('Captcha.Captcha', ['auto' => false]);
+```
+
+Then inside your action, use `addValidation()` to inject the plugin's validation rules into the form validator:
+```php
+use App\Form\ContactForm; // Your Cake\Form\Form subclass
+
+$contactForm = new ContactForm();
+
+if ($this->request->is('post')) {
+    $this->Captcha->addValidation($contactForm->getValidator(), 'Passive');
+
+    if ($contactForm->execute($this->request->getData())) {
+        // Send email and redirect
+    }
+    // Display validation errors
+}
+```
+
+Also here, don't forget to add the helper call.
+
+## Configuration
+
+You can configure it globally using Configure class - and `app.php`:
+```
+'Captcha' => [
+    'dummyField' => 'email_homepage',
+    'log' => true,
+],
+```
+
+Use `'log' => true` if you want to log all honeypot events to type `info`.
+
+### Optional verification throttling
+
+Passive throttling is disabled by default. To enable it globally:
+
+```php
+'Captcha' => [
+    'verifyRateLimit' => [
+        'enabled' => true,
+        'maxFailures' => 5,
+        'window' => 600,
+        'scope' => 'ip_session',
+        'cache' => 'default',
+    ],
+],
+```
+
+This needs a persistent Cake Cache backend and starts a session for `ip_session` scope.
+It still creates no captcha database rows. Use `ip` scope to share the failure budget across sessions
+at the same address. Missing, null, and filled honeypot fields each reject a submission; multiple
+failed fields consume only one attempt. Once the limit is reached, empty honeypots also reject
+until the current time bucket ends or an administrator clears the counter. Empty honeypots alone
+do not clear past failures, because bots can submit them too.
+
+When both behaviors use the same cache, scope, and window, they share a failure counter.
+A submission failing both checks increments it once. A valid database token clears the counter
+only if every configured honeypot is also present and empty, regardless of validation order.
+Use the same limiter settings on both behaviors. Global configuration applies to both; per-behavior
+options take precedence over the corresponding global option. Partial `verifyRateLimit` overrides
+inherit the remaining global settings, including the cache.
+
+Throttle errors belong to the hidden honeypot fields. Render a visible error summary or show
+`$this->Form->error('email_homepage')` outside the hidden wrapper so visitors know why the
+submission was rejected. Use your configured field name when it differs from the default.
+
+See [cache requirements](./active#verification-cache) and [admin monitoring](./admin#currently-rate-limited-clients).
+
+### CSP-compatible rendering (`passiveClass`)
+
+By default, `passive()` renders the honeypot wrapper with an inline style:
+```html
+<div style="display: none">…</div>
+```
+
+Inline `style` attributes are blocked by a strict `Content-Security-Policy` that does not
+allow `'unsafe-inline'` in `style-src` (respectively `style-src-attr`).
+To render a CSS class instead, set the `passiveClass` config key:
+
+```php
+// config/app.php or app_local.php
+'Captcha' => [
+    'passiveClass' => 'd-none', // Bootstrap utility class, or any custom class
+],
+```
+
+The helper then outputs:
+```html
+<div class="d-none">…</div>
+```
+
+If you are not using a framework that already ships such a utility class, add the rule yourself:
+```css
+.d-none { display: none; }
+```
+
+The class must hide the field from assistive technology as well, not just visually.
+`display: none` or `visibility: hidden` do that; an off-screen-only class (such as a
+`.sr-only`/`.visually-hidden` helper) does not; screen reader users would fill in the
+honeypot and get their submission rejected.
+
+When `passiveClass` is `null` (the default), the existing inline-style behavior is preserved; no breaking change.
