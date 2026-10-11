@@ -7,8 +7,8 @@ use Captcha\Engine\MathEngine;
 return [
 	'Captcha' => [
 		'engine' => MathEngine::class, // Engine FQCN (must implement Captcha\Engine\EngineInterface); default is MathEngine
-		'engineConfig' => [], // Only read by the admin preview (Admin/CaptchaController::preview) when rendering a test captcha; the live captcha flow does NOT read this — set production engine options at the Captcha.* top level
-		'maxTime' => DAY, // Seconds a generated captcha stays valid before it is considered stale/expired; default DAY (86400)
+		'engineConfig' => [], // Only read by the admin preview (Admin/CaptchaController::preview) when rendering a test captcha; the live captcha flow does not read this; set production engine options at the Captcha.* top level
+		'maxTime' => 86400, // Seconds a generated captcha stays valid before it is considered stale/expired; default DAY (86400)
 
 		'maxPerUser' => 100, // Total stored captchas per user
 		'deadlockMinutes' => 60, // How long at most to block a user who generated too much captchas
@@ -34,7 +34,7 @@ return [
 		// 'adminBackUrl' => ['plugin' => false, 'prefix' => 'Admin', 'controller' => 'Overview', 'action' => 'index'],
 		// 'adminBackLabel' => 'Back to admin', // Optional. Defaults to "Back to App".
 
-		// REQUIRED for the admin backend. Default is deny — the closure must return true to allow access.
+		// REQUIRED for the admin backend. Default is deny; the closure must return true to allow access.
 		// 'adminAccess' => function (\Cake\Http\ServerRequest $request): bool {
 		//     $identity = $request->getAttribute('identity');
 		//     return $identity !== null && in_array('admin', (array)($identity->roles ?? []), true);

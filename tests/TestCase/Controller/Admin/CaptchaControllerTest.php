@@ -5,6 +5,8 @@ namespace Captcha\Test\TestCase\Controller\Admin;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use Cake\Event\EventInterface;
+use Cake\Event\EventManager;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\ServerRequest;
@@ -12,6 +14,7 @@ use Cake\I18n\DateTime;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Captcha\Cache\VerifyRateLimiter;
+use RuntimeException;
 
 /**
  * @uses \Captcha\Controller\Admin\CaptchaController
@@ -186,6 +189,72 @@ class CaptchaControllerTest extends TestCase {
 		} finally {
 			Cache::drop('dashboard_limiter');
 		}
+	}
+
+	public function testHostRedirectStopsLaterListeners(): void {
+		Configure::write('Test.hostRedirectViaEvent', true);
+		Configure::write('Captcha.adminAccess', function (): bool {
+			$this->fail('The plugin gate must not run after a host redirect.');
+		});
+		$listener = function (EventInterface $event): void {
+			$this->fail('Later listeners must not replace the host redirect.');
+		};
+		EventManager::instance()->on('Controller.initialize', ['priority' => 100], $listener);
+
+		try {
+			$this->get(['prefix' => 'Admin', 'plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'index']);
+			$this->assertRedirect('/login');
+		} finally {
+			EventManager::instance()->off('Controller.initialize', $listener);
+			Configure::delete('Test.hostRedirectViaEvent');
+		}
+	}
+
+	public function testReturnedHostRedirectStopsAction(): void {
+		Configure::write('Test.hostRedirect', true);
+		Configure::write('Captcha.adminAccess', function (): bool {
+			$this->fail('The plugin gate must not run after a host redirect.');
+		});
+		try {
+			$this->get(['prefix' => 'Admin', 'plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'index']);
+			$this->assertRedirect('/login');
+		} finally {
+			Configure::delete('Test.hostRedirect');
+		}
+	}
+
+	public function testGateExceptionDeniesAccess(): void {
+		$this->disableErrorHandlerMiddleware();
+		Configure::write('Captcha.adminAccess', function (): bool {
+			throw new RuntimeException('Gate unavailable');
+		});
+		$this->expectException(ForbiddenException::class);
+
+		$this->get(['prefix' => 'Admin', 'plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'index']);
+	}
+
+	public function testRequestAuthorizationServiceIsMarkedChecked(): void {
+		$service = new class {
+			public bool $skipped = false;
+
+			public function skipAuthorization(): void {
+				$this->skipped = true;
+			}
+		};
+		Configure::write('Captcha.adminAccess', fn (): bool => true);
+		$listener = function (EventInterface $event) use ($service): void {
+			$controller = $event->getSubject();
+			$controller->setRequest($controller->getRequest()->withAttribute('authorization', $service));
+		};
+		EventManager::instance()->on('Controller.initialize', $listener);
+		try {
+			$this->get(['prefix' => 'Admin', 'plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'index']);
+		} finally {
+			EventManager::instance()->off('Controller.initialize', $listener);
+		}
+
+		$this->assertResponseOk();
+		$this->assertTrue($service->skipped);
 	}
 
 }

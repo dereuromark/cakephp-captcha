@@ -170,4 +170,13 @@ class CaptchaHelperTest extends TestCase {
 		}
 	}
 
+	public function testControlIncludesChallengeTokenWithoutHoneypot(): void {
+		$result = $this->Captcha->control();
+
+		$this->assertStringContainsString('name="captcha_result"', $result);
+		$this->assertMatchesRegularExpression('/name="captcha_uuid"[^>]*value="[0-9a-f-]{36}"/', $result);
+		$this->assertStringNotContainsString('name="email_homepage"', $result);
+		$this->assertSame(1, substr_count($this->Captcha->render(), 'name="captcha_uuid"'));
+	}
+
 }

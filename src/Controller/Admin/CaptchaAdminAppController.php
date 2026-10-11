@@ -7,7 +7,10 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
+use Cake\Log\Log;
 use Closure;
+use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 /**
  * Base controller for the Captcha admin backend.
@@ -40,17 +43,39 @@ class CaptchaAdminAppController extends AppController {
      * @return void
 	 */
 	public function beforeFilter(EventInterface $event): void {
-		parent::beforeFilter($event);
+		$result = parent::beforeFilter($event);
+		if ($result instanceof ResponseInterface) {
+			$event->setResult($result);
+		}
+		if ($event->getResult() instanceof ResponseInterface) {
+			$event->stopPropagation();
+
+			return;
+		}
 
 		if ($this->components()->has('Authorization') && method_exists($this->components()->get('Authorization'), 'skipAuthorization')) {
 			$this->components()->get('Authorization')->skipAuthorization();
+		} else {
+			$authorization = $this->request->getAttribute('authorization');
+			if (is_object($authorization) && is_callable([$authorization, 'skipAuthorization'])) {
+				$authorization->skipAuthorization();
+			}
 		}
 
 		$gate = Configure::read('Captcha.adminAccess');
 		if (!($gate instanceof Closure)) {
 			throw new ForbiddenException(__d('captcha', 'Captcha admin backend is not configured. Set Captcha.adminAccess to a Closure.'));
 		}
-		if ($gate($this->request) !== true) {
+		try {
+			$allowed = $gate($this->request) === true;
+		} catch (ForbiddenException $e) {
+			throw $e;
+		} catch (Throwable $e) {
+			Log::warning(sprintf('Captcha.adminAccess threw %s: %s', $e::class, $e->getMessage()));
+
+			throw new ForbiddenException(__d('captcha', 'Captcha admin access denied.'));
+		}
+		if (!$allowed) {
 			throw new ForbiddenException(__d('captcha', 'Captcha admin access denied.'));
 		}
 	}

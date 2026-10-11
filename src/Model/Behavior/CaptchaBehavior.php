@@ -21,8 +21,8 @@ use RuntimeException;
 /**
  * CaptchaBehavior
  *
- * Uses different captcha types, database driven and session-free.
- * This allows a cleaner, robust and completely tab-safe approach.
+ * Stores separate challenge tokens bound to the visitor session and IP address.
+ * Multiple open forms use independent tokens.
  */
 class CaptchaBehavior extends Behavior {
 

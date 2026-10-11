@@ -7,7 +7,10 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Captcha\Model\Behavior\CaptchaBehavior;
+use Captcha\Model\Behavior\PassiveCaptchaBehavior;
 use ReflectionClass;
+use RuntimeException;
 
 class CaptchaComponent extends Component {
 
@@ -32,19 +35,18 @@ class CaptchaComponent extends Component {
 			return;
 		}
 
-		$model = $this->getControllerModelClass();
-		if (!$model || !$this->_config['auto']) {
+		if (!$this->getConfig('auto')) {
 			return;
 		}
-		if (str_contains($model, '.')) {
-			[$plugin, $model] = pluginSplit($model);
+		$model = $this->getControllerModelClass();
+		if (!$model) {
+			return;
 		}
 
-		$controller = $this->getController();
-		if ($controller->$model->hasBehavior('Captcha')) {
-			return;
+		$table = $this->getController()->fetchTable($model);
+		if (!$table->hasBehavior('Captcha')) {
+			$table->addBehavior('Captcha.Captcha');
 		}
-		$controller->$model->addBehavior('Captcha.Captcha');
 	}
 
 	/**
@@ -58,7 +60,7 @@ class CaptchaComponent extends Component {
 		}
 		$property = $reflection->getProperty($property);
 
-		return $property->getValue($this->getController());
+		return $property->getValue($this->getController()) ?? '';
 	}
 
 	/**
@@ -81,7 +83,7 @@ class CaptchaComponent extends Component {
 	 *
 	 * @return void
 	 */
-	public function addValidation(Validator $validator, ?string $type = null) {
+	public function addValidation(Validator $validator, ?string $type = null): void {
 		/** @var \Cake\ORM\Table<array{Captcha: \Captcha\Model\Behavior\CaptchaBehavior, PassiveCaptcha: \Captcha\Model\Behavior\PassiveCaptchaBehavior}> $Captchas */
 		$Captchas = TableRegistry::getTableLocator()->get('Captcha.Captchas');
 
@@ -93,9 +95,14 @@ class CaptchaComponent extends Component {
 		}
 
 		$Captchas->addBehavior('Captcha.' . $behavior);
-		$method = 'add' . $behavior . 'Validation';
-		/** @phpstan-ignore-next-line */
-		$Captchas->getBehavior($behavior)->$method($validator);
+		$instance = $Captchas->getBehavior($behavior);
+		if ($instance instanceof CaptchaBehavior) {
+			$instance->addCaptchaValidation($validator);
+		} elseif ($instance instanceof PassiveCaptchaBehavior) {
+			$instance->addPassiveCaptchaValidation($validator);
+		} else {
+			throw new RuntimeException('Unsupported captcha validation behavior');
+		}
 	}
 
 	/**

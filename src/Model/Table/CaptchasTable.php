@@ -100,7 +100,7 @@ class CaptchasTable extends Table {
 	 * @return string|null
 	 */
 	public function touch(string $sessionId, string $ip): ?string {
-		$probability = (int)Configure::read('Captcha.cleanupProbability') ?: 10;
+		$probability = (int)(Configure::read('Captcha.cleanupProbability') ?? 10);
 		$this->cleanup($probability);
 
 		$captcha = $this->newEntity(
