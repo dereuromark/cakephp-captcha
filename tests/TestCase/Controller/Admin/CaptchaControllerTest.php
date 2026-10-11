@@ -63,6 +63,8 @@ class CaptchaControllerTest extends TestCase {
 
 		$this->assertResponseOk();
 		$this->assertResponseContains('Captcha');
+		$this->assertResponseContains('class="fas fa-broom me-1"');
+		$this->assertResponseNotContains('&lt;i class=');
 	}
 
 	/**

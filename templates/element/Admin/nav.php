@@ -28,7 +28,7 @@ $adminBackLabel = (string)\Cake\Core\Configure::read('Captcha.adminBackLabel', _
 			<?= $this->Html->link(
 				'<i class="fas fa-arrow-left me-1"></i>' . h($adminBackLabel),
 				$adminBackUrl,
-				['class' => 'nav-link', 'escapeTitle' => false],
+				['class' => 'nav-link', 'escape' => false, 'escapeAttributes' => true],
 			) ?>
 		</li>
 	<?php } ?>
