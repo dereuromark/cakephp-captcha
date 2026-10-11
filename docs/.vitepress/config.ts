@@ -42,7 +42,7 @@ export default defineConfig({
     search: { provider: 'local' },
     socialLinks: [{ icon: 'github', link: 'https://github.com/dereuromark/cakephp-captcha' }],
     editLink: {
-      pattern: 'https://github.com/dereuromark/cakephp-captcha/edit/master/docs/:path',
+      pattern: 'https://github.com/dereuromark/cakephp-captcha/edit/cake6/docs/:path',
       text: 'Edit this page on GitHub',
     },
     footer: { message: 'Released under the MIT License.' },

@@ -135,7 +135,7 @@ class CaptchaController extends CaptchaAdminAppController {
 				'created' => 'created',
 			])
 			->where(['created >' => $since])
-			->disableHydration()
+			->enableHydration(false)
 			->all();
 
 		$open = 0;
@@ -187,7 +187,7 @@ class CaptchaController extends CaptchaAdminAppController {
 		$rows = $this->Captchas->find()
 			->select(['created' => 'created', 'solved' => 'solved'])
 			->where(['created >' => $since])
-			->disableHydration()
+			->enableHydration(false)
 			->all();
 
 		$grid = [];

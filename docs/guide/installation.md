@@ -1,9 +1,12 @@
 # Installation
 
-Composer checks supported PHP and CakePHP versions from the package requirements.
+This development branch requires CakePHP 6 and PHP 8.5. Allow development
+dependencies while preferring stable versions of other packages.
 
 ```sh
-composer require dereuromark/cakephp-captcha
+composer config minimum-stability dev
+composer config prefer-stable true
+composer require cakephp/cakephp:^6.0@dev dereuromark/cakephp-captcha:dev-cake6
 bin/cake plugin load Captcha
 ```
 
@@ -16,11 +19,12 @@ For a honeypot, continue with [Getting started](./getting-started). No plugin da
 Active captchas, `NullEngine`, and the admin interface require the plugin schema on your application's default connection. If Migrations is not installed:
 
 ```sh
-composer require cakephp/migrations
+composer require cakephp/migrations:dev-fix/6.x-cakephp-compatibility
 bin/cake plugin load Migrations
 ```
 
-Then apply all plugin migrations:
+The migration dependency currently uses the upstream CakePHP 6 compatibility
+branch. Then apply all plugin migrations:
 
 ```sh
 bin/cake migrations migrate -p Captcha

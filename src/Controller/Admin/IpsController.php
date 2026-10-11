@@ -67,7 +67,7 @@ class IpsController extends CaptchaAdminAppController {
 		$rows = $this->Captchas->find()
 			->select(['solved' => 'solved'])
 			->where(['ip' => $ip, 'created >' => $since24h])
-			->disableHydration()
+			->enableHydration(false)
 			->all();
 		foreach ($rows as $row) {
 			$summary['issued']++;
@@ -119,7 +119,7 @@ class IpsController extends CaptchaAdminAppController {
 				->select(['session_id' => 'session_id'])
 				->where(['ip' => $ip, 'created >' => $since])
 				->distinct(['session_id'])
-				->disableHydration()
+				->enableHydration(false)
 				->all()
 				->extract('session_id')
 				->toList();
@@ -167,7 +167,7 @@ class IpsController extends CaptchaAdminAppController {
 			->limit(10);
 
 		$out = [];
-		foreach ($query->disableHydration()->all() as $row) {
+		foreach ($query->enableHydration(false)->all() as $row) {
 			$out[] = ['ip' => (string)$row['ip'], 'n' => (int)$row['n']];
 		}
 

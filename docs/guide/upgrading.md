@@ -9,7 +9,22 @@ bin/cake migrations migrate -p Captcha
 
 Test both accepted and rejected submissions after upgrading. UUID, session, IP, timing, and single-use checks all affect active validation.
 
-## Unreleased fixes
+## CakePHP 6 development branch
+
+Use PHP 8.5 and the development dependencies described in [Installation](installation.md).
+Host controller `beforeFilter()` methods return `void`; set redirect responses on the
+event with `$event->setResult($this->redirect('/login'))`.
+
+CakePHP 6 no longer forwards behavior methods through tables. Access captcha
+validation methods through `$table->getBehavior('Captcha')`. The plugin registers
+that behavior as the `captcha` validation provider. Custom engines using
+`validateCaptchaResult` should use `'provider' => 'captcha'` in their rules.
+
+Custom helpers and behaviors must use the framework's renamed `defaultConfig`,
+`config`, `View`, and `registry` properties where applicable. Entity field access
+is configured with `patchable`, replacing `_accessible`.
+
+## Earlier fixes
 
 The current branch includes these fixes after the previous release:
 

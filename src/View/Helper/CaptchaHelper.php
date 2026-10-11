@@ -32,7 +32,7 @@ class CaptchaHelper extends Helper {
 	 *
 	 * @var array<string, mixed>
 	 */
-	protected array $_defaultConfig = [
+	protected array $defaultConfig = [
 		'ext' => null,
 		'engine' => MathEngine::class,
 		'passiveClass' => null, // CSS class for honeypot wrapper (e.g. 'd-none'); null uses inline style
@@ -152,14 +152,14 @@ class CaptchaHelper extends Helper {
 			return $this->_id;
 		}
 		$CaptchasTable = $this->_getTable();
-		if (!$this->_View->getRequest()->getSession()->started()) {
-			$this->_View->getRequest()->getSession()->start();
+		if (!$this->View->getRequest()->getSession()->started()) {
+			$this->View->getRequest()->getSession()->start();
 		}
-		$id = $this->_View->getRequest()->getSession()->id();
+		$id = $this->View->getRequest()->getSession()->id();
 		if (!$id && PHP_SAPI === 'cli') {
 			$id = 'test';
 		}
-		$this->_id = $CaptchasTable->touch($id, $this->_View->getRequest()->clientIp());
+		$this->_id = $CaptchasTable->touch($id, $this->View->getRequest()->clientIp());
 
 		return $this->_id;
 	}

@@ -12,4 +12,4 @@ Honeypots and simple math catch basic automated submissions. They do not replace
 
 The [beginner guide](./getting-started) starts with a honeypot on an existing form. Continue with [active captchas](../reference/active) for a stored challenge. Both behaviors can be attached to the same table.
 
-These docs describe the current CakePHP 5 branch. Check [upgrading](./upgrading) for changes that have not yet been released. Older CakePHP versions have a [version map](https://github.com/dereuromark/cakephp-captcha/wiki#cakephp-version-map).
+These docs describe the CakePHP 6 development branch. Check [upgrading](./upgrading) for changes that have not yet been released. Older CakePHP versions have a [version map](https://github.com/dereuromark/cakephp-captcha/wiki#cakephp-version-map).

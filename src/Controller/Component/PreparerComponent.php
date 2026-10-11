@@ -23,7 +23,7 @@ class PreparerComponent extends Component {
 	/**
 	 * @var array<string, mixed>
 	 */
-	protected array $_defaultConfig = [
+	protected array $defaultConfig = [
 		'engine' => MathEngine::class,
 	];
 
@@ -34,7 +34,7 @@ class PreparerComponent extends Component {
 	 * @return void
 	 */
 	public function initialize(array $config): void {
-		$controller = $this->_registry->getController();
+		$controller = $this->registry->getController();
 		$this->setEventManager($controller->getEventManager());
 
 		$this->Captchas = $controller->Captchas;
@@ -66,7 +66,7 @@ class PreparerComponent extends Component {
 	 * @return \Captcha\Engine\EngineInterface
 	 */
 	protected function _getEngine() {
-		$config = (array)Configure::read('Captcha') + $this->_defaultConfig;
+		$config = (array)Configure::read('Captcha') + $this->defaultConfig;
 		/** @phpstan-var class-string<\Captcha\Engine\EngineInterface> $engine */
 		$engine = $config['engine'];
 

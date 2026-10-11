@@ -68,7 +68,7 @@ class MathEngine implements EngineInterface {
 		$validator->add('captcha_result', [
 			'valid' => [
 				'rule' => 'validateCaptchaResult',
-				'provider' => 'table',
+				'provider' => 'captcha',
 				'message' => __d('captcha', 'The solution is not correct'),
 				'last' => true,
 			],

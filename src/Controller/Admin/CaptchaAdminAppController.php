@@ -44,10 +44,7 @@ class CaptchaAdminAppController extends AppController {
      * @return void
 	 */
 	public function beforeFilter(EventInterface $event): void {
-		$result = parent::beforeFilter($event);
-		if ($result instanceof ResponseInterface) {
-			$event->setResult($result);
-		}
+		parent::beforeFilter($event);
 		$authorization = $this->request->getAttribute('authorization');
 		if (is_object($authorization) && $this->components()->has('Authorization') && method_exists($this->components()->get('Authorization'), 'skipAuthorization')) {
 			$this->components()->get('Authorization')->skipAuthorization();
