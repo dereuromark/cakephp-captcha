@@ -7,7 +7,7 @@
 ?>
 <tr>
 	<td class="font-monospace">
-		<?= $this->Html->link(h($ip), ['action' => 'view', $ip], ['escapeTitle' => false]) ?>
+		<?= $this->Html->link(h($ip), ['action' => 'view', $ip], ['escape' => false, 'escapeAttributes' => true]) ?>
 	</td>
 	<td class="text-end"><span class="badge text-bg-secondary"><?= h((string)$n) ?></span></td>
 	<td class="text-end" style="width: 14rem;">
@@ -16,7 +16,7 @@
 			['action' => 'clearRateLimit', $ip],
 			[
 				'class' => 'btn btn-sm btn-outline-warning',
-				'escapeTitle' => false,
+				'escape' => false, 'escapeAttributes' => true,
 				'confirm' => __d('captcha', 'Clear rate-limit cache for {0}?', $ip),
 				'block' => true,
 			],
@@ -26,7 +26,7 @@
 			['action' => 'reset', $ip],
 			[
 				'class' => 'btn btn-sm btn-outline-danger',
-				'escapeTitle' => false,
+				'escape' => false, 'escapeAttributes' => true,
 				'confirm' => __d('captcha', 'Delete all captcha rows for {0}?', $ip),
 				'block' => true,
 				'title' => __d('captcha', 'Delete all rows for this IP'),

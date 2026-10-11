@@ -16,7 +16,7 @@ $this->assign('title', __d('captcha', 'Captcha · Preview'));
 		<?= $this->Html->link(
 			'<i class="fas fa-arrows-rotate me-1"></i>' . __d('captcha', 'Regenerate'),
 			['action' => 'preview'],
-			['class' => 'btn btn-sm btn-outline-primary', 'escapeTitle' => false],
+			['class' => 'btn btn-sm btn-outline-primary', 'escape' => false, 'escapeAttributes' => true],
 		) ?>
 	</div>
 	<div class="card-body">

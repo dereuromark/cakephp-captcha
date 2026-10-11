@@ -31,7 +31,7 @@ $this->assign('title', __d('captcha', 'Captcha · IP {0}', $ip));
 				['action' => 'clearRateLimit', $ip],
 				[
 					'class' => 'btn btn-outline-warning',
-					'escapeTitle' => false,
+					'escape' => false, 'escapeAttributes' => true,
 					'confirm' => __d('captcha', 'Clear rate-limit cache for {0}?', $ip),
 					'block' => true,
 				],
@@ -41,7 +41,7 @@ $this->assign('title', __d('captcha', 'Captcha · IP {0}', $ip));
 				['action' => 'reset', $ip],
 				[
 					'class' => 'btn btn-outline-danger',
-					'escapeTitle' => false,
+					'escape' => false, 'escapeAttributes' => true,
 					'confirm' => __d('captcha', 'Delete all captcha rows for {0}?', $ip),
 					'block' => true,
 				],

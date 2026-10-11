@@ -46,7 +46,7 @@ $solveRate = $attempted > 0 ? round(($tiles24h['solved'] / $attempted) * 100) : 
 			['action' => 'cleanup'],
 			[
 				'class' => 'btn btn-outline-primary btn-sm',
-				'escapeTitle' => false,
+				'escape' => false, 'escapeAttributes' => true,
 				'confirm' => __d('captcha', 'Delete all captchas older than maxTime?'),
 				'block' => true,
 			],
@@ -56,7 +56,7 @@ $solveRate = $attempted > 0 ? round(($tiles24h['solved'] / $attempted) * 100) : 
 			['action' => 'hardReset'],
 			[
 				'class' => 'btn btn-outline-danger btn-sm',
-				'escapeTitle' => false,
+				'escape' => false, 'escapeAttributes' => true,
 				'confirm' => __d('captcha', 'Delete ALL captcha rows? This cannot be undone.'),
 				'block' => true,
 			],
