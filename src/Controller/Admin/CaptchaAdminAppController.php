@@ -48,10 +48,10 @@ class CaptchaAdminAppController extends AppController {
 		if ($result instanceof ResponseInterface) {
 			$event->setResult($result);
 		}
-		if ($this->components()->has('Authorization') && method_exists($this->components()->get('Authorization'), 'skipAuthorization')) {
+		$authorization = $this->request->getAttribute('authorization');
+		if (is_object($authorization) && $this->components()->has('Authorization') && method_exists($this->components()->get('Authorization'), 'skipAuthorization')) {
 			$this->components()->get('Authorization')->skipAuthorization();
 		} else {
-			$authorization = $this->request->getAttribute('authorization');
 			if (is_object($authorization) && is_callable([$authorization, 'skipAuthorization'])) {
 				$authorization->skipAuthorization();
 			}

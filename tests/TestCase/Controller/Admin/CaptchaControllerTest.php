@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Captcha\Test\TestCase\Controller\Admin;
 
 use Cake\Cache\Cache;
+use Cake\Controller\Component;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\Event\EventManager;
@@ -16,6 +17,7 @@ use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Captcha\Cache\VerifyRateLimiter;
 use Captcha\Controller\Admin\CaptchaController;
+use LogicException;
 use PHPUnit\Framework\Attributes\UsesClass;
 use RuntimeException;
 
@@ -291,6 +293,27 @@ class CaptchaControllerTest extends TestCase {
 
 		$this->assertRedirect('/login');
 		$this->assertTrue($service->skipped);
+	}
+
+	public function testHostRedirectWithComponentButNoAuthorizationService(): void {
+		Configure::write('Test.hostRedirect', true);
+		$listener = function (EventInterface $event): void {
+			$controller = $event->getSubject();
+			$controller->components()->set('Authorization', new class ($controller->components()) extends Component {
+				public function skipAuthorization(): void {
+					throw new LogicException('No Authorization middleware service');
+				}
+			});
+		};
+		EventManager::instance()->on('Controller.initialize', $listener);
+		try {
+			$this->get(['prefix' => 'Admin', 'plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'index']);
+		} finally {
+			EventManager::instance()->off('Controller.initialize', $listener);
+			Configure::delete('Test.hostRedirect');
+		}
+
+		$this->assertRedirect('/login');
 	}
 
 }
