@@ -5,6 +5,7 @@ namespace Captcha\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Captcha\Model\Behavior\CaptchaBehavior;
@@ -84,22 +85,23 @@ class CaptchaComponent extends Component {
 	 * @return void
 	 */
 	public function addValidation(Validator $validator, ?string $type = null): void {
-		/** @var \Cake\ORM\Table<array{Captcha: \Captcha\Model\Behavior\CaptchaBehavior, PassiveCaptcha: \Captcha\Model\Behavior\PassiveCaptchaBehavior}> $Captchas */
+		if ($type === 'Passive') {
+			$behavior = new PassiveCaptchaBehavior(new Table());
+			$behavior->addPassiveCaptchaValidation($validator);
+
+			return;
+		}
+
 		$Captchas = TableRegistry::getTableLocator()->get('Captcha.Captchas');
 
 		$Captchas->setValidator('captcha', $validator);
 
 		$behavior = 'Captcha';
-		if ($type === 'Passive') {
-			$behavior = 'PassiveCaptcha';
-		}
 
 		$Captchas->addBehavior('Captcha.' . $behavior);
 		$instance = $Captchas->getBehavior($behavior);
 		if ($instance instanceof CaptchaBehavior) {
 			$instance->addCaptchaValidation($validator);
-		} elseif ($instance instanceof PassiveCaptchaBehavior) {
-			$instance->addPassiveCaptchaValidation($validator);
 		} else {
 			throw new RuntimeException('Unsupported captcha validation behavior');
 		}

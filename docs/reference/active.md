@@ -2,10 +2,10 @@
 
 The default MathEngine displays an addition or subtraction riddle. Complete the [stored challenge installation](../guide/installation#stored-challenges-and-admin-pages) first. Each form uses a UUID token bound to its session and IP address. Multiple open forms have independent tokens.
 
-There is for example a built in NullEngine to also build hidden ones (mainly leveraging the min/max time).
+`NullEngine` provides an invisible stored token with timing checks.
 
-### Forms with tables
-You can add the behavior to your model inside the specific action: or you can simply
+## Forms with tables
+Attach the behavior to the table in its `initialize()` method, or inside the controller action before creating or patching the entity:
 ```php
 $this->MyTable->addBehavior('Captcha.Captcha');
 ```
@@ -18,7 +18,7 @@ $this->loadComponent('Captcha.Captcha');
 The component has the advantage that it also auto-loads the Captcha helper for your template forms.
 Otherwise you need to manually load it.
 
-If you only want to validate captchas for certain actions, the component can be white-listed to certain actions:
+Restrict automatic behavior attachment to selected actions:
 ```php
 $this->loadComponent('Captcha.Captcha', [
     'actions' => ['add', 'edit'],
@@ -42,7 +42,7 @@ The helper stores the active challenge UUID in a hidden `captcha_uuid` field and
 Use `control()` for the active result input and hidden UUID only. Attach `Captcha.PassiveCaptcha` separately to validate the passive field rendered by `render()`. Rendering a field does not attach its behavior. A correct or wrong answer consumes the active token; render a fresh form after a rejected submission.
 The passive element is only a low-assurance honeypot and should be treated as supplemental filtering, not as the main protection layer.
 
-### Working with model-less forms
+## Working with model-less forms
 E.g. for a contact form, first add this in your controller's `initialize()`:
 ```php
 $this->loadComponent('Captcha.Captcha', ['auto' => false]);
@@ -108,7 +108,7 @@ Set `Captcha.mathType` to a class implementing `Captcha\Engine\Math\MathInterfac
 
 For a different challenge, set `Captcha.engine` to a class implementing `Captcha\Engine\EngineInterface`. Its constructor receives the configuration. `generate(): array` supplies the stored `result` and binary `image`; `buildValidator(Validator $validator): void` adds validation rules. Keep the generated values and template controls consistent with those rules.
 
-### Throttle and Garbage Collect
+## Throttle and Garbage Collect
 With such a DB driven tool you must clean out your table daily or even hourly based on the traffic.
 Use the `maxTime` config to define the time span a captcha is valid, and when it can be removed as outdated.
 The built in solution here is to auto-clean when creating images on a probability level (0...100). Default for `cleanupProbability` is `10` (percent).
@@ -142,7 +142,7 @@ The same verification policy applies to `NullEngine`. After the timing checks pa
 is consumed atomically and cannot be reused. `solved` remains `null`, since there was no riddle.
 A successful verification clears previous failures, provided any attached honeypot checks pass too.
 
-### Verification cache
+## Verification cache
 
 Use a shared cache with atomic `add` and `increment` operations, such as Redis or Memcached,
 for enforcement across concurrent requests and application workers. Set its duration to at least
@@ -153,7 +153,7 @@ The limiter uses fixed time buckets, so the budget resets at the next bucket bou
 than a full window after the latest failure. `ip_session` separates sessions at the same IP;
 `ip` shares their budget and may also group unrelated users behind a shared address.
 
-### Larger captcha images
+## Larger captcha images
 
 Check the binary column capacity for your database and image sizes.
 For MySQL the type `blob` is used when detected as DB.

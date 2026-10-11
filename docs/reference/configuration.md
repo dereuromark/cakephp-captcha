@@ -28,7 +28,7 @@ The active and passive behaviors merge global settings with per-behavior options
 
 ## Verification limits
 
-Active token validation enables the verification limiter by default; passive validation leaves it disabled. Both default to five failures per 600-second fixed bucket, `ip_session` scope, and the `default` cache. Configure a shared cache with atomic operations for concurrent workers. See [active cache requirements](./active#verification-cache) and [passive throttling](./passive#optional-verification-throttling).
+Active token validation enables the verification limiter by default; passive validation leaves it disabled. A global `verifyRateLimit.enabled` override applies to both behaviors. Copying the enabled limiter in the example configuration also enables passive throttling, including its cache and session use. Both default to five failures per 600-second fixed bucket, `ip_session` scope, and the `default` cache. Configure a shared cache with atomic operations for concurrent workers. See [active cache requirements](./active#verification-cache) and [passive throttling](./passive#optional-verification-throttling).
 
 `engineConfig` is used only by the admin preview. Production engine options belong at the top level of `Captcha`, alongside `engine`.
 

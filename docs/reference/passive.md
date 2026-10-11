@@ -1,10 +1,10 @@
-## Passive Captchas
+# Passive captchas
 
 By default, the plugin provides an unobtrusive passive captcha as "bot trap" aka "honeypot".
 It does not need a DB table.
 This is low-assurance protection only and should be treated as nuisance filtering for unsophisticated bots, not as a primary anti-automation control.
 
-### Honeypot field
+## Honeypot field
 The `dummyField` config sets an input field (by default `email_homepage` control) as hidden field, and will fail if filled out.
 This only catches simplistic bots that blindly fill every field they see. More capable bots can detect or ignore honeypots.
 
@@ -30,7 +30,7 @@ echo $this->Captcha->passive();
 That's it, now it should not validate the form if the honeypot was triggered.
 For higher-risk forms, combine it with the active captcha or your own external bot-defense layer.
 
-### Working with model-less forms
+## Working with model-less forms
 E.g. for a contact form, first add this in your controller's `initialize()`:
 ```php
 $this->loadComponent('Captcha.Captcha', ['auto' => false]);
@@ -54,7 +54,7 @@ if ($this->request->is('post')) {
 
 Also here, don't forget to add the helper call.
 
-### Configuration
+## Configuration
 
 You can configure it globally using Configure class - and `app.php`:
 ```
@@ -66,7 +66,7 @@ You can configure it globally using Configure class - and `app.php`:
 
 Use `'log' => true` if you want to log all honeypot events to type `info`.
 
-#### Optional verification throttling
+### Optional verification throttling
 
 Passive throttling is disabled by default. To enable it globally:
 
@@ -102,7 +102,7 @@ submission was rejected. Use your configured field name when it differs from the
 
 See [cache requirements](./active#verification-cache) and [admin monitoring](./admin#currently-rate-limited-clients).
 
-#### CSP-compatible rendering (`passiveClass`)
+### CSP-compatible rendering (`passiveClass`)
 
 By default, `passive()` renders the honeypot wrapper with an inline style:
 ```html

@@ -6,10 +6,10 @@ use Cake\Core\Configure;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use Captcha\Controller\CaptchaController;
+use PHPUnit\Framework\Attributes\UsesClass;
 
-/**
- * @uses \Captcha\Controller\CaptchaController
- */
+#[UsesClass(CaptchaController::class)]
 class CaptchaControllerTest extends TestCase {
 
 	use IntegrationTestTrait;

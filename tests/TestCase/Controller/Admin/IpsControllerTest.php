@@ -11,10 +11,10 @@ use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Captcha\Cache\RateLimitKey;
 use Captcha\Cache\VerifyRateLimiter;
+use Captcha\Controller\Admin\IpsController;
+use PHPUnit\Framework\Attributes\UsesClass;
 
-/**
- * @uses \Captcha\Controller\Admin\IpsController
- */
+#[UsesClass(IpsController::class)]
 class IpsControllerTest extends TestCase {
 
 	use IntegrationTestTrait;

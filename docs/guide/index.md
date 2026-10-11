@@ -4,7 +4,7 @@ Captcha adds validation rules and form controls to CakePHP applications. Choose 
 
 | Setup | Visitor interaction | State |
 | --- | --- | --- |
-| `Captcha.PassiveCaptcha` | Hidden honeypot | No database, cache, or session by default |
+| `Captcha.PassiveCaptcha` | Hidden honeypot | No database; no cache or session unless throttling is enabled |
 | `Captcha.Captcha` with `MathEngine` | Math riddle | Database token, session, timing checks, verification cache |
 | `Captcha.Captcha` with `NullEngine` | No riddle | Database token, session, timing checks, verification cache |
 

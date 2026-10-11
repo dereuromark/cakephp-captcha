@@ -9,16 +9,17 @@ use Cake\Event\EventInterface;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\MethodNotAllowedException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\Http\ServerRequest;
 use Cake\I18n\DateTime;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Captcha\Cache\VerifyRateLimiter;
+use Captcha\Controller\Admin\CaptchaController;
+use PHPUnit\Framework\Attributes\UsesClass;
 use RuntimeException;
 
-/**
- * @uses \Captcha\Controller\Admin\CaptchaController
- */
+#[UsesClass(CaptchaController::class)]
 class CaptchaControllerTest extends TestCase {
 
 	use IntegrationTestTrait;
@@ -254,6 +255,41 @@ class CaptchaControllerTest extends TestCase {
 		}
 
 		$this->assertResponseOk();
+		$this->assertTrue($service->skipped);
+	}
+
+	public function testGateHttpExceptionKeepsItsStatus(): void {
+		$this->disableErrorHandlerMiddleware();
+		Configure::write('Captcha.adminAccess', function (): bool {
+			throw new NotFoundException('Hidden admin');
+		});
+		$this->expectException(NotFoundException::class);
+
+		$this->get(['prefix' => 'Admin', 'plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'index']);
+	}
+
+	public function testHostRedirectMarksRequestAuthorizationChecked(): void {
+		$service = new class {
+			public bool $skipped = false;
+
+			public function skipAuthorization(): void {
+				$this->skipped = true;
+			}
+		};
+		Configure::write('Test.hostRedirect', true);
+		$listener = function (EventInterface $event) use ($service): void {
+			$controller = $event->getSubject();
+			$controller->setRequest($controller->getRequest()->withAttribute('authorization', $service));
+		};
+		EventManager::instance()->on('Controller.initialize', $listener);
+		try {
+			$this->get(['prefix' => 'Admin', 'plugin' => 'Captcha', 'controller' => 'Captcha', 'action' => 'index']);
+		} finally {
+			EventManager::instance()->off('Controller.initialize', $listener);
+			Configure::delete('Test.hostRedirect');
+		}
+
+		$this->assertRedirect('/login');
 		$this->assertTrue($service->skipped);
 	}
 

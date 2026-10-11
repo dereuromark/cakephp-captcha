@@ -2,11 +2,15 @@
 
 // The following configs can be globally configured, copy the array content over to your ROOT/config
 
+use Captcha\Engine\Math\SimpleMath;
 use Captcha\Engine\MathEngine;
 
 return [
 	'Captcha' => [
 		'engine' => MathEngine::class, // Engine FQCN (must implement Captcha\Engine\EngineInterface); default is MathEngine
+		'mathType' => SimpleMath::class,
+		'imageFormat' => MathEngine::FORMAT_PNG,
+		'size' => 14,
 		'engineConfig' => [], // Only read by the admin preview (Admin/CaptchaController::preview) when rendering a test captcha; the live captcha flow does not read this; set production engine options at the Captcha.* top level
 		'maxTime' => 86400, // Seconds a generated captcha stays valid before it is considered stale/expired; default DAY (86400)
 
@@ -14,7 +18,7 @@ return [
 		'deadlockMinutes' => 60, // How long at most to block a user who generated too much captchas
 		'cleanupProbability' => 10, // 0...100 - Use 0 if you use a cronjob to manually garbage collect
 		'verifyRateLimit' => [
-			'enabled' => true, // Enabled by default; override to tune or disable
+			'enabled' => true, // Active defaults to true; setting this globally also enables passive throttling
 			'maxFailures' => 5,
 			'window' => 600,
 			'scope' => 'ip_session', // 'ip_session' or 'ip'
@@ -22,6 +26,7 @@ return [
 		],
 
 		// Admin backend (mounted at /<adminPrefix><adminRoutePath> — default /admin/captcha)
+		'adminPrefixPath' => null, // Derive the URL path from adminPrefix
 		'adminPrefix' => 'Admin', // Route prefix to mount the admin under
 		'adminRoutePath' => '/captcha', // Path segment under the prefix
 		'adminLayout' => null, // null = plugin layout, false = host layout, string = custom layout name
@@ -45,6 +50,7 @@ return [
 		// can also be overridden globally here via the Captcha namespace, which is
 		// merged onto each component's defaults at runtime.
 		'minTime' => 2, // CaptchaBehavior: minimum seconds a human is expected to need to fill in the form
+		'passiveClass' => null, // Use a CSS class instead of an inline style for strict CSP
 		'dummyField' => 'email_homepage', // PassiveCaptchaBehavior/Helper: honeypot field name (string or array of names)
 		'ext' => null, // CaptchaHelper: image URL extension for the rendered captcha (e.g. 'png'); null = none
 		'log' => null, // PassiveCaptchaBehavior: log honeypot hits; null = auto-detect based on debug mode

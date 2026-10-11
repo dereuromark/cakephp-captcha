@@ -1,6 +1,6 @@
 # Admin Backend
 
-The plugin ships with a admin interface with a bundled layout that gives you health, abuse-signal, and maintenance views for the captchas table without dropping into SQL.
+The admin interface shows stored captcha activity and verification counters, with actions to clear limits and remove tokens. It uses a bundled layout and requires the [plugin schema](../guide/installation#stored-challenges-and-admin-pages).
 
 ## Routing
 
@@ -22,7 +22,7 @@ the path below that prefix.
 
 ## Authorization (deny by default)
 
-The admin backend is **deny by default**. You must register an access closure that returns `true` for the requests you want to let through. The closure receives the current `ServerRequest` so you can inspect identity, roles, IP, headers, anything.
+The admin backend is deny by default. You must register an access closure that returns `true` for the requests you want to let through. The closure receives the current `ServerRequest` so you can inspect identity, roles, IP, headers, anything.
 
 ```php
 // config/bootstrap.php (or your Application::bootstrap())
@@ -37,7 +37,7 @@ Configure::write('Captcha.adminAccess', function (ServerRequest $request): bool 
 
 If `Captcha.adminAccess` is not set, every admin URL responds with `403 Forbidden`.
 
-The host `AppController` initialization and `beforeFilter()` still run. Its redirects are preserved. After those callbacks, the plugin uses `Captcha.adminAccess` as its admin authorization check. Returning anything other than `true`, or throwing an exception, denies access.
+The host `AppController` initialization and `beforeFilter()` still run. Its redirects are preserved. After those callbacks, the plugin uses `Captcha.adminAccess` as its admin authorization check. Returning anything other than `true` denies access. HTTP exceptions retain their status or redirect; other callback failures are logged and return 403.
 
 ## Layout
 
@@ -50,14 +50,14 @@ The admin uses a self-contained Bootstrap 5 layout shipped with the plugin (`Cap
 ],
 ```
 
-## Features
+## Pages
 
 ### Dashboard (`/admin/captcha/`)
 
-- **Stat tiles**: Open · Solved (24h) · Failed (24h) · Solve rate · Expired (no attempt) · Throttled now
-- **Hourly heatmap**: 7×24 grid colored by issued count, with `solved/failed` breakdown on hover
-- **Engine + config snapshot**: which engine is active, plus the load-bearing config values
-- **Maintenance strip**: `Run cleanup now`, `Hard reset (truncate)` — both `confirm`-gated `postLink`s
+- Stat tiles: Open · Solved (24h) · Failed (24h) · Solve rate · Expired (no attempt) · Throttled now
+- Hourly heatmap: 7×24 grid colored by issued count, with `solved/failed` breakdown on hover
+- Engine and configuration: which engine is active, plus the load-bearing config values
+- Maintenance actions: `Run cleanup now`, `Hard reset (truncate)`; both `confirm`-gated `postLink`s
 
 ### IPs (`/admin/captcha/ips/`)
 
@@ -76,7 +76,7 @@ Read-only list of registered engines (`MathEngine`, `NullEngine`, plus any custo
 
 ### Preview (`/admin/captcha/preview`)
 
-Renders a sample captcha through the configured engine for verification. The preview does **not** create a `captchas` table row — it only invokes the engine's `generate()` method. Useful when sanity-checking a config change without touching a real form.
+Renders a sample captcha through the configured engine for verification. The preview does not create a `captchas` table row; it only invokes the engine's `generate()` method. Useful when sanity-checking a config change without touching a real form.
 
 ### Config (`/admin/captcha/config`)
 

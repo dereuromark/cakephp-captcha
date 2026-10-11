@@ -72,4 +72,17 @@ class CaptchaComponentTest extends TestCase {
 		$this->assertTrue($controller->fetchTable()->hasBehavior('Captcha'));
 	}
 
+	public function testPassiveFormValidationDoesNotLoadCaptchaTable(): void {
+		Configure::write('Captcha.log', false);
+		$component = new CaptchaComponent(new ComponentRegistry(new Controller(new ServerRequest())), ['auto' => false]);
+		$form = new Form();
+		$validator = $form->getValidator();
+		$component->addValidation($validator, 'Passive');
+
+		$this->assertSame([], $validator->validate(['email_homepage' => '']));
+		$this->assertNotEmpty($validator->validate(['email_homepage' => 'bot']));
+		$this->assertNotEmpty($validator->validate([]));
+		$this->assertFalse($this->getTableLocator()->exists('Captcha.Captchas'));
+	}
+
 }

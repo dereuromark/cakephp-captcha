@@ -7,6 +7,7 @@ use App\Controller\AppController;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\HttpException;
 use Cake\Log\Log;
 use Closure;
 use Psr\Http\Message\ResponseInterface;
@@ -47,12 +48,6 @@ class CaptchaAdminAppController extends AppController {
 		if ($result instanceof ResponseInterface) {
 			$event->setResult($result);
 		}
-		if ($event->getResult() instanceof ResponseInterface) {
-			$event->stopPropagation();
-
-			return;
-		}
-
 		if ($this->components()->has('Authorization') && method_exists($this->components()->get('Authorization'), 'skipAuthorization')) {
 			$this->components()->get('Authorization')->skipAuthorization();
 		} else {
@@ -62,13 +57,19 @@ class CaptchaAdminAppController extends AppController {
 			}
 		}
 
+		if ($event->getResult() instanceof ResponseInterface) {
+			$event->stopPropagation();
+
+			return;
+		}
+
 		$gate = Configure::read('Captcha.adminAccess');
 		if (!($gate instanceof Closure)) {
 			throw new ForbiddenException(__d('captcha', 'Captcha admin backend is not configured. Set Captcha.adminAccess to a Closure.'));
 		}
 		try {
 			$allowed = $gate($this->request) === true;
-		} catch (ForbiddenException $e) {
+		} catch (HttpException $e) {
 			throw $e;
 		} catch (Throwable $e) {
 			Log::warning(sprintf('Captcha.adminAccess threw %s: %s', $e::class, $e->getMessage()));
