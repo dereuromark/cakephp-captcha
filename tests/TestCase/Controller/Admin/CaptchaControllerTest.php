@@ -11,6 +11,7 @@ use Cake\Event\EventManager;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
+use Cake\Http\MiddlewareQueue;
 use Cake\Http\ServerRequest;
 use Cake\I18n\DateTime;
 use Cake\TestSuite\IntegrationTestTrait;
@@ -19,6 +20,9 @@ use Captcha\Cache\VerifyRateLimiter;
 use Captcha\Controller\Admin\CaptchaController;
 use LogicException;
 use PHPUnit\Framework\Attributes\UsesClass;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 
 #[UsesClass(CaptchaController::class)]
@@ -51,6 +55,40 @@ class CaptchaControllerTest extends TestCase {
 		$this->disableErrorHandlerMiddleware();
 		$this->expectException(ForbiddenException::class);
 		$this->get(['plugin' => 'Captcha', 'prefix' => 'Admin', 'controller' => 'Captcha', 'action' => 'index']);
+	}
+
+	/**
+	 * CakePHP's CspMiddleware stores the nonces as `cspScriptNonce` and `cspStyleNonce`.
+	 *
+	 * @return void
+	 */
+	public function testIndexUsesCoreCspNonces(): void {
+		Configure::write('Captcha.adminAccess', fn (ServerRequest $request): bool => true);
+		$this->withRequestAttributes(['cspScriptNonce' => 'script-nonce', 'cspStyleNonce' => 'style-nonce']);
+
+		$this->get(['plugin' => 'Captcha', 'prefix' => 'Admin', 'controller' => 'Captcha', 'action' => 'index']);
+
+		$this->assertResponseOk();
+		$this->assertResponseContains('<script nonce="script-nonce" src="https://cdn.jsdelivr.net/npm/bootstrap');
+		$this->assertResponseContains('<style nonce="style-nonce">');
+		$this->assertResponseNotRegExp('/<script(?![^>]*nonce="script-nonce")/');
+		$this->assertResponseNotRegExp('/<style(?![^>]*nonce="style-nonce")/');
+		$this->assertResponseNotRegExp('/<link(?![^>]*nonce="style-nonce")[^>]*rel="stylesheet"/');
+	}
+
+	/**
+	 * A custom middleware may still provide the script nonce as `cspNonce`.
+	 *
+	 * @return void
+	 */
+	public function testIndexFallsBackToCspNonce(): void {
+		Configure::write('Captcha.adminAccess', fn (ServerRequest $request): bool => true);
+		$this->withRequestAttributes(['cspNonce' => 'custom-nonce']);
+
+		$this->get(['plugin' => 'Captcha', 'prefix' => 'Admin', 'controller' => 'Captcha', 'action' => 'index']);
+
+		$this->assertResponseOk();
+		$this->assertResponseNotRegExp('/<script(?![^>]*nonce="custom-nonce")/');
 	}
 
 	/**
@@ -314,6 +352,25 @@ class CaptchaControllerTest extends TestCase {
 		}
 
 		$this->assertRedirect('/login');
+	}
+
+	/**
+	 * Adds a middleware that sets request attributes, like a CSP middleware would.
+	 *
+	 * @param array<string, string> $attributes
+	 *
+	 * @return void
+	 */
+	protected function withRequestAttributes(array $attributes): void {
+		EventManager::instance()->on('Server.buildMiddleware', function (EventInterface $event, MiddlewareQueue $queue) use ($attributes): void {
+			$queue->prepend(function (ServerRequestInterface $request, RequestHandlerInterface $handler) use ($attributes): ResponseInterface {
+				foreach ($attributes as $name => $value) {
+					$request = $request->withAttribute($name, $value);
+				}
+
+				return $handler->handle($request);
+			});
+		});
 	}
 
 }
